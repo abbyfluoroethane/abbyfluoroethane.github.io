@@ -3,7 +3,7 @@ title: project longinus
 status: active
 featured: true
 article: true
-description: experimental development and flight test campaign involving rockets, avionics, and propulsion.
+description: experimental development and flight test campaign involving rockets, avionics, and propulsion. named after the spear of longinus from neon genesis evangelion.
 external_url: ""
 url_text: ""
 date: 2024-12-01

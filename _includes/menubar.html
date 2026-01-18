@@ -131,6 +131,39 @@
       menuItems.forEach(item => item.classList.remove('active'));
       currentOpenMenu = null;
     });
+
+    // Update dropdown position when scrolling
+    window.addEventListener('scroll', function() {
+      if (currentOpenMenu) {
+        const dropdown = currentOpenMenu.querySelector('.dropdown');
+        if (dropdown) {
+          const menuBar = currentOpenMenu.closest('.menu-bar');
+          const menuBarRect = menuBar.getBoundingClientRect();
+          const itemRect = currentOpenMenu.getBoundingClientRect();
+          const dropdownWidth = dropdown.offsetWidth;
+          const viewportWidth = window.innerWidth;
+
+          // Calculate position relative to menu bar
+          let left = itemRect.left - 2;
+
+          // If dropdown would overflow right edge, shift it left
+          if (left + dropdownWidth > viewportWidth - 8) {
+            left = viewportWidth - dropdownWidth - 8;
+          }
+
+          // Don't go past left edge
+          if (left < 8) {
+            left = 8;
+          }
+
+          // Use menu bar bottom as reference point
+          const top = menuBarRect.bottom;
+
+          dropdown.style.top = top + 'px';
+          dropdown.style.left = left + 'px';
+        }
+      }
+    });
   });
 
   // Theme switching logic

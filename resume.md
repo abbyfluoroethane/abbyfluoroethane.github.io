@@ -3,9 +3,38 @@ title: Resume
 app_name: Resume
 ---
 
+<div style="text-align: center; margin-bottom: 2rem;">
+  <a href="{{ '/assets/Abby_Bigaouette_Resume.pdf' | relative_url }}" download="Abby_Bigaouette_Resume.pdf" class="project-button">
+    Download as PDF
+  </a>
+</div>
+
+<style>
+.project-button {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background: var(--theme-surface0);
+  border: 2px solid var(--theme-surface1);
+  color: var(--theme-pink) !important;
+  text-decoration: none !important;
+  border-bottom: 2px solid var(--theme-surface1) !important;
+  font-family: Chicago, serif;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 2px 2px 0 var(--theme-surface0);
+}
+
+.project-button:hover {
+  background: var(--theme-pink) !important;
+  color: var(--theme-crust) !important;
+  box-shadow: 3px 3px 0 var(--theme-surface1);
+}
+</style>
+
 # Abby Bigaouette
 #### Space Coast, FL | (918) 506-1265 | abby@bigaouette.com | bigaouette.com
-Aerospace-grade mechanic building a road to space. Extensive experience in high-impact design and multimedia production. Previously led the design team at Tahlequah Daily Press, where I coordinated editoral direction as well as newspaper and magazine production.
+Aerospace-grade mechanic building a road to space. Extensive experience in high-impact design and multimedia production. Previously led the design team at Tahlequah Daily Press, where I coordinated editorial direction as well as newspaper and magazine production.
 
 ## Experience
 ### Subassembly Technician, Blue Origin
@@ -22,21 +51,21 @@ Aerospace-grade mechanic building a road to space. Extensive experience in high-
 ### Head of Design, Tahlequah Daily Press
 #### 2022 - 2024
 - Coordinated editorial direction and production of the Tahlequah Daily Press and Claremore Progress.
-- Designed two newspapers daily and 10 magazines yearly in Adobe Creative Cloud suite.
-- Overhauled workflows, leading to an 88% greater ability to meet deadlines for daily print products.
-- Managed social media following of over 38,000.
-
-### Multimedia Artist, Freelance
-#### 2017 - Present
-- Dynamically applies skills to photography, graphic design, UI design, and 3D modelling.
-- Utilizes versatile photography skills and editing techniques to capture compelling images within astronomy and aviation.
+- Designed two newspapers daily and 10 magazines yearly, managing tight deadlines and multi-project workflows.
+- Overhauled production workflows, leading to an 88% improvement in ability to meet daily print deadlines.
 
 ## Projects
+### Personal Website
+#### 2016 - Present
+- Built and maintained personal website using Jekyll and GitHub Pages.
+- Designed custom responsive UI inspired by classic Mac OS aesthetics with multiple theme and accessibility options.
+- Hosts blog, projects portfolio, and resume with automated deployment.
+
 ### High-Power Rocketry
 #### 2019 - Present
-- Utilizes novel contruction methods to dramatically reduce the cost to build and fly high power rockets.
+- Utilizes novel construction methods to dramatically reduce the cost to build and fly high power rockets.
 - Demonstrated rapid reusability by flying the same rocket twice in a 24-hour period.
-- Designed, assembled, and debugged custom avionics PCBs.
+- Designed, assembled, and debugged custom avionics PCBs including flight computers and telemetry systems.
 - Level 2 High Power certified.
 
 ### Liquid Propulsion
@@ -46,8 +75,12 @@ Aerospace-grade mechanic building a road to space. Extensive experience in high-
 - Utilizes Onshape and OnScale for design and simulation.
 - Creates detailed engineering drawings and work instructions for suppliers and assembly operations.
 
-### Skills, Awards, and Certifications
-**Skills:** CAD (Autodesk Fusion, Autodesk Inventor, OnShape, Creo); 3D Printing (FDM, SLA, SLS); Welding (MIG, TIG); Rigging, Lifting; Composites Manufacturing (Fiberglass, Carbon Fiber); Precision Drilling; System Testing; Project Management; Programming (Python, C# .NET); Web Development (HTML, CSS, Svelte); AP Style; Adobe Creative Cloud (Illustrator, InDesign, Premiere Pro, Photoshop); Serif Affinity (Designer, Photo, Publisher)
+## Skills, Awards, and Certifications
+**Technical:** CAD (Creo, Onshape, Autodesk Fusion, KiCad); 3D Printing (FDM, SLA, SLS); Welding (MIG, TIG); Composites Manufacturing (fiberglass, carbon fiber); Precision Drilling; Rigging & Lifting; System Testing; Project Management
+
+**Software:** Python; C# .NET; Web Development (HTML, CSS, JavaScript)
+
+**Design & Media:** Adobe Creative Cloud (Illustrator, InDesign, Photoshop); Serif Affinity (Designer, Photo, Publisher); Davinci Resolve; AP Style
 
 **Certifications:** Laser Operator, Multi-Layer Insulation/MLI Installation, Cleanroom Entry and Operations, Hydraulic and Pneumatic Testing, ESD Protected Area (Blue Origin); Level 2 HPR (National Association of Rocketry)
 

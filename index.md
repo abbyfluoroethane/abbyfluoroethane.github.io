@@ -33,4 +33,4 @@ i currently work as a technician at blue origin, where i help build new glenn. o
 
 [fedi | dormsoc](https://dorm.social/@abbyfluoroethane)<br>
 [inst*gram](https://instagram.com/abbyfluoroethane)<br>
-email: first @ lastname.com
+email: abby@bigaouette.com

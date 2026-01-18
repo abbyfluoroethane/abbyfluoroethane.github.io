@@ -3,7 +3,7 @@ title: biblically inaccurate angel
 status: archive
 featured: false
 article: true
-description: fully 3D printed rocket designed in 72 hours. flew twice in 24 hours to prove rapid reusability is possible (take that, spacex :p).
+description: fully 3D printed rocket designed and built in 72 hours. flew twice in 24 hours to prove rapid reusability is possible (take that, spacex :p).
 date: 2022-07-09
 ---
 
@@ -16,3 +16,5 @@ Biblically Inaccurate Angel was a 3D printed Level 1 high-power capable rocket s
 The project was completed in January 2023 after two successful flights on 9 July 2022.
 
 ![Biblically Inaccurate Angel Flight 1 hero](/assets/images/projects/biblically inaccurate angel/BIA-hero.jpg)
+
+#### Acknowledgements: [Lavie Ohana](https://lavieohana.com), chute supplier and technical advisor.

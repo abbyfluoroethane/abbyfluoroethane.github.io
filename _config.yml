@@ -8,6 +8,8 @@ lastfm:
   api_key: "3d59870650c4a720a39500c654d23eb1"
 
 markdown: kramdown
+kramdown:
+  smart_quotes: ["apos", "apos", "quot", "quot"]
 permalink: /blog/:title/
 
 # Collections
