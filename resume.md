@@ -1,7 +1,7 @@
----
+
 title: Resume
 app_name: Resume
----
+
 
 <div style="text-align: center; margin-bottom: 2rem;">
   <a href="{{ '/assets/Abby_Bigaouette_Resume.pdf' | relative_url }}" download="Abby_Bigaouette_Resume.pdf" class="project-button">
@@ -38,12 +38,12 @@ app_name: Resume
 
 Aerospace technician building a road to space. At Blue Origin I build New Glenn's first stage subassemblies — fluid systems, cryogenic insulation, avionics, and precision machining on flight hardware. In my free time I develop liquid rocket engines, fly experimental rockets, and write open source software to make complex work more accessible.
 
----
+
 
 ## Experience
 
 ### Subassembly Technician II, Blue Origin
-**2024 – Present**
+#### **2024 – Present**
 
 - Assemble and test pneumatic, hydraulic, and monopropellant subassemblies for New Glenn's first stage.
 - Install high-performance cryogenic insulation systems (Cryogel-Z, SOFI, MLI) and proprietary thermal protection materials.
@@ -59,36 +59,36 @@ Aerospace technician building a road to space. At Blue Origin I build New Glenn'
 - Contributed code bugfixes to internal software products.
 
 ### Head of Design, Tahlequah Daily Press
-**2022 – 2024**
+#### **2022 – 2024**
 
 - Managed production of two daily newspapers and 10+ annual magazines, coordinating across editorial, advertising, and print teams.
 - Overhauled production workflows, leading to an 88% improvement in ability to meet daily print deadlines.
 
----
+
 
 ## Projects
 
 ### OPAL (Operations, Procedures, Assets, Logistics)
-**2026 – Present**
+#### **2026 – Present**
 
 - Building lightweight ERP software for small teams building complex hardware, with CAD integration with Onshape.
 - Supports AI agent integration with out-of-box MCP server.
 
 ### Liquid Propulsion
-**2023 – Present**
+#### **2023 – Present**
 
 - Developing a 1000N (225 lbf) IPA/nitrous oxide bipropellant engine, including GSE design, propellant handling, and test operations.
 - Fired a subscale hybrid motor, gaining hands-on experience with high-pressure gas systems, nitrous oxide handling, and test stand setup/teardown.
 - Fabricate custom fluid lines including tube bending, flaring, and oxygen-compatible cleaning for propellant system components.
 
 ### Project Longinus
-**2023 – Present**
+#### **2023 – Present**
 
 - Designed, assembled, and debugged custom avionics PCBs including RP2040-based flight computers with dual-redundant pyro channels and LoRa telemetry.
 - Created detailed engineering drawings and work instructions for suppliers and assembly operations.
 - Fabricates airframe components using composites layup and vacuum bagging.
 
----
+
 
 ## Skills
 
@@ -100,7 +100,7 @@ Aerospace technician building a road to space. At Blue Origin I build New Glenn'
 
 **Design & Media:** Adobe Creative Cloud (Illustrator, InDesign, Photoshop) · Serif Affinity (Designer, Photo, Publisher) · DaVinci Resolve · AP Style
 
----
+
 
 ## Certifications
 
