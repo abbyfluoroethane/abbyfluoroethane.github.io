@@ -1,7 +1,7 @@
-
+---
 title: Resume
 app_name: Resume
-
+---
 
 <div style="text-align: center; margin-bottom: 2rem;">
   <a href="{{ '/assets/Abby_Bigaouette_Resume.pdf' | relative_url }}" download="Abby_Bigaouette_Resume.pdf" class="project-button">
