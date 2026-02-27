@@ -33,60 +33,86 @@ app_name: Resume
 </style>
 
 # Abby Bigaouette
-#### Space Coast, FL | (918) 506-1265 | abby@bigaouette.com | bigaouette.com
-Aerospace-grade mechanic building a road to space. Extensive experience in high-impact design and multimedia production. Previously led the design team at Tahlequah Daily Press, where I coordinated editorial direction as well as newspaper and magazine production.
+
+**Space Coast, FL** · (918) 506-1265 · abby@bigaouette.com · [bigaouette.com](https://bigaouette.com)
+
+Aerospace technician building a road to space. At Blue Origin I build New Glenn's first stage subassemblies — fluid systems, cryogenic insulation, avionics, and precision machining on flight hardware. In my free time I develop liquid rocket engines, fly experimental rockets, and write open source software to make complex work more accessible.
+
+---
 
 ## Experience
-### Subassembly Technician, Blue Origin
-#### 2024 - Present
+
+### Subassembly Technician II, Blue Origin
+**2024 – Present**
+
 - Assemble and test pneumatic, hydraulic, and monopropellant subassemblies for New Glenn's first stage.
-- Installation of high performance insulation materials. (Cryogel-Z, SOFI, MLI, proprietary TPS materials)
+- Install high-performance cryogenic insulation systems (Cryogel-Z, SOFI, MLI) and proprietary thermal protection materials.
 - Operate in cleanroom and ESD controlled environments to preserve component cleanliness and system integrity.
+- Perform precision drilling, reaming, and machining operations on large-scale aerospace structures using hand and power tools.
 - Certified in Laser Operation and part marking per AS478 and internal specifications.
-- Perform precision drilling and machining operations on large structures.
-- Interpret engineering drawings and 3D models in Creo.
-- Perform avionics work including soldering, wire harness installation, inspections, and repairs.
+- Inspect parts and assemblies using calipers, micrometers, dial indicators, and engineer's scales to verify dimensional conformance.
+- Interpret engineering drawings, GD&T callouts, and 3D models in Creo to execute complex build sequences.
+- Perform avionics work including soldering, wire harness fabrication, installation, connector pinning, and inspection.
+- Assist in rigging and crane operations for oversized and heavy components.
+- Document all work per AS9100-compliant procedures; execute and provide feedback on work instructions.
+- Support test campaigns including setup, execution, and teardown of high-pressure proof tests, leak tests, and system-level functional checkouts; log data and complete test documentation per procedure requirements.
 - Contributed code bugfixes to internal software products.
 
 ### Head of Design, Tahlequah Daily Press
-#### 2022 - 2024
-- Coordinated editorial direction and production of the Tahlequah Daily Press and Claremore Progress.
-- Designed two newspapers daily and 10 magazines yearly, managing tight deadlines and multi-project workflows.
+**2022 – 2024**
+
+- Managed production of two daily newspapers and 10+ annual magazines, coordinating across editorial, advertising, and print teams.
 - Overhauled production workflows, leading to an 88% improvement in ability to meet daily print deadlines.
 
+---
+
 ## Projects
-### Daria for Sharkey & Turtkey
-#### 2026-Present
-- Cross-platform Misskey compatible fediverse client designed to give Sharkey and Turtkey users a first-class experience on mobile and desktop.
-- Built using Flutter and Dart.
+
+### OPAL (Operations, Procedures, Assets, Logistics)
+**2026 – Present**
+
+- Building lightweight ERP software for small teams building complex hardware, with CAD integration with Onshape.
+- Supports AI agent integration with out-of-box MCP server.
 
 ### Liquid Propulsion
-#### 2023 - Present
-- In development 1000N (225 lbf) IPA-nitrous engine.
-- Fired a subscale hybrid motor, gaining experience handling nitrous, GSE design, and operation.
-- Utilizes Onshape and OnScale for design and simulation.
-- Creates detailed engineering drawings and work instructions for suppliers and assembly operations.
+**2023 – Present**
 
-### High-Power Rocketry
-#### 2019 - Present
-- Utilizes novel construction methods to dramatically reduce the cost to build and fly high power rockets.
-- Demonstrated rapid reusability by flying the same rocket twice in a 24-hour period.
-- Designed, assembled, and debugged custom avionics PCBs including flight computers and telemetry systems.
-- Level 2 High Power certified.
+- Developing a 1000N (225 lbf) IPA/nitrous oxide bipropellant engine, including GSE design, propellant handling, and test operations.
+- Fired a subscale hybrid motor, gaining hands-on experience with high-pressure gas systems, nitrous oxide handling, and test stand setup/teardown.
+- Fabricate custom fluid lines including tube bending, flaring, and oxygen-compatible cleaning for propellant system components.
 
-### Personal Website
-#### 2016 - Present
-- Built and maintained personal website using Jekyll and GitHub Pages.
-- Designed custom responsive UI inspired by classic Mac OS aesthetics with multiple theme and accessibility options.
-- Hosts blog, projects portfolio, and resume with automated deployment.
+### Project Longinus
+**2023 – Present**
 
-## Skills, Awards, and Certifications
-**Technical:** CAD (Creo, Onshape, Autodesk Fusion, KiCad); 3D Printing (FDM, SLA, SLS); Welding (MIG, TIG); Composites Manufacturing (fiberglass, carbon fiber); Precision Drilling; Rigging & Lifting; System Testing; Project Management
+- Designed, assembled, and debugged custom avionics PCBs including RP2040-based flight computers with dual-redundant pyro channels and LoRa telemetry.
+- Created detailed engineering drawings and work instructions for suppliers and assembly operations.
+- Fabricates airframe components using composites layup and vacuum bagging.
 
-**Software:** Python, C# .NET, Dart, Flutter; Web Development (HTML, CSS, JavaScript)
+---
 
-**Design & Media:** Adobe Creative Cloud (Illustrator, InDesign, Photoshop); Serif Affinity (Designer, Photo, Publisher); Davinci Resolve; AP Style
+## Skills
 
-**Certifications:** Laser Operator, Multi-Layer Insulation/MLI Installation, Cleanroom Entry and Operations, Hydraulic and Pneumatic Testing, ESD Protected Area (Blue Origin); Level 2 HPR (National Association of Rocketry)
+**Fabrication/Fluids:** Sheet metal forming · tube bending and flaring · TIG and MIG welding · composites layup and vacuum bagging (fiberglass, carbon fiber) · riveting (CherryMax, solid) · nutplate installation (click bond, riveted) · precision drilling, reaming, and deburring · 3D printing (FDM, SLA, SLS) · helicoil installation · harness routing · safety wire/cable · torque application and marking · rigging and crane operations · band saw · drill press · hydraulic press · manual mill and lathe · oxygen-compatible cleaning
 
-**Awards:** Sequoyah Award, Oklahoma Press Association (2024); Newspaper of the Year, Best of CNHI Div. II (2024); Newspaper of the Year, Best of CNHI Div. III (2023)
+**Technical:** CAD (Creo, Onshape, Autodesk Fusion, KiCad) · inspection (calipers, micrometers, dial indicators, engineer's scales; GD&T interpretation) · high-pressure proof and leak testing · hydraulic and pneumatic system testing · system integration · project management
+
+**Software:** Python · C# .NET · Web Development (HTML, CSS, JavaScript, Jekyll, Jinja2, Astro)
+
+**Design & Media:** Adobe Creative Cloud (Illustrator, InDesign, Photoshop) · Serif Affinity (Designer, Photo, Publisher) · DaVinci Resolve · AP Style
+
+---
+
+## Certifications
+
+- Laser Operator (Blue Origin)
+- Multi-Layer Insulation/MLI Installation (Blue Origin)
+- Cleanroom Entry and Operations (Blue Origin)
+- Hydraulic and Pneumatic Testing (Blue Origin)
+- ESD Protected Area (Blue Origin)
+- Level 2 HPR (National Association of Rocketry)
+
+## Awards
+
+- Sequoyah Award, Oklahoma Press Association (2024)
+- Newspaper of the Year, Best of CNHI Div. II (2024)
+- Newspaper of the Year, Best of CNHI Div. III (2023)
