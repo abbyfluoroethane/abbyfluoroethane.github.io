@@ -1,7 +1,7 @@
 {% assign username = include.username | default: site.lastfm.username %}
 {% assign api_key = include.api_key | default: site.lastfm.api_key %}
 
-<div class="lastfm-widget">
+<div class="lastfm-widget standard-dialog">
   <div class="lastfm-content">
     <div class="lastfm-artwork">
       <img id="lastfm-album-art" src="" alt="Album artwork">
@@ -20,10 +20,10 @@
       </div>
 
       <div class="lastfm-actions">
-        <button id="lastfm-refresh" class="action-button lastfm-refresh-button">
+        <button id="lastfm-refresh" class="btn lastfm-refresh-button">
           Refresh
         </button>
-        <a href="#" id="lastfm-link" class="action-button" target="_blank" rel="noopener noreferrer">
+        <a href="#" id="lastfm-link" class="btn" target="_blank" rel="noopener noreferrer">
           View on Last.fm
         </a>
       </div>
@@ -171,10 +171,12 @@
       }
     }
 
+    var bg = getComputedStyle(document.documentElement).getPropertyValue('--secondary').trim() || '#FFFFFF';
+    var fg = getComputedStyle(document.documentElement).getPropertyValue('--muted').trim() || '#A5A5A5';
     return 'data:image/svg+xml,' + encodeURIComponent(
       '<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120">' +
-      '<rect width="120" height="120" fill="#1e1e2e"/>' +
-      '<text x="60" y="60" text-anchor="middle" dy=".3em" fill="#6c7086" font-size="12">No Image</text>' +
+      '<rect width="120" height="120" fill="' + bg + '"/>' +
+      '<text x="60" y="60" text-anchor="middle" dy=".3em" fill="' + fg + '" font-size="12">No Image</text>' +
       '</svg>'
     );
   }

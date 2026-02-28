@@ -1,67 +1,48 @@
-<nav class="menu-bar">
-  <div class="menu-item app-name">
-    {{ page.app_name | default: "$AppName" }}
-    <div class="dropdown">
-      <div class="dropdown-item" id="return-to-parent-menu-item">Return to <span id="parent-page-name">Parent</span></div>
-    </div>
-  </div>
-  <div class="menu-item">
-    File
-    <div class="dropdown">
-      <div class="dropdown-item" id="about-menu-item">About</div>
-      <div class="divider"></div>
-      <div class="dropdown-item" id="close-window-menu-item">Close Window</div>
-    </div>
-  </div>
-  <div class="menu-item">
-    Navigate
-    <div class="dropdown">
-      <div class="dropdown-item">
-        <a href="{{ '/' | relative_url }}">Home</a>
-      </div>
-      <div class="dropdown-item">
-        <a href="{{ '/projects' | relative_url }}">Projects</a>
-      </div>
-      <div class="dropdown-item">
-        <a href="{{ '/blog' | relative_url }}">Blog</a>
-      </div>
-      <div class="dropdown-item">
-        <a href="{{ '/gallery' | relative_url }}">Gallery</a>
-      </div>
-      <div class="divider"></div>
-      <div class="dropdown-item">
-        <a href="{{ '/resume' | relative_url }}">Resume</a>
-      </div>
-    </div>
-  </div>
-  <div class="menu-item">
-    View
-    <div class="dropdown">
-      <div class="dropdown-item" id="light-mode-menu">Light Mode</div>
-      <div class="dropdown-item" id="dark-mode-menu">Dark Mode</div>
-      <div class="dropdown-item" id="monochrome-mode-menu">Monochrome Mode</div>
-      <div class="divider"></div>
-      <div class="dropdown-item" id="atkinson-font-menu">Atkinson Hyperlegible</div>
-    </div>
-  </div>
-  <div class="menu-item">
-    Help
-    <div class="dropdown">
-      <div class="dropdown-item" id="acknowledgements-menu-item">Acknowledgements</div>
-      <div class="divider"></div>
-      <div class="dropdown-item">
-        <a href="https://github.com/abbyfluoroethane/abbyfluoroethane.github.io/issues" target="_blank">Report a Bug</a>
-      </div>
-      <div class="dropdown-item">
-        <a href="https://github.com/abbyfluoroethane/abbyfluoroethane.github.io" target="_blank">View Source</a>
-      </div>
-    </div>
-  </div>
-  <div class="spacer"></div>
-  <div class="menu-item">
-    <span id="clock">--:--</span>
-  </div>
-</nav>
+<ul class="menu-bar">
+  <li class="menu-item" tabindex="0">{{ page.app_name | default: "$AppName" }}
+    <ul class="menu">
+      <li class="menu-item"><button id="return-to-parent-menu-item">Return to <span id="parent-page-name">Parent</span></button></li>
+    </ul>
+  </li>
+  <li class="menu-item" tabindex="0">File
+    <ul class="menu">
+      <li class="menu-item"><button id="about-menu-item">About</button></li>
+      <li class="menu-item divider"></li>
+      <li class="menu-item"><button id="close-window-menu-item">Close Window</button></li>
+    </ul>
+  </li>
+  <li class="menu-item" tabindex="0">Navigate
+    <ul class="menu">
+      <li class="menu-item"><a href="{{ '/' | relative_url }}">Home</a></li>
+      <li class="menu-item"><a href="{{ '/projects' | relative_url }}">Projects</a></li>
+      <li class="menu-item"><a href="{{ '/blog' | relative_url }}">Blog</a></li>
+      <li class="menu-item"><a href="{{ '/gallery' | relative_url }}">Gallery</a></li>
+      <li class="menu-item divider"></li>
+      <li class="menu-item"><a href="{{ '/resume' | relative_url }}">Resume</a></li>
+    </ul>
+  </li>
+  <li class="menu-item" tabindex="0">View
+    <ul class="menu">
+      <li class="menu-item"><button id="theme-monochrome-light">Monochrome Light</button></li>
+      <li class="menu-item"><button id="theme-monochrome-dark">Monochrome Dark</button></li>
+      <li class="menu-item divider"></li>
+      <li class="menu-item"><button id="theme-latte-pink">Catppuccin Latte</button></li>
+      <li class="menu-item"><button id="theme-mocha-pink">Catppuccin Mocha</button></li>
+      <li class="menu-item divider"></li>
+      <li class="menu-item"><button id="font-atkinson">Atkinson Hyperlegible</button></li>
+    </ul>
+  </li>
+  <li class="menu-item" tabindex="0">Help
+    <ul class="menu">
+      <li class="menu-item"><button id="acknowledgements-menu-item">Acknowledgements</button></li>
+      <li class="menu-item divider"></li>
+      <li class="menu-item"><a href="https://github.com/abbyfluoroethane/abbyfluoroethane.github.io/issues" target="_blank">Report a Bug</a></li>
+      <li class="menu-item"><a href="https://github.com/abbyfluoroethane/abbyfluoroethane.github.io" target="_blank">View Source</a></li>
+    </ul>
+  </li>
+  <li class="menu-item" aria-haspopup="false" style="flex: 1; background: var(--secondary);"></li>
+  <li class="menu-item" aria-haspopup="false"><span id="clock">--:--</span></li>
+</ul>
 
 <script>
   // Clock update function
@@ -75,194 +56,12 @@
   updateClock();
   setInterval(updateClock, 1000);
 
-  // Safari/iOS touch-friendly menu handling
-  document.addEventListener('DOMContentLoaded', function() {
-    const menuItems = document.querySelectorAll('.menu-item:not(:has(#clock))');
-    let currentOpenMenu = null;
-
-    menuItems.forEach(item => {
-      const dropdown = item.querySelector('.dropdown');
-      if (dropdown) {
-        item.addEventListener('click', function(e) {
-          e.stopPropagation();
-
-          // Close other menus
-          if (currentOpenMenu && currentOpenMenu !== item) {
-            currentOpenMenu.classList.remove('active');
-          }
-
-          // Toggle current menu
-          item.classList.toggle('active');
-          currentOpenMenu = item.classList.contains('active') ? item : null;
-
-          // Position dropdown to prevent overflow (Firefox Android compatible)
-          if (item.classList.contains('active')) {
-            const menuBar = item.closest('.menu-bar');
-            const menuBarRect = menuBar.getBoundingClientRect();
-            const itemRect = item.getBoundingClientRect();
-            const dropdownWidth = dropdown.offsetWidth;
-            const viewportWidth = window.innerWidth;
-
-            // Calculate position relative to menu bar
-            let left = itemRect.left - 2;
-
-            // If dropdown would overflow right edge, shift it left
-            if (left + dropdownWidth > viewportWidth - 8) {
-              left = viewportWidth - dropdownWidth - 8;
-            }
-
-            // Don't go past left edge
-            if (left < 8) {
-              left = 8;
-            }
-
-            // Use menu bar bottom as reference point instead of item bottom
-            const top = menuBarRect.bottom;
-
-            dropdown.style.top = top + 'px';
-            dropdown.style.left = left + 'px';
-          }
-        });
-      }
-    });
-
-    // Close menus when clicking outside
-    document.addEventListener('click', function() {
-      menuItems.forEach(item => item.classList.remove('active'));
-      currentOpenMenu = null;
-    });
-
-    // Update dropdown position when scrolling
-    window.addEventListener('scroll', function() {
-      if (currentOpenMenu) {
-        const dropdown = currentOpenMenu.querySelector('.dropdown');
-        if (dropdown) {
-          const menuBar = currentOpenMenu.closest('.menu-bar');
-          const menuBarRect = menuBar.getBoundingClientRect();
-          const itemRect = currentOpenMenu.getBoundingClientRect();
-          const dropdownWidth = dropdown.offsetWidth;
-          const viewportWidth = window.innerWidth;
-
-          // Calculate position relative to menu bar
-          let left = itemRect.left - 2;
-
-          // If dropdown would overflow right edge, shift it left
-          if (left + dropdownWidth > viewportWidth - 8) {
-            left = viewportWidth - dropdownWidth - 8;
-          }
-
-          // Don't go past left edge
-          if (left < 8) {
-            left = 8;
-          }
-
-          // Use menu bar bottom as reference point
-          const top = menuBarRect.bottom;
-
-          dropdown.style.top = top + 'px';
-          dropdown.style.left = left + 'px';
-        }
-      }
-    });
-  });
-
-  // Theme switching logic
-  const lightModeMenu = document.getElementById('light-mode-menu');
-  const darkModeMenu = document.getElementById('dark-mode-menu');
-  const monochromeModeMenu = document.getElementById('monochrome-mode-menu');
-  const atkinsonFontMenu = document.getElementById('atkinson-font-menu');
-  const CHECKMARK = '\u2713 ';
-
-  function setTheme(theme) {
-    document.documentElement.setAttribute('data-theme', theme);
-    try {
-      localStorage.setItem('theme', theme);
-    } catch (e) {
-      console.warn('Could not save theme preference:', e);
+  // Click outside menus to close (blur active element)
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.menu-bar')) {
+      document.activeElement.blur();
     }
-    updateThemeCheckmarks(theme);
-  }
-
-  function updateThemeCheckmarks(theme) {
-    lightModeMenu.textContent = lightModeMenu.textContent.replace(CHECKMARK, '');
-    darkModeMenu.textContent = darkModeMenu.textContent.replace(CHECKMARK, '');
-    monochromeModeMenu.textContent = monochromeModeMenu.textContent.replace(CHECKMARK, '');
-
-    if (theme === 'latte') {
-      if (!lightModeMenu.textContent.startsWith(CHECKMARK)) {
-        lightModeMenu.textContent = CHECKMARK + lightModeMenu.textContent;
-      }
-    } else if (theme === 'monochrome') {
-      if (!monochromeModeMenu.textContent.startsWith(CHECKMARK)) {
-        monochromeModeMenu.textContent = CHECKMARK + monochromeModeMenu.textContent;
-      }
-    } else {
-      if (!darkModeMenu.textContent.startsWith(CHECKMARK)) {
-        darkModeMenu.textContent = CHECKMARK + darkModeMenu.textContent;
-      }
-    }
-  }
-
-  function setFont(font) {
-    document.documentElement.setAttribute('data-font', font);
-    try {
-      localStorage.setItem('font', font);
-    } catch (e) {
-      console.warn('Could not save font preference:', e);
-    }
-    updateFontCheckmarks(font);
-  }
-
-  function updateFontCheckmarks(font) {
-    atkinsonFontMenu.textContent = atkinsonFontMenu.textContent.replace(CHECKMARK, '');
-
-    if (font === 'atkinson') {
-      if (!atkinsonFontMenu.textContent.startsWith(CHECKMARK)) {
-        atkinsonFontMenu.textContent = CHECKMARK + atkinsonFontMenu.textContent;
-      }
-    }
-  }
-
-  // Initialize checkmarks on page load
-  const currentTheme = document.documentElement.getAttribute('data-theme');
-  const currentFont = document.documentElement.getAttribute('data-font');
-  updateThemeCheckmarks(currentTheme);
-  updateFontCheckmarks(currentFont);
-
-  // Add click handlers
-  lightModeMenu.addEventListener('click', function(e) {
-    e.preventDefault();
-    setTheme('latte');
   });
-
-  darkModeMenu.addEventListener('click', function(e) {
-    e.preventDefault();
-    setTheme('mocha');
-  });
-
-  monochromeModeMenu.addEventListener('click', function(e) {
-    e.preventDefault();
-    setTheme('monochrome');
-  });
-
-  atkinsonFontMenu.addEventListener('click', function(e) {
-    e.preventDefault();
-    const currentFont = document.documentElement.getAttribute('data-font');
-    setFont(currentFont === 'atkinson' ? 'default' : 'atkinson');
-  });
-
-  // Listen for system theme changes
-  if (window.matchMedia) {
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
-      try {
-        if (!localStorage.getItem('theme')) {
-          setTheme(e.matches ? 'mocha' : 'latte');
-        }
-      } catch (err) {
-        setTheme(e.matches ? 'mocha' : 'latte');
-      }
-    });
-  }
 
   // About window functionality
   function showAboutWindow() {
@@ -301,6 +100,7 @@
     if (aboutMenuItem) {
       aboutMenuItem.addEventListener('click', function(e) {
         e.preventDefault();
+        document.activeElement.blur();
         showAboutWindow();
       });
     }
@@ -310,6 +110,7 @@
     if (acknowledgementsMenuItem) {
       acknowledgementsMenuItem.addEventListener('click', function(e) {
         e.preventDefault();
+        document.activeElement.blur();
         showAcknowledgementsWindow();
       });
     }
@@ -317,16 +118,13 @@
     // Close Window menu item - go to home
     const closeWindowMenuItem = document.getElementById('close-window-menu-item');
     if (closeWindowMenuItem) {
-      // Check if we're on the home page
       const currentPath = window.location.pathname;
       const homePath = '{{ "/" | relative_url }}';
       const isHomePage = currentPath === homePath || currentPath === homePath + 'index.html';
 
       if (isHomePage) {
-        // Disable on home page
-        closeWindowMenuItem.classList.add('disabled');
+        closeWindowMenuItem.disabled = true;
       } else {
-        // Enable on other pages
         closeWindowMenuItem.addEventListener('click', function(e) {
           e.preventDefault();
           window.location.href = homePath;
@@ -347,7 +145,6 @@
       let parentName = 'Parent';
       let isOnParentPage = false;
 
-      // Check if we're on the projects or blog listing pages
       if (currentPath === projectsPath || currentPath === projectsPath + '/' || currentPath === projectsPath + '/index.html') {
         isOnParentPage = true;
         parentName = 'Projects';
@@ -358,7 +155,6 @@
         isOnParentPage = true;
         parentName = 'Home';
       } else {
-        // Determine parent based on current path
         if (currentPath.includes('/projects/') || currentPath.includes('/_projects/')) {
           parentPath = projectsPath;
           parentName = 'Projects';
@@ -374,10 +170,8 @@
       parentPageNameSpan.textContent = parentName;
 
       if (isOnParentPage || !parentPath) {
-        // Disable when on parent page or no parent exists
-        returnToParentMenuItem.classList.add('disabled');
+        returnToParentMenuItem.disabled = true;
       } else {
-        // Enable and add click handler
         returnToParentMenuItem.addEventListener('click', function(e) {
           e.preventDefault();
           window.location.href = parentPath;
@@ -416,5 +210,85 @@
         }
       });
     }
+
+    // --- View menu: Theme switching ---
+    var themeButtons = {
+      'monochrome-light': document.getElementById('theme-monochrome-light'),
+      'monochrome-dark': document.getElementById('theme-monochrome-dark'),
+      'latte-pink': document.getElementById('theme-latte-pink'),
+      'mocha-pink': document.getElementById('theme-mocha-pink')
+    };
+
+    var themeLabels = {
+      'monochrome-light': 'Monochrome Light',
+      'monochrome-dark': 'Monochrome Dark',
+      'latte-pink': 'Catppuccin Latte',
+      'mocha-pink': 'Catppuccin Mocha'
+    };
+
+    function setTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('theme', theme);
+      updateThemeCheckmarks(theme);
+
+      var themeColors = {
+        'monochrome-light': '#ffffff',
+        'monochrome-dark': '#1a1a1a',
+        'latte-pink': '#eff1f5',
+        'mocha-pink': '#1e1e2e'
+      };
+      var meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute('content', themeColors[theme] || '#ffffff');
+    }
+
+    function updateThemeCheckmarks(theme) {
+      Object.keys(themeButtons).forEach(function(key) {
+        var btn = themeButtons[key];
+        if (btn) {
+          btn.textContent = (key === theme ? '\u2713 ' : '') + themeLabels[key];
+        }
+      });
+    }
+
+    Object.keys(themeButtons).forEach(function(key) {
+      var btn = themeButtons[key];
+      if (btn) {
+        btn.addEventListener('click', function(e) {
+          e.preventDefault();
+          setTheme(key);
+          document.activeElement.blur();
+        });
+      }
+    });
+
+    // --- View menu: Font toggle ---
+    var fontButton = document.getElementById('font-atkinson');
+
+    function setFont(font) {
+      document.documentElement.setAttribute('data-font', font);
+      localStorage.setItem('font', font);
+      updateFontCheckmark(font);
+    }
+
+    function updateFontCheckmark(font) {
+      if (fontButton) {
+        fontButton.textContent = (font === 'atkinson' ? '\u2713 ' : '') + 'Atkinson Hyperlegible';
+      }
+    }
+
+    if (fontButton) {
+      fontButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        var current = document.documentElement.getAttribute('data-font') || 'default';
+        setFont(current === 'atkinson' ? 'default' : 'atkinson');
+        document.activeElement.blur();
+      });
+    }
+
+    // Initialize checkmarks from current state
+    var currentTheme = document.documentElement.getAttribute('data-theme') || 'monochrome-light';
+    var currentFont = document.documentElement.getAttribute('data-font') || 'default';
+    updateThemeCheckmarks(currentTheme);
+    updateFontCheckmark(currentFont);
   });
 </script>

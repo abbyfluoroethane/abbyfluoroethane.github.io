@@ -20,22 +20,21 @@
     }
   })();
   </script>
-  <div class="container">
-    {% include menubar.html %}
+  {% include menubar.html %}
 
-    <div class="window">
-      <div class="title-bar">
-        <div class="title">{{ page.title | default: site.title }}</div>
-        <div class="title-spacer"></div>
+  <div class="desktop" id="desktop">
+    <div class="window" id="main-window">
+      <div class="title-bar" id="main-title-bar">
+        <button class="close" id="main-close" aria-label="Close"></button>
+        <h1 class="title">{{ page.title | default: site.title }}</h1>
+        <button class="resize" id="main-resize" aria-label="Resize"></button>
       </div>
-
-      <div class="content">
+      <div class="separator"></div>
+      <div class="window-pane">
         {{ content }}
 
         <div class="footer">
           <div class="buttons-88x31">
-            <!-- Add your 88x31 buttons here -->
-            <!-- Example: <a href="https://example.com"><img src="{{ '/assets/images/buttons/button.gif' | relative_url }}" alt="Button" width="88" height="31"></a> -->
              <a href="https://friends.dorm.social"><img src="{{ '/assets/images/buttons/dorm.gif' | relative_url }}" alt="dorm" width="88" height="31"></a>
              <a href="https://fedoraproject.org"><img src="{{ '/assets/images/buttons/fedora.png' | relative_url }}" alt="fedora" width="88" height="31"></a>
              <img src="{{ '/assets/images/buttons/macos.gif' | relative_url }}" alt="Button" width="88" height="31">
@@ -51,53 +50,55 @@
   </div>
 
   <!-- About Window Modal -->
-  <div id="about-overlay" class="about-overlay hidden">
-    <div class="about-window">
+  <div id="about-overlay" class="modal-overlay hidden">
+    <div class="window" style="max-width: 400px;">
       <div class="title-bar">
-        <div class="window-close" id="about-close"></div>
-        <div class="title">About</div>
-        <div class="title-spacer"></div>
+        <button class="close" id="about-close" aria-label="Close"></button>
+        <h1 class="title">About</h1>
+        <button class="resize hidden" aria-label="Resize"></button>
       </div>
-
-      <div class="about-content">
-        <div class="about-image">
-          <!-- You can add an image here -->
-          <img src="{{ '/assets/images/about.gif' | relative_url }}" alt="About Icon">
-        </div>
-        <div class="about-text">
-          <h3>{{ site.title | default: "Portfolio" }}</h3>
-          <p>version 1.2.0</p>
-          <p>made on earth by humans</p>
-          <p>2025 abby bigaouette</p>
+      <div class="separator"></div>
+      <div class="window-pane">
+        <div class="about-content">
+          <div class="about-image">
+            <img src="{{ '/assets/images/about.gif' | relative_url }}" alt="About Icon">
+          </div>
+          <div class="about-text">
+            <h3>{{ site.title | default: "Portfolio" }}</h3>
+            <p>version 1.2.0</p>
+            <p>made on earth by humans</p>
+            <p>2025 abby bigaouette</p>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Acknowledgements Window Modal -->
-  <div id="acknowledgements-overlay" class="about-overlay hidden">
-    <div class="about-window">
+  <div id="acknowledgements-overlay" class="modal-overlay hidden">
+    <div class="window" style="max-width: 400px;">
       <div class="title-bar">
-        <div class="window-close" id="acknowledgements-close"></div>
-        <div class="title">Acknowledgements</div>
-        <div class="title-spacer"></div>
+        <button class="close" id="acknowledgements-close" aria-label="Close"></button>
+        <h1 class="title">Acknowledgements</h1>
+        <button class="resize hidden" aria-label="Resize"></button>
       </div>
-
-      <div class="about-content">
-        <div class="about-text">
-          <h3>built with</h3>
-          <p><strong>Jekyll</strong> - static site generator</p>
-          <p><strong>Catppuccin</strong> - soothing pastel theme</p>
-          <p><strong>system7.css</strong> - classic Mac OS inspired CSS</p>
-          <p><strong>Atkinson Hyperlegible</strong> - accessible font</p>
-          <p><strong>Last.fm API</strong> - music tracking</p>
-          <div class="divider divider-spaced"></div>
-          <p class="acknowledgements-footer">
-            hosted on GitHub Pages
-          </p>
+      <div class="separator"></div>
+      <div class="window-pane">
+        <div class="about-content">
+          <div class="about-text">
+            <h3>built with</h3>
+            <p><strong>Jekyll</strong> - static site generator</p>
+            <p><strong>system7.css</strong> - classic Mac OS inspired CSS</p>
+            <p><strong>Last.fm API</strong> - music tracking</p>
+            <hr>
+            <p class="acknowledgements-footer">
+              hosted on GitHub Pages
+            </p>
+          </div>
         </div>
       </div>
     </div>
   </div>
+  <script src="{{ '/assets/js/desktop.js' | relative_url }}"></script>
 </body>
 </html>

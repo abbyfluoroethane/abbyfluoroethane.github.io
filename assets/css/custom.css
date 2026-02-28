@@ -1,477 +1,265 @@
-/* Staging banner - only visible in development */
+/* ==========================================================================
+   custom.css — Overrides and additions on top of system7.css
+   ========================================================================== */
+
+/* --- Theme variable overrides --- */
+/* Default is monochrome-light — no overrides needed, uses system7.css :root values */
+
+html[data-theme="monochrome-dark"] {
+  --sys-color-white: #1a1a1a;
+  --sys-color-black: #e0e0e0;
+  --sys-color-grey: #333333;
+  --sys-color-darkgrey: #666666;
+  --primary: #e0e0e0;
+  --secondary: #1a1a1a;
+  --tertiary: #333333;
+  --disabled: #666666;
+  --accent: #e0e0e0;
+  --muted: #888888;
+}
+
+html[data-theme="mocha-pink"] {
+  --sys-color-white: #1e1e2e;
+  --sys-color-black: #cdd6f4;
+  --sys-color-grey: #313244;
+  --sys-color-darkgrey: #6c7086;
+  --primary: #cdd6f4;
+  --secondary: #1e1e2e;
+  --tertiary: #313244;
+  --disabled: #6c7086;
+  --accent: #f5c2e7;
+  --muted: #a6adc8;
+}
+
+html[data-theme="latte-pink"] {
+  --sys-color-white: #eff1f5;
+  --sys-color-black: #4c4f69;
+  --sys-color-grey: #ccd0da;
+  --sys-color-darkgrey: #9ca0b0;
+  --primary: #4c4f69;
+  --secondary: #eff1f5;
+  --tertiary: #ccd0da;
+  --disabled: #9ca0b0;
+  --accent: #ea76cb;
+  --muted: #8c8fa1;
+}
+
+/* --- Muted text + accent color --- */
+/* --tertiary is used for grid/border colors and is too dark in dark themes for text.
+   --muted provides a readable subdued text color separate from --tertiary. */
+:root { --accent: var(--primary); --muted: var(--tertiary); }
+a { color: var(--accent); }
+
+/* --- Theme text color --- */
+/* system7.css never sets color on html/body — it stays browser-default black.
+   This is fine for monochrome-light but makes text invisible on dark backgrounds. */
+html { color: var(--primary); }
+
+/* system7.css sets ul.menu { color: initial } which resets dropdown text to black.
+   Override so dropdown menus use the theme's text color. */
+ul.menu { color: var(--primary); }
+.inactive-title-bar .title { color: var(--muted); }
+
+/* Disabled menu items: greyed out, no hover highlight */
+ul.menu > .menu-item > button:disabled {
+  color: var(--disabled);
+  cursor: default;
+}
+ul.menu > .menu-item > button:disabled:hover,
+ul.menu > .menu-item > button:disabled:focus {
+  background: transparent;
+  color: var(--disabled);
+}
+
+/* --- Dark theme SVG fixes --- */
+/* Scrollbar arrow buttons, select dropdowns, and button borders use SVGs with
+   hardcoded black/white fills. Invert them for dark themes. */
+
+/* Scrollbar arrow buttons: invert the hardcoded black-on-white SVGs */
+html[data-theme="monochrome-dark"] ::-webkit-scrollbar-button,
+html[data-theme="mocha-pink"] ::-webkit-scrollbar-button {
+  filter: invert(1);
+}
+
+/* Button border-image uses a hardcoded black SVG outline — replace with CSS borders.
+   Exclude title-bar close/resize buttons which need their original square 4px border. */
+html[data-theme="monochrome-dark"] button:not(.close):not(.resize),
+html[data-theme="monochrome-dark"] .btn,
+html[data-theme="monochrome-dark"] .btn-default,
+html[data-theme="monochrome-dark"] .btn:disabled,
+html[data-theme="monochrome-dark"] ::file-selector-button,
+html[data-theme="mocha-pink"] button:not(.close):not(.resize),
+html[data-theme="mocha-pink"] .btn,
+html[data-theme="mocha-pink"] .btn-default,
+html[data-theme="mocha-pink"] .btn:disabled,
+html[data-theme="mocha-pink"] ::file-selector-button {
+  border-image: none;
+  border: 2px solid var(--primary);
+  border-radius: 6px;
+}
+
+/* Restore menu-item buttons — system7.css uses `all: unset` on these */
+html[data-theme="monochrome-dark"] ul.menu > .menu-item > button,
+html[data-theme="mocha-pink"] ul.menu > .menu-item > button {
+  border: none;
+  border-image: none;
+  border-radius: 0;
+}
+
+/* Content SVGs (black line art on transparent) — invert for dark themes */
+html[data-theme="monochrome-dark"] .window-pane img[src$=".svg"],
+html[data-theme="mocha-pink"] .window-pane img[src$=".svg"] {
+  filter: invert(1);
+}
+
+/* --- Desktop layout: body is a flex column filling the viewport --- */
+
+body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background-attachment: fixed;
+}
+
+/* --- Menu bar --- */
+
+ul.menu-bar {
+  flex-shrink: 0;
+  position: relative;
+  z-index: 100;
+}
+
+/* --- Staging banner --- */
+
 .staging-banner {
-  background: #dc2626;
+  background: #000000;
   color: #ffffff;
   text-align: center;
   padding: 0.5rem 0;
   font-family: Chicago, serif;
   font-weight: bold;
   font-size: 0.9rem;
-  border-bottom: 2px solid #991b1b;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  width: 100vw;
+  border-bottom: 2px solid var(--primary);
+  flex-shrink: 0;
   z-index: 1000;
   margin: 0;
 }
 
-body {
-  padding-top: 0;
-}
+/* --- Desktop area — fills remaining space, centers window --- */
 
-body:has(.staging-banner[style*="display: block"]) {
-  padding-top: 2.5rem;
-}
-
-/* Catppuccin Theme Overrides */
-:root {
-  /* Theme-aware color mapping - default to Mocha (dark) */
-  --theme-base: var(--ctp-mocha-base);
-  --theme-text: var(--ctp-mocha-text);
-  --theme-mantle: var(--ctp-mocha-mantle);
-  --theme-surface0: var(--ctp-mocha-surface0);
-  --theme-surface1: var(--ctp-mocha-surface1);
-  --theme-overlay0: var(--ctp-mocha-overlay0);
-  --theme-pink: var(--ctp-mocha-pink);
-  --theme-mauve: var(--ctp-mocha-mauve);
-  --theme-crust: var(--ctp-mocha-crust);
-  --theme-red: var(--ctp-mocha-red);
-  --theme-green: var(--ctp-mocha-green);
-  --theme-rainbow-green: var(--ctp-mocha-green);
-  --theme-rainbow-yellow: var(--ctp-mocha-yellow);
-  --theme-rainbow-peach: var(--ctp-mocha-peach);
-  --theme-rainbow-red: var(--ctp-mocha-red);
-  --theme-rainbow-mauve: var(--ctp-mocha-mauve);
-  --theme-rainbow-sky: var(--ctp-mocha-sky);
-}
-
-/* Light theme (Latte) override */
-html[data-theme="latte"] {
-  --theme-base: var(--ctp-latte-base);
-  --theme-text: var(--ctp-latte-text);
-  --theme-mantle: var(--ctp-latte-mantle);
-  --theme-surface0: var(--ctp-latte-surface0);
-  --theme-surface1: var(--ctp-latte-surface1);
-  --theme-overlay0: var(--ctp-latte-overlay0);
-  --theme-pink: var(--ctp-latte-pink);
-  --theme-mauve: var(--ctp-latte-mauve);
-  --theme-crust: var(--ctp-latte-crust);
-  --theme-red: var(--ctp-latte-red);
-  --theme-green: var(--ctp-latte-green);
-  --theme-rainbow-green: var(--ctp-latte-green);
-  --theme-rainbow-yellow: var(--ctp-latte-yellow);
-  --theme-rainbow-peach: var(--ctp-latte-peach);
-  --theme-rainbow-red: var(--ctp-latte-red);
-  --theme-rainbow-mauve: var(--ctp-latte-mauve);
-  --theme-rainbow-sky: var(--ctp-latte-sky);
-}
-
-/* Monochrome theme - classic black and white */
-html[data-theme="monochrome"] {
-  --theme-base: #ffffff;
-  --theme-text: #000000;
-  --theme-mantle: #f5f5f5;
-  --theme-surface0: #e0e0e0;
-  --theme-surface1: #d0d0d0;
-  --theme-overlay0: #808080;
-  --theme-pink: #000000;
-  --theme-mauve: #404040;
-  --theme-crust: #fafafa;
-  --theme-red: #000000;
-  --theme-green: #000000;
-  --theme-rainbow-green: #1a1a1a;
-  --theme-rainbow-yellow: #2a2a2a;
-  --theme-rainbow-peach: #3a3a3a;
-  --theme-rainbow-red: #4a4a4a;
-  --theme-rainbow-mauve: #5a5a5a;
-  --theme-rainbow-sky: #6a6a6a;
-}
-
-:root {
-  /* Override system7 color tokens with theme variables */
-  --sys-color-white: var(--theme-base);
-  --sys-color-black: var(--theme-text);
-  --sys-color-grey: var(--theme-surface0);
-  --sys-color-darkgrey: var(--theme-overlay0);
-
-  --primary: var(--theme-text);
-  --secondary: var(--theme-base);
-  --tertiary: var(--theme-surface0);
-  --disabled: var(--theme-overlay0);
-  --accent: var(--theme-pink);
-}
-
-/* Font setup */
-@font-face {
-  font-family: Chicago;
-  src: url("../fonts/ChicagoFLF.woff2") format("woff2"),
-       url("../fonts/ChicagoFLF.woff") format("woff");
-  font-display: swap;
-}
-
-@font-face {
-  font-family: Geneva;
-  src: url("../fonts/FindersKeepers.woff2") format("woff2"),
-       url("../fonts/FindersKeepers.woff") format("woff");
-  font-display: swap;
-}
-
-/* Base styles */
-body {
-  font-family: Geneva, -apple-system, BlinkMacSystemFont, sans-serif;
-  background: var(--theme-base);
-  color: var(--theme-text);
-  font-size: 26px;
-  line-height: 1.4;
-  padding: 2rem;
-  background: linear-gradient(90deg,
-    var(--theme-mantle) 21px,
-    transparent 1%) center,
-  linear-gradient(var(--theme-mantle) 21px,
-    transparent 1%) center, var(--theme-base);
-  background-size: 22px 22px;
-}
-
-/* Atkinson Hyperlegible font override - full site-wide implementation */
-html[data-font="atkinson"] body {
-  font-family: 'Atkinson Hyperlegible', Geneva, -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 20px;
-}
-
-html[data-font="atkinson"] h1,
-html[data-font="atkinson"] h2,
-html[data-font="atkinson"] h3 {
-  font-family: 'Atkinson Hyperlegible', Chicago, serif;
-  font-weight: bold;
-}
-
-html[data-font="atkinson"] .menu-bar,
-html[data-font="atkinson"] .menu-item,
-html[data-font="atkinson"] .dropdown-item {
-  font-family: 'Atkinson Hyperlegible', Chicago, serif;
-}
-
-html[data-font="atkinson"] .menu-item:first-child {
-  font-weight: bold;
-}
-
-html[data-font="atkinson"] .title-bar .title {
-  font-family: 'Atkinson Hyperlegible', Chicago, serif;
-  font-weight: bold;
-}
-
-html[data-font="atkinson"] .content p,
-html[data-font="atkinson"] .content li,
-html[data-font="atkinson"] .content a,
-html[data-font="atkinson"] .content code {
-  font-family: 'Atkinson Hyperlegible', Geneva, -apple-system, BlinkMacSystemFont, sans-serif;
-}
-
-html[data-font="atkinson"] .footer {
-  font-family: 'Atkinson Hyperlegible', Geneva, -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 0.92rem;
-}
-
-html[data-font="atkinson"] .project {
-  font-family: 'Atkinson Hyperlegible', Geneva, -apple-system, BlinkMacSystemFont, sans-serif;
-}
-
-html[data-font="atkinson"] .track-name {
-  font-family: 'Atkinson Hyperlegible', Chicago, serif;
-  font-weight: bold;
-}
-
-.container {
-  max-width: 900px;
-  margin: 0 auto;
-}
-
-/* Menu Bar */
-.menu-bar {
-  background: var(--theme-base);
-  border: 2px solid var(--theme-text);
-  display: flex;
-  align-items: stretch;
-  margin-bottom: 0;
-  font-size: 0.95rem;
-  position: relative;
-  z-index: 10;
-  font-family: Chicago, serif;
-}
-
-.menu-item {
-  padding: 0.4rem 1rem;
-  cursor: pointer;
-  border-right: 2px solid var(--theme-text);
-  position: relative;
-  user-select: none;
-  color: var(--theme-text);
-}
-
-.menu-item:first-child {
-  background: var(--theme-base);
-  color: var(--theme-text);
-  font-weight: bold;
-  padding: 0.4rem 0.7rem;
+.desktop {
+  flex: 1;
+  min-height: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: default;
+  padding: 1rem 2rem;
+  overflow: hidden;
 }
 
-/* Only highlight when active (clicked), not on hover - matches macOS */
-.menu-item.active {
-  background: var(--theme-pink);
-  color: var(--theme-crust);
-}
+/* --- Generic .window fix --- */
 
-.menu-item.app-name {
-  font-weight: bold;
-  padding: 0.4rem 1rem;
-  cursor: pointer;
-}
-
-.menu-item.app-name.active {
-  background: var(--theme-pink);
-  color: var(--theme-crust);
-}
-
-/* Dropdown menu */
-.dropdown {
-  display: none;
-  position: fixed;
-  background: var(--theme-base);
-  border: 2px solid var(--theme-text);
-  min-width: 180px;
-  max-width: calc(100vw - 1rem);
-  box-shadow: 4px 4px 0 var(--theme-surface0);
-  z-index: 100;
-  /* Firefox Android compatibility */
-  transform: translateZ(0);
-  will-change: top, left;
-}
-
-/* Click behavior only - matches macOS menu bar */
-.menu-item.active .dropdown {
-  display: block;
-}
-
-.dropdown-item {
-  padding: 0.5rem 1.5rem;
-  cursor: pointer;
-  border-bottom: 1px solid var(--theme-surface0);
-  color: var(--theme-text);
-}
-
-.dropdown-item a {
-  color: inherit;
-  text-decoration: none;
-  border: none;
-  display: block;
-  width: 100%;
-}
-
-/* Override global a:hover for dropdown links - explicitly set to crust when parent is hovered */
-.dropdown-item a:hover {
-  color: var(--theme-text) !important;
-  background: transparent !important;
-  border-bottom: none !important;
-}
-
-.dropdown-item:hover a:hover {
-  color: var(--theme-crust) !important;
-}
-
-.dropdown-item:last-child {
-  border-bottom: none;
-}
-
-.dropdown-item:hover {
-  background: var(--theme-pink);
-  color: var(--theme-crust);
-}
-
-/* Ensure links inside dropdown items inherit hover colors - needs !important to override global a:hover */
-.dropdown-item:hover a {
-  color: var(--theme-crust) !important;
-  background: transparent !important;
-  border-bottom: none !important;
-}
-
-.dropdown-item.disabled {
-  color: var(--theme-overlay0);
-  cursor: not-allowed;
-}
-
-.dropdown-item.disabled:hover {
-  background: var(--theme-base);
-  color: var(--theme-overlay0);
-}
-
-.spacer {
-  flex: 1;
-  border-right: 2px solid var(--theme-text);
-}
-
-.divider {
-  border-top: 1px solid var(--theme-surface0);
-  margin: 0.25rem 0;
-}
-
-/* Window */
 .window {
-  background: var(--theme-base);
-  border: 2px solid var(--theme-text);
-  box-shadow: 4px 4px 0 var(--theme-surface0);
-}
-
-.title-bar {
   display: flex;
-  align-items: center;
-  padding: 0.4rem 0.5rem;
-  background: repeating-linear-gradient(
-    90deg,
-    var(--theme-pink) 0px,
-    var(--theme-pink) 2px,
-    transparent 2px,
-    transparent 4px
-  );
-  border-bottom: 2px solid var(--theme-text);
+  margin: 0;
 }
 
-.title-bar .title {
-  margin: 0 auto;
-  padding: 0.25rem 1rem;
-  background: var(--theme-base);
-  color: var(--theme-text);
-  font-weight: bold;
-  font-size: 0.95rem;
-  font-family: Chicago, serif;
-}
+/* --- Main window — desktop mode --- */
 
-.window-close {
-  width: 16px;
-  height: 16px;
-  background: var(--theme-base);
-  border: 2px solid var(--theme-text);
-  cursor: pointer;
+#main-window {
+  flex-direction: column;
+  max-width: 900px;
+  width: 100%;
+  max-height: 100%;
+  overflow: hidden;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.5);
   position: relative;
 }
 
-.window-close:hover {
-  background: var(--theme-red);
+html[data-theme="monochrome-dark"] #main-window,
+html[data-theme="mocha-pink"] #main-window {
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.7);
 }
 
-.content {
-  padding: 2rem;
-}
-
-/* Typography */
-h1, h2, h3 {
-  color: var(--theme-pink);
-  margin-bottom: 1rem;
-  font-weight: normal;
-  font-family: Chicago, serif;
-}
-
-h1 { font-size: 2rem; }
-h2 {
-  font-size: 1.5rem;
-  margin-top: 2rem;
-  border-bottom: 2px solid var(--theme-surface1);
-  padding-bottom: 0.5rem;
-}
-
-p {
-  margin-bottom: 1rem;
-  color: var(--theme-text);
-}
-
-a {
-  color: var(--theme-pink);
-  text-decoration: none;
-  border-bottom: 1px dotted var(--theme-pink);
-  transition: all 0.2s;
-}
-
-a:hover {
-  color: var(--theme-pink);
-  border-bottom-color: var(--theme-pink);
-  background: var(--theme-surface0);
-}
-
-/* Projects */
-.project {
-  margin: 1.5rem 0;
-  padding: 1rem;
-  background: var(--theme-mantle);
-  border: 2px solid var(--theme-surface1);
-}
-
-.project h3 {
-  margin-bottom: 0.5rem;
-  color: var(--theme-pink);
-}
-
-/* Code */
-code {
-  background: var(--theme-crust);
-  padding: 0.2rem 0.4rem;
-  border: 1px solid var(--theme-surface0);
-  color: var(--theme-green);
-  font-family: 'Courier New', monospace;
-}
-
-pre {
-  background: var(--theme-crust);
-  padding: 1rem;
-  border: 2px solid var(--theme-surface0);
-  overflow-x: auto;
-  margin: 1rem 0;
-}
-
-pre code {
-  background: none;
-  border: none;
+.desktop:has(#main-window.zoomed) {
   padding: 0;
 }
 
-/* Lists */
-ul {
+#main-window.zoomed {
+  max-width: none;
+  width: 100%;
+  max-height: 100%;
+  transform: none !important;
+  box-shadow: none;
+}
+
+/* --- Window pane — internal scrolling --- */
+
+#main-window > .window-pane {
+  flex: 1;
+  overflow-y: auto;
+  height: 0;
+  min-height: 0;
+}
+
+/* Fix: <button> elements don't inherit font-size by default, making them smaller than <a class="btn"> */
+button.btn {
+  font-size: inherit;
+}
+
+/* --- Title bar buttons --- */
+
+#main-title-bar button {
+  cursor: pointer;
+}
+
+/* --- Title-bar button visibility --- */
+
+.title-bar button.hidden {
+  display: block !important;
+  visibility: hidden;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* --- Content lists — scoped to window-pane --- */
+
+.window-pane ul {
   margin-left: 2rem;
   margin-bottom: 1rem;
 }
 
-li {
-  color: var(--theme-text);
+.window-pane li {
   margin: 0.5rem 0;
 }
 
-li::marker {
-  color: var(--theme-pink);
-}
+/* --- Images inside window-pane --- */
 
-/* Images */
-.content img {
+.window-pane img {
   max-width: 100%;
   height: auto;
   display: block;
   margin: 1rem 0;
 }
 
-/* Footer */
+/* --- Footer --- */
+
 .footer {
   margin-top: 2rem;
   padding-top: 1rem;
-  border-top: 2px dotted var(--theme-surface1);
+  border-top: 2px dotted var(--tertiary);
   text-align: center;
-  color: var(--theme-overlay0);
+  color: var(--muted);
   font-size: 1.05rem;
 }
 
-/* 88x31 Buttons */
+/* --- 88x31 buttons --- */
+
 .buttons-88x31 {
   display: flex;
   flex-wrap: wrap;
@@ -484,6 +272,7 @@ li::marker {
   border: none;
   line-height: 0;
   display: inline-block;
+  text-decoration: none;
 }
 
 .buttons-88x31 a:hover {
@@ -499,452 +288,7 @@ li::marker {
   image-rendering: crisp-edges;
 }
 
-.footer-text {
-  margin-top: 0;
-}
-
-/* About Window Modal */
-.about-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.about-window {
-  background: var(--theme-base);
-  border: 2px solid var(--theme-text);
-  box-shadow: 4px 4px 0 var(--theme-surface0);
-  width: 400px;
-  max-width: 90%;
-}
-
-.about-content {
-  padding: 2rem;
-  text-align: center;
-}
-
-.about-image {
-  margin-bottom: 1.5rem;
-}
-
-.about-image img {
-  display: block;
-  margin: 0 auto;
-  border: 2px solid var(--theme-surface0);
-  background: var(--theme-mantle);
-  padding: 0.5rem;
-}
-
-.about-text h3 {
-  margin-top: 0;
-  margin-bottom: 0.5rem;
-  font-size: 1.3rem;
-}
-
-.about-text p {
-  margin: 0.25rem 0;
-  font-size: 1.05rem;
-}
-
-/* Mobile Optimizations */
-@media (max-width: 768px) {
-  /* Reduce body padding */
-  body {
-    padding: 1rem;
-    font-size: 22px;
-    line-height: 1.4;
-  }
-
-  /* Hide clock and its container on mobile */
-  .menu-item:has(#clock) {
-    display: none;
-  }
-
-  #clock {
-    display: none;
-  }
-
-  /* Reduce menu bar font size */
-  .menu-bar {
-    font-size: 0.85rem;
-  }
-
-  /* Reduce menu item padding */
-  .menu-item {
-    padding: 0.4rem 0.6rem;
-  }
-
-  .menu-item.app-name {
-    padding: 0.4rem 0.6rem;
-  }
-
-  .menu-item:first-child {
-    padding: 0.4rem 0.5rem;
-  }
-
-  /* Reduce content padding */
-  .content {
-    padding: 1.5rem;
-  }
-
-  /* Reduce dropdown width */
-  .dropdown {
-    min-width: 150px;
-  }
-
-  /* Adjust window for mobile */
-  .window {
-    box-shadow: 2px 2px 0 var(--theme-surface0);
-  }
-
-  /* Reduce title bar padding */
-  .title-bar {
-    padding: 0.4rem;
-  }
-
-  .title-bar .title {
-    font-size: 1rem;
-    padding: 0.2rem 0.8rem;
-  }
-
-  /* Reduce heading sizes */
-  h1 {
-    font-size: 1.5rem;
-  }
-
-  h2 {
-    font-size: 1.2rem;
-  }
-
-  /* About window adjustments */
-  .about-window {
-    width: 90%;
-  }
-
-  .about-content {
-    padding: 1.5rem;
-  }
-
-  .about-image img {
-    max-width: 96px !important;
-  }
-
-  /* Reduce project padding */
-  .project {
-    padding: 0.75rem;
-  }
-
-  /* Reduce footer size */
-  .footer {
-    font-size: 0.9rem;
-  }
-}
-
-@media (max-width: 480px) {
-  /* Extra small screens */
-  body {
-    padding: 0.5rem;
-    font-size: 20px;
-    line-height: 1.4;
-  }
-
-  .menu-bar {
-    font-size: 0.8rem;
-  }
-
-  .content {
-    padding: 1rem;
-  }
-
-  .title-bar .title {
-    font-size: 0.9rem;
-  }
-
-  h1 {
-    font-size: 1.3rem;
-  }
-
-  h2 {
-    font-size: 1.1rem;
-  }
-
-  /* Make dropdown items more touch-friendly */
-  .dropdown-item {
-    padding: 0.6rem 1rem;
-  }
-
-  /* Adjust about window for very small screens */
-  .about-content {
-    padding: 1rem;
-  }
-
-  .about-image img {
-    max-width: 80px !important;
-  }
-
-  .about-text h3 {
-    font-size: 1.1rem;
-  }
-
-  .about-text p {
-    font-size: 0.95rem;
-  }
-}
-
-/* Wireframe images - adapt to theme colors */
-.wireframe {
-  max-width: 100%;
-  height: auto;
-  color: var(--theme-text);
-}
-
-/* Apply color based on theme */
-:root[data-theme="mocha"] .wireframe {
-  filter: brightness(0) saturate(100%) invert(1);
-}
-
-:root[data-theme="latte"] .wireframe,
-:root[data-theme="monochrome"] .wireframe {
-  filter: brightness(0) saturate(100%) invert(0);
-}
-
-/* ==========================================================================
-   UNIFIED COMPONENT STYLES
-   Consolidated classes to reduce duplication across includes
-   ========================================================================== */
-
-/* Action Button - Unified button style for projects, last.fm, etc. */
-.action-button {
-  display: inline-block;
-  padding: 0.5rem 1rem;
-  background: var(--theme-surface0);
-  border: 2px solid var(--theme-surface1);
-  color: var(--theme-pink) !important;
-  font-family: Chicago, serif;
-  font-size: 0.9rem;
-  text-decoration: none;
-  cursor: pointer;
-  transition: all 0.2s;
-  box-shadow: 2px 2px 0 var(--theme-surface0);
-}
-
-.action-button:hover {
-  background: var(--theme-pink) !important;
-  color: var(--theme-crust) !important;
-  box-shadow: 3px 3px 0 var(--theme-surface1);
-  transform: translateY(-1px);
-}
-
-/* Modal Overlay - Unified style for all modals */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-/* Modal Window - Unified style for modal content boxes */
-.modal-window {
-  background: var(--theme-base);
-  border: 2px solid var(--theme-text);
-  box-shadow: 4px 4px 0 var(--theme-surface0);
-  display: flex;
-  flex-direction: column;
-}
-
-/* Utility Classes */
-.hidden {
-  display: none;
-}
-
-.title-spacer {
-  width: 16px;
-}
-
-.error-message {
-  padding: 1rem;
-  border: 2px solid var(--theme-pink);
-  color: var(--theme-pink);
-  font-family: Chicago, serif;
-}
-
-/* ==========================================================================
-   GALLERY COMPONENT
-   ========================================================================== */
-
-.masonry-gallery {
-  margin: 2rem 0;
-}
-
-.gallery-title {
-  color: var(--theme-pink);
-  margin-bottom: 1rem;
-  font-family: Chicago, serif;
-}
-
-.masonry-grid {
-  column-count: 3;
-  column-gap: 1rem;
-}
-
-.masonry-item {
-  border: 2px solid var(--theme-surface1);
-  box-shadow: 2px 2px 0 var(--theme-surface0);
-  overflow: hidden;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  break-inside: avoid;
-  margin-bottom: 1rem;
-  display: block;
-  width: 100%;
-  line-height: 0;
-  font-size: 0;
-}
-
-.masonry-item:hover {
-  box-shadow: 3px 3px 0 var(--theme-surface1);
-  transform: translateY(-2px);
-}
-
-.masonry-item img {
-  width: 100%;
-  height: auto;
-  display: block;
-  margin: 0;
-  padding: 0;
-}
-
-.gallery-lightbox {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.gallery-lightbox:not(.hidden) {
-  display: flex;
-}
-
-.lightbox-window {
-  background: var(--theme-base);
-  border: 2px solid var(--theme-text);
-  box-shadow: 4px 4px 0 var(--theme-surface0);
-  max-width: 600px;
-  max-height: 80vh;
-  display: flex;
-  flex-direction: column;
-}
-
-.lightbox-content {
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  overflow: auto;
-}
-
-.lightbox-image-container {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 200px;
-}
-
-.lightbox-image {
-  max-width: 100%;
-  max-height: 60vh;
-  height: auto;
-  display: block;
-  border: 1px solid var(--theme-surface1);
-}
-
-.lightbox-loading {
-  position: absolute;
-  color: var(--theme-text);
-  font-family: Chicago, serif;
-  font-size: 1rem;
-  display: none;
-}
-
-.lightbox-caption {
-  margin-top: 0.75rem;
-  color: var(--theme-overlay0);
-  font-family: Chicago, serif;
-  text-align: center;
-  font-size: 0.85rem;
-}
-
-.lightbox-caption:empty {
-  display: none;
-}
-
-/* Gallery Responsive Design */
-@media (max-width: 768px) {
-  .masonry-grid {
-    column-count: 2;
-  }
-
-  .lightbox-window {
-    max-width: 90vw;
-    max-height: 85vh;
-  }
-
-  .lightbox-content {
-    padding: 0.75rem;
-  }
-
-  .lightbox-image {
-    max-height: 55vh;
-  }
-}
-
-@media (max-width: 480px) {
-  .masonry-grid {
-    column-count: 1;
-  }
-
-  .lightbox-window {
-    max-width: 95vw;
-    max-height: 90vh;
-  }
-
-  .lightbox-content {
-    padding: 0.5rem;
-  }
-
-  .lightbox-caption {
-    font-size: 0.8rem;
-  }
-}
-
-/* ==========================================================================
-   LAST.FM WIDGET COMPONENT
-   ========================================================================== */
-
-.lastfm-widget {
-  margin: 1.5rem 0;
-  padding: 1rem;
-  background: var(--theme-mantle);
-  border: 2px solid var(--theme-surface1);
-}
+/* --- Last.fm widget --- */
 
 .lastfm-content {
   display: flex;
@@ -956,8 +300,8 @@ li::marker {
   flex-shrink: 0;
   width: 120px;
   height: 120px;
-  border: 2px solid var(--theme-surface0);
-  background: var(--theme-crust);
+  border: 2px solid var(--primary);
+  background: var(--secondary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -984,7 +328,7 @@ li::marker {
   align-items: center;
   gap: 0.5rem;
   font-size: 0.85rem;
-  color: var(--theme-overlay0);
+  color: var(--muted);
   font-family: Chicago, serif;
 }
 
@@ -992,12 +336,12 @@ li::marker {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--theme-overlay0);
+  background: var(--tertiary);
   display: inline-block;
 }
 
 .status-indicator.now-playing {
-  background: var(--theme-green);
+  background: #30d158;
   animation: pulse 2s ease-in-out infinite;
 }
 
@@ -1015,17 +359,17 @@ li::marker {
 .track-name {
   font-family: Chicago, serif;
   font-size: 1.1rem;
-  color: var(--theme-pink);
+  color: var(--primary);
   font-weight: bold;
 }
 
 .track-artist {
-  color: var(--theme-text);
+  color: var(--primary);
   font-size: 0.95rem;
 }
 
 .track-album {
-  color: var(--theme-overlay0);
+  color: var(--muted);
   font-size: 0.95rem;
   font-style: italic;
 }
@@ -1045,12 +389,281 @@ li::marker {
 .lastfm-message {
   padding: 1rem;
   text-align: center;
-  color: var(--theme-overlay0);
+  color: var(--muted);
   font-size: 0.9rem;
 }
 
-/* Last.fm Responsive Design */
+/* --- Project preview --- */
+
+.project.standard-dialog {
+  margin-bottom: 1rem;
+}
+
+.project-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+/* --- Gallery — masonry grid --- */
+
+.masonry-gallery {
+  margin: 2rem 0;
+}
+
+.masonry-grid {
+  column-count: 3;
+  column-gap: 1rem;
+}
+
+.masonry-item {
+  border: 2px solid var(--primary);
+  box-shadow: var(--box-shadow);
+  overflow: hidden;
+  cursor: pointer;
+  break-inside: avoid;
+  margin-bottom: 1rem;
+  display: block;
+  width: 100%;
+  line-height: 0;
+  font-size: 0;
+}
+
+.masonry-item:hover {
+  box-shadow: 3px 3px 0 var(--primary);
+  transform: translateY(-2px);
+}
+
+.masonry-item img {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
+/* --- Gallery lightbox --- */
+
+.gallery-lightbox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  align-items: center;
+  justify-content: center;
+  z-index: 1001;
+}
+
+.gallery-lightbox:not(.hidden) {
+  display: flex;
+}
+
+.lightbox-content {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+}
+
+.lightbox-image-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+}
+
+.lightbox-image {
+  max-width: 100%;
+  max-height: 60vh;
+  height: auto;
+  display: block;
+  border: 1px solid var(--primary);
+}
+
+.lightbox-loading {
+  position: absolute;
+  color: var(--primary);
+  font-family: Chicago, serif;
+  font-size: 1rem;
+  display: none;
+}
+
+.lightbox-caption {
+  margin-top: 0.75rem;
+  color: var(--muted);
+  font-family: Chicago, serif;
+  text-align: center;
+  font-size: 0.85rem;
+}
+
+.lightbox-caption:empty {
+  display: none;
+}
+
+/* --- Post layout --- */
+
+.post-header {
+  margin-bottom: 2em;
+  padding-bottom: 1em;
+  border-bottom: 2px solid var(--primary);
+}
+
+.post-date {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.post-tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  background: var(--secondary);
+  padding: 4px 12px;
+  border: 1px solid var(--primary);
+  font-size: 0.85em;
+  color: var(--primary);
+}
+
+/* --- Modal overlay --- */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001;
+}
+
+/* --- About modal content --- */
+
+.about-content {
+  padding: 2rem;
+  text-align: center;
+}
+
+.about-image {
+  margin-bottom: 1.5rem;
+}
+
+.about-image img {
+  display: block;
+  margin: 0 auto;
+  border: 2px solid var(--primary);
+  background: var(--secondary);
+  padding: 0.5rem;
+  max-width: 128px;
+  height: auto;
+}
+
+.about-text h3 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  font-size: 1.3rem;
+}
+
+.about-text p {
+  margin: 0.25rem 0;
+  font-size: 1.05rem;
+}
+
+.divider-spaced {
+  margin: 1rem 0;
+}
+
+.acknowledgements-footer {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+/* --- Close button disabled state (on home page) --- */
+
+#main-close.disabled {
+  border-color: var(--disabled);
+  cursor: default;
+}
+
+/* --- Atkinson Hyperlegible font overrides --- */
+
+html[data-font="atkinson"] body,
+html[data-font="atkinson"] .window-pane {
+  font-family: 'Atkinson Hyperlegible', Geneva, Helvetica, sans-serif;
+}
+
+html[data-font="atkinson"] h1,
+html[data-font="atkinson"] h2,
+html[data-font="atkinson"] h3 {
+  font-family: 'Atkinson Hyperlegible', Chicago, Geneva, Helvetica, sans-serif;
+}
+
+html[data-font="atkinson"] .menu-bar,
+html[data-font="atkinson"] .title-bar .title {
+  font-family: 'Atkinson Hyperlegible', Chicago_12, Chicago, Geneva, sans-serif;
+}
+
+html[data-font="atkinson"] button,
+html[data-font="atkinson"] .btn,
+html[data-font="atkinson"] input,
+html[data-font="atkinson"] select {
+  font-family: 'Atkinson Hyperlegible', Chicago_12, Geneva, Helvetica, sans-serif;
+}
+
+/* ==========================================================================
+   Mobile responsive
+   ========================================================================== */
+
 @media (max-width: 768px) {
+  .menu-bar > .menu-item:has(#clock) {
+    display: none;
+  }
+
+  #clock {
+    display: none;
+  }
+
+  .desktop {
+    padding: 0;
+    align-items: stretch;
+  }
+
+  #main-window {
+    max-width: none;
+    max-height: 100%;
+    box-shadow: none;
+    border-left: none;
+    border-right: none;
+    transform: none !important;
+  }
+
+  .window-pane {
+    padding: 1rem;
+  }
+
+  .masonry-grid {
+    column-count: 2;
+  }
+
+  .lightbox-content {
+    padding: 0.75rem;
+  }
+
+  .lightbox-image {
+    max-height: 55vh;
+  }
+
   .lastfm-content {
     flex-direction: column;
     align-items: center;
@@ -1073,11 +686,19 @@ li::marker {
   .lastfm-actions {
     align-self: center;
   }
+
+  .project-actions {
+    justify-content: center;
+  }
+
+  .about-image img {
+    max-width: 96px !important;
+  }
 }
 
 @media (max-width: 480px) {
-  .lastfm-widget {
-    padding: 0.75rem;
+  .masonry-grid {
+    column-count: 1;
   }
 
   .lastfm-artwork {
@@ -1088,77 +709,12 @@ li::marker {
   .track-name {
     font-size: 1rem;
   }
-}
 
-/* ==========================================================================
-   PROJECT PREVIEW COMPONENT
-   ========================================================================== */
-
-.project-actions {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-  justify-content: flex-end;
-  margin-top: 1rem;
-}
-
-/* Project Actions Responsive Design */
-@media (max-width: 768px) {
-  .project-actions {
-    justify-content: center;
+  .lightbox-caption {
+    font-size: 0.8rem;
   }
-}
 
-/* ==========================================================================
-   POST LAYOUT
-   ========================================================================== */
-
-.post-header {
-  margin-bottom: 2em;
-  padding-bottom: 1em;
-  border-bottom: 2px solid var(--theme-surface1);
-}
-
-.post-header h1 {
-  margin-top: 0;
-  color: var(--theme-pink);
-}
-
-.post-date {
-  color: var(--theme-overlay0);
-  font-size: 0.9rem;
-}
-
-.post-tags {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.tag {
-  background: var(--theme-surface0);
-  padding: 4px 12px;
-  border: 1px solid var(--theme-surface1);
-  font-size: 0.85em;
-  color: var(--theme-pink);
-}
-
-/* Default Layout Inline Styles Converted to Classes */
-
-/* About image styling */
-.about-image img {
-  max-width: 128px;
-  height: auto;
-}
-
-/* Divider with margin */
-.divider-spaced {
-  margin: 1rem 0;
-}
-
-/* Footer acknowledgements text styling */
-.acknowledgements-footer {
-  margin-top: 1rem;
-  font-size: 0.9rem;
-  color: var(--theme-overlay0);
+  .about-image img {
+    max-width: 80px !important;
+  }
 }
