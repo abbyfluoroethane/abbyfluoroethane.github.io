@@ -9,7 +9,7 @@ app_name: Blog
   {% for post in site.posts %}
     <li>
       <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
-      <span style="color: var(--ctp-mocha-overlay0);">— {{ post.date | date: "%B %d, %Y" }}</span>
+      <span style="color: var(--theme-overlay0);">— {{ post.date | date: "%B %d, %Y" }}</span>
     </li>
   {% endfor %}
 </ul>

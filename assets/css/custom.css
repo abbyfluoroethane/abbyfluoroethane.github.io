@@ -1124,6 +1124,11 @@ li::marker {
   color: var(--theme-pink);
 }
 
+.post-date {
+  color: var(--theme-overlay0);
+  font-size: 0.9rem;
+}
+
 .post-tags {
   display: flex;
   gap: 8px;

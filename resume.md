@@ -4,33 +4,10 @@ app_name: Resume
 ---
 
 <div style="text-align: center; margin-bottom: 2rem;">
-  <a href="https://github.com/abbyfluoroethane/style-guide/blob/main/Documents/Resume.pdf" class="project-button">
+  <a href="https://github.com/abbyfluoroethane/style-guide/blob/main/Documents/Resume.pdf" class="action-button">
     Download as PDF (GitHub)
   </a>
 </div>
-
-<style>
-.project-button {
-  display: inline-block;
-  padding: 0.5rem 1rem;
-  background: var(--theme-surface0);
-  border: 2px solid var(--theme-surface1);
-  color: var(--theme-pink) !important;
-  text-decoration: none !important;
-  border-bottom: 2px solid var(--theme-surface1) !important;
-  font-family: Chicago, serif;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  box-shadow: 2px 2px 0 var(--theme-surface0);
-}
-
-.project-button:hover {
-  background: var(--theme-pink) !important;
-  color: var(--theme-crust) !important;
-  box-shadow: 3px 3px 0 var(--theme-surface1);
-}
-</style>
 
 # Abby Bigaouette
 
