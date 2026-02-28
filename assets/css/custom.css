@@ -166,6 +166,7 @@ ul.menu-bar {
 .window {
   display: flex;
   margin: 0;
+  font-family: Geneva_9, Geneva, Helvetica, sans-serif;
 }
 
 /* --- Main window — desktop mode --- */
