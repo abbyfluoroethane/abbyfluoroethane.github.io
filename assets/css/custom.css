@@ -166,6 +166,7 @@ ul.menu-bar {
 .window {
   display: flex;
   margin: 0;
+  font-family: 'JetBrains Mono', Menlo, Chicago, Geneva, monospace;
 }
 
 /* --- Main window — desktop mode --- */
