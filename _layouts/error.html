@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% include head.html %}
+</head>
+<body>
+  {% include menubar.html %}
+
+  <div class="desktop" id="desktop">
+    {{ content }}
+  </div>
+
+  <script src="{{ '/assets/js/desktop.js' | relative_url }}"></script>
+</body>
+</html>

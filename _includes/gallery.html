@@ -32,18 +32,21 @@ Requires: Data file at _data/galleries/[gallery-name].yml
 
 <!-- Lightbox Modal -->
 <div class="gallery-lightbox hidden" id="lightbox-{{ gallery_id }}">
-  <div class="lightbox-window">
+  <div class="window" style="max-width: 600px; max-height: 80vh;">
     <div class="title-bar">
-      <div class="window-close lightbox-close" id="lightbox-close-{{ gallery_id }}"></div>
-      <div class="title lightbox-counter" aria-live="polite"></div>
-      <div class="title-spacer"></div>
+      <button class="close" id="lightbox-close-{{ gallery_id }}" aria-label="Close"></button>
+      <h1 class="title lightbox-counter" aria-live="polite"></h1>
+      <button class="resize hidden" aria-label="Resize"></button>
     </div>
-    <div class="lightbox-content">
-      <div class="lightbox-image-container">
-        <div class="lightbox-loading">Loading...</div>
-        <img class="lightbox-image" src="" alt="">
+    <div class="separator"></div>
+    <div class="window-pane" style="overflow: auto;">
+      <div class="lightbox-content">
+        <div class="lightbox-image-container">
+          <div class="lightbox-loading">Loading...</div>
+          <img class="lightbox-image" src="" alt="">
+        </div>
+        <div class="lightbox-caption"></div>
       </div>
-      <div class="lightbox-caption"></div>
     </div>
   </div>
 </div>

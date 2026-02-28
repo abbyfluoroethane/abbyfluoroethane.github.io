@@ -4,7 +4,7 @@ app_name: Resume
 ---
 
 <div style="text-align: center; margin-bottom: 2rem;">
-  <a href="https://github.com/abbyfluoroethane/style-guide/blob/main/Documents/Resume.pdf" class="action-button">
+  <a href="https://github.com/abbyfluoroethane/style-guide/blob/main/Documents/Resume.pdf" class="btn">
     Download as PDF (GitHub)
   </a>
 </div>
