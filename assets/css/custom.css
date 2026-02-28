@@ -130,6 +130,7 @@ ul.menu-bar {
   flex-shrink: 0;
   position: relative;
   z-index: 100;
+  max-height: none;
 }
 
 /* --- Staging banner --- */
