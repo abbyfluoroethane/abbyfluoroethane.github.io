@@ -1,6 +1,6 @@
 ---
 layout: post
-title: DoW punishing AI lab for safeguards not about national security, irresponsible
+title: DoW punishing Anthropic over Claude safeguards was never about national security
 date: 2026-03-01
 ---
 
