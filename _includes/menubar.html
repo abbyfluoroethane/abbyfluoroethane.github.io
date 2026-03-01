@@ -11,16 +11,6 @@
       <li class="menu-item"><button id="close-window-menu-item">Close Window</button></li>
     </ul>
   </li>
-  <li class="menu-item" tabindex="0">Navigate
-    <ul class="menu">
-      <li class="menu-item"><a href="{{ '/' | relative_url }}">Home</a></li>
-      <li class="menu-item"><a href="{{ '/projects' | relative_url }}">Projects</a></li>
-      <li class="menu-item"><a href="{{ '/blog' | relative_url }}">Blog</a></li>
-      <li class="menu-item"><a href="{{ '/gallery' | relative_url }}">Gallery</a></li>
-      <li class="menu-item divider"></li>
-      <li class="menu-item"><a href="{{ '/resume' | relative_url }}">Resume</a></li>
-    </ul>
-  </li>
   <li class="menu-item" tabindex="0">View
     <ul class="menu">
       <li class="menu-item"><button id="theme-latte-pink">Catppuccin Latte</button></li>
@@ -29,6 +19,16 @@
       <li class="menu-item"><button id="theme-monochrome-dark">Monochrome Dark</button></li>
       <li class="menu-item divider"></li>
       <li class="menu-item"><button id="font-atkinson">Atkinson Hyperlegible</button></li>
+    </ul>
+  </li>
+  <li class="menu-item" tabindex="0">Navigate
+    <ul class="menu">
+      <li class="menu-item"><a href="{{ '/' | relative_url }}">Home</a></li>
+      <li class="menu-item"><a href="{{ '/projects' | relative_url }}">Projects</a></li>
+      <li class="menu-item"><a href="{{ '/blog' | relative_url }}">Blog</a></li>
+      <li class="menu-item"><a href="{{ '/gallery' | relative_url }}">Gallery</a></li>
+      <li class="menu-item divider"></li>
+      <li class="menu-item"><a href="{{ '/resume' | relative_url }}">Resume</a></li>
     </ul>
   </li>
   <li class="menu-item" tabindex="0">Help
@@ -289,5 +289,25 @@
     var currentFont = document.documentElement.getAttribute('data-font') || 'default';
     updateThemeCheckmarks(currentTheme);
     updateFontCheckmark(currentFont);
+  });
+
+  // Prevent menu dropdowns from extending past viewport
+  document.querySelectorAll('ul.menu-bar > .menu-item[tabindex]').forEach(function(item) {
+    item.addEventListener('focusin', function() {
+      var menu = this.querySelector('ul.menu');
+      if (!menu) return;
+      // Reset to default left-aligned position
+      menu.style.left = '0';
+      // Defer check until browser has applied :focus-within layout
+      requestAnimationFrame(function() {
+        var rect = menu.getBoundingClientRect();
+        var overflow = rect.right - document.documentElement.clientWidth;
+        if (overflow > 0) {
+          // Don't shift so far left that the dropdown goes off the left edge
+          var maxShift = rect.left;
+          menu.style.left = -Math.min(overflow, maxShift) + 'px';
+        }
+      });
+    });
   });
 </script>
