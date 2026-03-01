@@ -82,28 +82,19 @@ html[data-theme="mocha-pink"] ::-webkit-scrollbar-button {
 }
 
 /* Button border-image uses a hardcoded black SVG outline — replace with CSS borders.
-   Exclude title-bar close/resize buttons which need their original square 4px border. */
-html[data-theme="monochrome-dark"] button:not(.close):not(.resize),
+   Only target .btn (content-area buttons); menu buttons already have `all: unset`. */
 html[data-theme="monochrome-dark"] .btn,
 html[data-theme="monochrome-dark"] .btn-default,
 html[data-theme="monochrome-dark"] .btn:disabled,
 html[data-theme="monochrome-dark"] ::file-selector-button,
-html[data-theme="mocha-pink"] button:not(.close):not(.resize),
 html[data-theme="mocha-pink"] .btn,
 html[data-theme="mocha-pink"] .btn-default,
 html[data-theme="mocha-pink"] .btn:disabled,
 html[data-theme="mocha-pink"] ::file-selector-button {
   border-image: none;
-  border: 2px solid var(--primary);
+  border-color: transparent;
+  box-shadow: 0 0 0 2px var(--primary);
   border-radius: 6px;
-}
-
-/* Restore menu-item buttons — system7.css uses `all: unset` on these */
-html[data-theme="monochrome-dark"] ul.menu > .menu-item > button,
-html[data-theme="mocha-pink"] ul.menu > .menu-item > button {
-  border: none;
-  border-image: none;
-  border-radius: 0;
 }
 
 /* Content SVGs (black line art on transparent) — invert for dark themes */
@@ -136,7 +127,7 @@ ul.menu-bar {
 /* --- Staging banner --- */
 
 .staging-banner {
-  background: #000000;
+  background: #d32f2f;
   color: #ffffff;
   text-align: center;
   padding: 0.5rem 0;
@@ -225,6 +216,14 @@ button.btn {
   visibility: hidden;
 }
 
+.title-bar .title,
+.inactive-title-bar .title {
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .hidden {
   display: none !important;
 }
@@ -286,6 +285,7 @@ button.btn {
   display: block;
   width: 88px;
   height: 31px;
+  margin: 0;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
 }
@@ -295,13 +295,14 @@ button.btn {
 .lastfm-content {
   display: flex;
   gap: 1rem;
-  align-items: flex-start;
+  align-items: stretch;
+  position: relative;
 }
 
 .lastfm-artwork {
   flex-shrink: 0;
-  width: 120px;
-  height: 120px;
+  width: 150px;
+  height: 150px;
   border: 2px solid var(--primary);
   background: var(--secondary);
   display: flex;
@@ -332,6 +333,9 @@ button.btn {
   font-size: 0.85rem;
   color: var(--muted);
   font-family: Chicago, serif;
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 
 .status-indicator {
@@ -381,6 +385,7 @@ button.btn {
   gap: 0.5rem;
   align-items: center;
   align-self: flex-end;
+  margin-top: auto;
 }
 
 .lastfm-refresh-button.refreshing {
@@ -650,6 +655,10 @@ html[data-font="atkinson"] select {
     transform: none !important;
   }
 
+  #main-resize {
+    visibility: hidden;
+  }
+
   .window-pane {
     padding: 1rem;
   }
@@ -674,7 +683,6 @@ html[data-font="atkinson"] select {
 
   .lastfm-artwork {
     width: 100px;
-    height: 100px;
   }
 
   .lastfm-info {
@@ -682,7 +690,7 @@ html[data-font="atkinson"] select {
   }
 
   .lastfm-status {
-    justify-content: center;
+    position: static;
   }
 
   .lastfm-actions {
@@ -705,7 +713,6 @@ html[data-font="atkinson"] select {
 
   .lastfm-artwork {
     width: 80px;
-    height: 80px;
   }
 
   .track-name {
