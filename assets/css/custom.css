@@ -919,25 +919,26 @@ html[data-font="atkinson"] select {
   }
 
   .lastfm-content {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
+    padding-top: 1.5rem;
+    padding-bottom: 2.5rem;
   }
 
   .lastfm-artwork {
     width: 100px;
   }
 
-  .lastfm-info {
-    align-items: center;
-  }
-
   .lastfm-status {
-    position: static;
+    position: absolute;
+    top: 0;
+    right: 0;
   }
 
   .lastfm-actions {
-    align-self: center;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    justify-content: center;
   }
 
   .project-actions {
@@ -968,10 +969,6 @@ html[data-font="atkinson"] select {
 
   .lastfm-artwork {
     width: 80px;
-  }
-
-  .track-name {
-    font-size: 1rem;
   }
 
   .lightbox-caption {
