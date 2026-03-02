@@ -4,12 +4,12 @@
 //
 // Environment variables (set as Worker secrets):
 //   GITHUB_TOKEN   — fine-grained PAT with Contents read/write
-//   ALLOWED_ORIGIN — e.g. https://abbyfluoroethane.github.io
+//   ALLOWED_ORIGIN — e.g. https://bigaouette.com
 
 const REPO_OWNER = "abbyfluoroethane";
 const REPO_NAME = "abbyfluoroethane.github.io";
 const FILE_PATH = "_data/guestbook.yml";
-const GUESTBOOK_URL = "https://abbyfluoroethane.github.io/guestbook";
+const GUESTBOOK_URL = "https://bigaouette.com/guestbook";
 
 const MAX_NAME = 100;
 const MAX_WEBSITE = 200;
