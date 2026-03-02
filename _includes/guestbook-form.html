@@ -20,3 +20,43 @@
     <button type="submit" class="btn btn-default">Sign Guestbook</button>
   </div>
 </form>
+
+<!-- Confirmation/error dialog -->
+<div id="guestbook-modal" class="modal-overlay hidden">
+  <div class="window standard-dialog" style="max-width: 340px; width: 100%;">
+    <div class="window-pane" style="padding: 1.5rem; text-align: center;">
+      <p id="guestbook-modal-message" style="margin: 0 0 1.25rem 0; font-family: Chicago, serif;"></p>
+      <button id="guestbook-modal-ok" class="btn btn-default" style="min-width: 80px;">OK</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var params = new URLSearchParams(window.location.search);
+  var msg = null;
+
+  if (params.get('signed') === 'true') {
+    msg = 'Thanks for signing the guestbook! Your entry will appear in a minute or two.';
+  } else if (params.get('error') === 'fields') {
+    msg = 'Please fill in both your name and a message.';
+  } else if (params.get('error') === 'server') {
+    msg = 'Something went wrong. Please try again later.';
+  }
+
+  if (!msg) return;
+
+  var modal = document.getElementById('guestbook-modal');
+  var text = document.getElementById('guestbook-modal-message');
+  var ok = document.getElementById('guestbook-modal-ok');
+
+  text.textContent = msg;
+  modal.classList.remove('hidden');
+  ok.focus();
+
+  ok.addEventListener('click', function () {
+    modal.classList.add('hidden');
+    history.replaceState(null, '', window.location.pathname);
+  });
+})();
+</script>
