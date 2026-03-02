@@ -8,10 +8,6 @@ description: i build things that go to space, break things that stay on earth, a
 
 welcome to my little corner of the internet. i build things that go to space, break things that stay on earth, and occasionally muse about my thoughts.
 
-## what i do
-
-i currently work as a technician at blue origin, where i help build new glenn. outside of work i build (small) rockets, write, and take pictures of things that fly. meow nyayayayayana meow mrrp meow.
-
 ## things i like
 
 - new glenn
