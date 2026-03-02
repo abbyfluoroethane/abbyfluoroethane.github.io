@@ -31,6 +31,16 @@
       <li class="menu-item"><a href="{{ '/resume' | relative_url }}">Resume</a></li>
     </ul>
   </li>
+  <li class="menu-item" tabindex="0">Extras
+    <ul class="menu">
+      <li class="menu-item"><a href="{{ '/guestbook' | relative_url }}">Guestbook</a></li>
+      <li class="menu-item"><a href="{{ '/links' | relative_url }}">Links</a></li>
+      <li class="menu-item"><a href="{{ '/now' | relative_url }}">Now</a></li>
+      <li class="menu-item"><a href="{{ '/colophon' | relative_url }}">Colophon</a></li>
+      <li class="menu-item divider"></li>
+      <li class="menu-item"><button disabled>Webring</button></li>
+    </ul>
+  </li>
   <li class="menu-item" tabindex="0">Help
     <ul class="menu">
       <li class="menu-item"><button id="acknowledgements-menu-item">Acknowledgements</button></li>
@@ -55,9 +65,9 @@
   updateClock();
   setInterval(updateClock, 1000);
 
-  // Click outside menus to close (blur active element)
+  // Click outside menus to close (blur menu-bar elements only)
   document.addEventListener('click', function(e) {
-    if (!e.target.closest('.menu-bar')) {
+    if (!e.target.closest('.menu-bar') && document.activeElement && document.activeElement.closest('.menu-bar')) {
       document.activeElement.blur();
     }
   });

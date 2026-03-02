@@ -865,6 +865,114 @@ html[data-font="atkinson"] select {
   font-family: 'Atkinson Hyperlegible', Chicago_12, Geneva, Helvetica, sans-serif;
 }
 
+/* --- Guestbook --- */
+
+.guestbook-clarus {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.guestbook-clarus img {
+  display: inline-block;
+  max-width: 172px;
+  height: auto;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.guestbook-clarus p {
+  font-family: Chicago, serif;
+  font-style: italic;
+  color: var(--muted);
+  margin-top: 0.25rem;
+}
+
+.guestbook-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 1.5rem 0;
+}
+
+.guestbook-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.guestbook-field label {
+  font-family: Chicago, serif;
+  font-size: 0.9rem;
+}
+
+.guestbook-field input,
+.guestbook-field textarea {
+  font-family: 'JetBrains Mono', Menlo, Chicago, Geneva, monospace;
+  font-size: 0.9rem;
+  padding: 0.4rem 0.5rem;
+  border: 2px solid var(--primary);
+  background: var(--secondary);
+  color: var(--primary);
+}
+
+/* Override system7.css focus inversion (Mac-style highlight) for text inputs/textareas */
+input[type="text"]:focus-visible,
+input[type="url"]:focus-visible,
+input[type="email"]:focus-visible,
+input[type="password"]:focus-visible,
+input[type="number"]:focus-visible,
+input[type="search"]:focus-visible,
+input[type="tel"]:focus-visible,
+textarea:focus,
+textarea:focus-visible {
+  background: var(--secondary);
+  color: var(--primary);
+  outline: none;
+}
+
+.guestbook-field textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.guestbook-submit {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.guestbook-entry {
+  margin-bottom: 0;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--tertiary);
+}
+
+.guestbook-entry:last-child {
+  border-bottom: none;
+}
+
+.guestbook-entry-header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 0.35rem;
+  font-family: Chicago, serif;
+  font-size: 0.9rem;
+}
+
+.guestbook-entry-date {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.guestbook-entry-date::before {
+  content: "·";
+  margin-right: 0.5rem;
+}
+
+.guestbook-entry p {
+  margin: 0;
+}
+
 /* ==========================================================================
    Mobile responsive
    ========================================================================== */

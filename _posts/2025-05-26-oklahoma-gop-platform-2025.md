@@ -63,5 +63,3 @@ What’s most infuriating is that while Oklahoma faces real, urgent challenges: 
 The Oklahoma GOP’s 2025 platform isn’t a serious plan for governance — it’s a culture war fever dream masquerading as policy. It offers no solutions to the actual problems choking our state, only scapegoats and slogans. Whether it’s dismantling internet infrastructure, defunding education, or criminalizing queerness, their vision for Oklahoma is one of fear, regression, and authoritarian control. They are not conserving anything — not liberty, not opportunity, not even common sense. And the more they double down on this ideology, the more they make a fool not just of themselves, but of the state they claim to serve.
 
 The clown car keeps rolling, and the rot continues to consume. I won’t tell you how to vote, but I encourage you to do so. Hell, run for office if you feel like it. Change happens from the bottom up. Be that change.
-
-Abby Bigaouette is an aerospace technician at Blue Origin and former graphic designer for the Daily Press. She is a citizen of the Cherokee Nation. You can reach her at abby@bigaouette.com.

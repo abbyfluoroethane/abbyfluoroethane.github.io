@@ -1,0 +1,22 @@
+<form class="guestbook-form" action="WORKER_URL" method="POST">
+  <!-- Honeypot — hidden from real users, attracts bots -->
+  <div style="position: absolute; left: -9999px;" aria-hidden="true">
+    <label for="guestbook-url">Leave this empty</label>
+    <input type="text" id="guestbook-url" name="url" tabindex="-1" autocomplete="off">
+  </div>
+  <div class="guestbook-field">
+    <label for="guestbook-name">Name <span style="color: var(--accent);">*</span></label>
+    <input type="text" id="guestbook-name" name="name" required maxlength="100" placeholder="Your name">
+  </div>
+  <div class="guestbook-field">
+    <label for="guestbook-website">Website</label>
+    <input type="url" id="guestbook-website" name="website" maxlength="200" placeholder="https://example.com">
+  </div>
+  <div class="guestbook-field">
+    <label for="guestbook-message">Message <span style="color: var(--accent);">*</span></label>
+    <textarea id="guestbook-message" name="message" required maxlength="1000" rows="4" placeholder="Say hi! Moof!"></textarea>
+  </div>
+  <div class="guestbook-submit">
+    <button type="submit" class="btn btn-default">Sign Guestbook</button>
+  </div>
+</form>

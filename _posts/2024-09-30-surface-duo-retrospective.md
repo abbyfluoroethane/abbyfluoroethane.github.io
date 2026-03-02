@@ -4,7 +4,7 @@ title: "Thoughts on Microsoft's horrible phone: a review and retrospective."
 date: 2024-09-30
 ---
 
-October 2, 2019 will forever be one of my favorite days in technology history. It was a day that set the stage for a revolution in the way we use our phones and computers — not to mention the next chapter in the development of Windows. Microsoft Chief Product Officer Panos Panay took the stage to unveil Surface Duo, Surface Neo, and the Windows 10X. For once, it felt as though we were moving forward in the world of consumer electronics.
+October 2, 2019 will forever be one of my favorite days in technology history. It was a day that set the stage for a revolution in the way we use our phones and computers — not to mention the next chapter in the development of Windows. Microsoft Chief Product Officer Panos Panay took the stage to unveil Surface Duo, Surface Neo, and Windows 10X. For once, it felt as though we were moving forward in the world of consumer electronics.
 
 Fast forward a year to October 2020 and you’ll see that we ended up with an operating system on life support, a dead computer, and what can be best described as a half baked, rushed phone. More on Surface Neo and Windows 10X in another post.
 
