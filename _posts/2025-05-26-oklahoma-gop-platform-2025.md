@@ -6,9 +6,9 @@ date: 2025-05-26
 
 Just when you thought the Oklahoma GOP couldn’t get more absurd, it puts out a new platform and enthusiastically boasts about the egg on its face. The 2025 Platform of the Oklahoma Republican Party includes new policy positions on hard-hitting issues breaking the backs of working Oklahomans, such as school funding, gay people, and… 5G? Let’s start with that.
 
-    “We support the elimination of all 5G technology.”
-
-    — 2025 Platform of the Oklahoma Republican Party (Section I.B)
+> “We support the elimination of all 5G technology.”
+>
+> — 2025 Platform of the Oklahoma Republican Party (Section I.B)
 
 I thought we as a society left fearmongering about 5G behind, but here we are making its elimination a party policy. Honestly, as someone with intimate knowledge about wireless infrastructure I was pretty confused reading this. It truly shows that the GOP has long strayed from being the party of fiscal conservatism and free markets and had instead become the party of conspiracy and denial of fact.
 
@@ -20,11 +20,11 @@ I can personally vouch for the economic, educational benefits of 5G. In Septembe
 
 On that topic, hopefully the OKGOP is doing better on the education front. The next generation is going to need all the education in the world to undo this mess.
 
-    “We oppose any increased state funding for the government schools.”
+> “We oppose any increased state funding for the government schools.”
+>
+> — 2025 Platform of the Oklahoma Republican Party (Section II.C)
 
-    — 2025 Platform of the Oklahoma Republican Party (Section II.C)
-
-Oh… Nevemind.
+Oh… Nevermind.
 
 If there’s one thing the OKGOP seems to fear more than 5G, it’s the idea of adequately funding public schools. Buried in the 2025 party platform is a laughable declaration: “We oppose any increased state funding for the government schools.” Not “monitor how money is spent,” not “increase accountability” — just a flat-out refusal to invest another cent. It’s a telling admission that they’ve all but given up on public education as a public good.
 
@@ -34,22 +34,21 @@ This obsession with privatization and moral panic comes at a cost: a generation 
 
 When lawmakers treat public education as a threat instead of a cornerstone of democracy, what they’re really opposing is opportunity — especially for rural, low-income, and marginalized students. The platform talks a big game about “freedom,” but seems allergic to the idea of freeing anyone from ignorance. Silly liberal, freedom is for straight white men!
 
-    “We believe that there are only two sexes/genders, male and female, determined at conception.”
+> “We believe that there are only two sexes/genders, male and female, determined at conception.”
+>
+> — 2025 Platform of the Oklahoma Republican Party (Section I.A)
 
-    — 2025 Platform of the Oklahoma Republican Party (Section I.A)
+> “We believe that any person performing or assisting someone under 18 years of age in obtaining a sex change operation or alteration to their reproductive organs, be guilty of interfering in the reproductive rights of the child, extreme mutilation the child, and of extreme child abuse on a felony level.”
+>
+> — 2025 Platform of the Oklahoma Republican Party (Section I.A)
 
-    “We believe that any person performing or assisting someone under 18 years of age in obtaining a sex change operation or alteration to their reproductive organs, be guilty of interfering in the reproductive rights of the child, extreme mutilation the child, and of extreme child abuse on a felony level.”
+> “We support the right of state and local government to prohibit displays of a sexual nature, including pride parades and drag shows, in view of the public regardless of public or private property.”
+>
+> — 2025 Platform of the Oklahoma Republican Party (Section I.A)
 
-    — 2025 Platform of the Oklahoma Republican Party (Section I.A)
-
-    “We support the right of state and local government to prohibit displays of a sexual nature, including pride parades and drag shows, in view of the public regardless of public or private property.”
-
-    — 2025 Platform of the Oklahoma Republican Party (Section I.A)
-
-    “We oppose the teaching of non-chromosomal gender and LGBTQ+ lifestyle, history, and
-    demonstration.”
-
-    — 2025 Platform of the Oklahoma Republican Party (Section II.B)
+> “We oppose the teaching of non-chromosomal gender and LGBTQ+ lifestyle, history, and demonstration.”
+>
+> — 2025 Platform of the Oklahoma Republican Party (Section II.B)
 
 For the ruling party in a state with crumbling infrastructure and bottom of the barrel schools, they seem quite obsessed with what gay and transgender Oklahomans are up to. And when it comes to LGBT issues, the OKGOP proves itself to yet again be a party of government overreach, censorship, and the erosion of personal liberties.
 
