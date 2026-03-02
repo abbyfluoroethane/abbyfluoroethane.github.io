@@ -1,11 +1,17 @@
 title: abby's site
 description: haiiiii :3
+url: "https://abbyfluoroethane.github.io"
 baseurl: ""
 
 # Last.fm Integration
 lastfm:
   username: "abby_isnthere"
   api_key: "3d59870650c4a720a39500c654d23eb1"
+
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-redirect-from
 
 markdown: kramdown
 kramdown:
