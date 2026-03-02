@@ -1,4 +1,10 @@
-{% assign meta_description = page.description | default: page.excerpt | strip_html | truncate: 160 | default: site.description %}
+{% assign meta_description = page.description %}
+{% unless meta_description %}
+  {% assign meta_description = page.content | strip_html | strip_newlines | strip | truncatewords: 30 %}
+{% endunless %}
+{% if meta_description == blank %}
+  {% assign meta_description = site.description %}
+{% endif %}
 
 <!-- Primary Meta Tags -->
 <meta name="title" content="{{ page.title | default: site.title }}">

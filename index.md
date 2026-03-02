@@ -1,6 +1,7 @@
 ---
 title: ~/abbyfluoroethane
 app_name: Home
+description: i build things that go to space, break things that stay on earth, and occasionally muse about my thoughts.
 ---
 
 # haii, i'm abby :3
