@@ -2,6 +2,7 @@
 layout: post
 title: A Testament to the Resilience, Capability, and Enduring Impact of Our Portfolio
 date: 2026-03-06
+summary: The Principal Chief of the Cherokee Nation congratulated a tribal citizen for being tapped for DHS secretary in his most tone-deaf statement yet. Turns out a significant portion of tribal funding comes from DHS contracts.
 ---
 
 ## *$364 million buys a lot of silence*
