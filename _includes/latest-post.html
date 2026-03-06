@@ -1,0 +1,13 @@
+{% assign post = site.posts.first %}
+{% if post %}
+<div class="project standard-dialog">
+  <h2>{{ post.title }}</h2>
+  <p>{% if post.summary %}{{ post.summary }}{% else %}{{ post.excerpt | strip_html | truncatewords: 30 }}{% endif %}</p>
+
+  <div class="project-actions">
+    <a href="{{ post.url | relative_url }}" class="btn">
+      Read More
+    </a>
+  </div>
+</div>
+{% endif %}

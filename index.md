@@ -19,6 +19,10 @@ welcome to my little corner of the internet. i build things that go to space, br
 
 {% include lastfm-widget.html %}
 
+## latest post
+
+{% include latest-post.html %}
+
 ## featured projects
 
 {% assign featured_projects = site.projects | where: "featured", true | sort: "date" | reverse %}
