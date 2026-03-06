@@ -1,0 +1,160 @@
+<!-- Procedural starfield — viewport-adaptive replacement for hardcoded box-shadows -->
+<div id="starfield-dim" class="starfield-layer"></div>
+<div id="starfield-bright" class="starfield-layer"></div>
+
+<style>
+.starfield-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  z-index: -1;
+  pointer-events: none;
+}
+
+#starfield-bright {
+  animation: twinkle 6s ease-in-out infinite;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #starfield-bright {
+    animation: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .starfield-layer {
+    display: none;
+  }
+}
+</style>
+
+<script>
+(function() {
+  var DIM_DENSITY = 5600;
+  var BRIGHT_DENSITY = 21500;
+
+  var palettes = {
+    'monochrome-light': {
+      dim: function() {
+        var o = 0.25 + Math.random() * 0.15;
+        return 'rgba(0,0,0,' + o.toFixed(2) + ')';
+      },
+      bright: function() {
+        var o = 0.5 + Math.random() * 0.2;
+        return 'rgba(0,0,0,' + o.toFixed(2) + ')';
+      }
+    },
+    'monochrome-dark': {
+      dim: function() {
+        var o = 0.15 + Math.random() * 0.2;
+        return 'rgba(255,255,255,' + o.toFixed(2) + ')';
+      },
+      bright: function() {
+        var o = 0.7 + Math.random() * 0.2;
+        return 'rgba(255,255,255,' + o.toFixed(2) + ')';
+      }
+    },
+    'latte-pink': {
+      dim: function() {
+        var o = 0.25 + Math.random() * 0.15;
+        var colors = [
+          'rgba(76,79,105,' + o.toFixed(2) + ')',
+          'rgba(140,143,161,' + o.toFixed(2) + ')'
+        ];
+        return colors[Math.random() < 0.7 ? 0 : 1];
+      },
+      bright: function() {
+        var o = 0.55 + Math.random() * 0.25;
+        var colors = [
+          'rgba(234,118,203,' + o.toFixed(2) + ')',
+          'rgba(30,102,245,' + o.toFixed(2) + ')',
+          'rgba(136,57,239,' + o.toFixed(2) + ')'
+        ];
+        return colors[Math.floor(Math.random() * 3)];
+      }
+    },
+    'mocha-pink': {
+      dim: function() {
+        var o = 0.15 + Math.random() * 0.2;
+        var colors = [
+          'rgba(205,214,244,' + o.toFixed(2) + ')',
+          'rgba(166,173,200,' + o.toFixed(2) + ')'
+        ];
+        return colors[Math.random() < 0.7 ? 0 : 1];
+      },
+      bright: function() {
+        var o = 0.7 + Math.random() * 0.2;
+        var colors = [
+          'rgba(245,194,231,' + o.toFixed(2) + ')',
+          'rgba(137,180,250,' + o.toFixed(2) + ')',
+          'rgba(203,166,247,' + o.toFixed(2) + ')'
+        ];
+        return colors[Math.floor(Math.random() * 3)];
+      }
+    }
+  };
+
+  var dimEl = document.getElementById('starfield-dim');
+  var brightEl = document.getElementById('starfield-bright');
+
+  function render() {
+    var theme = document.documentElement.getAttribute('data-theme');
+    var palette = palettes[theme];
+
+    if (!palette || window.innerWidth <= 768) {
+      dimEl.style.boxShadow = 'none';
+      brightEl.style.boxShadow = 'none';
+      return;
+    }
+
+    var w = window.innerWidth;
+    var h = window.innerHeight;
+    var area = w * h;
+
+    var isLight = theme === 'monochrome-light' || theme === 'latte-pink';
+    var dimCount = Math.round(area / DIM_DENSITY);
+    var brightCount = Math.round(area / BRIGHT_DENSITY);
+
+    var dimShadows = [];
+    for (var i = 0; i < dimCount; i++) {
+      var x = Math.round(Math.random() * w);
+      var y = Math.round(Math.random() * h);
+      var dimSpread = isLight ? '1px' : '0.5px';
+      dimShadows.push(x + 'px ' + y + 'px 0 ' + dimSpread + ' ' + palette.dim());
+    }
+
+    var brightShadows = [];
+    for (var j = 0; j < brightCount; j++) {
+      var bx = Math.round(Math.random() * w);
+      var by = Math.round(Math.random() * h);
+      var blur = isLight
+        ? (Math.random() < 0.5 ? '1.5px' : '2px')
+        : (Math.random() < 0.5 ? '1px' : '1.5px');
+      brightShadows.push(bx + 'px ' + by + 'px 0 ' + blur + ' ' + palette.bright());
+    }
+
+    dimEl.style.boxShadow = dimShadows.join(',');
+    brightEl.style.boxShadow = brightShadows.join(',');
+  }
+
+  render();
+
+  new MutationObserver(function() { render(); }).observe(
+    document.documentElement,
+    { attributes: true, attributeFilter: ['data-theme'] }
+  );
+
+  var resizeTimer;
+  window.addEventListener('resize', function() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(render, 150);
+  });
+})();
+</script>
