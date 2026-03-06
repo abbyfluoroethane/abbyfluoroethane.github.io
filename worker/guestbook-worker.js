@@ -5,6 +5,7 @@
 // Environment variables (set as Worker secrets):
 //   GITHUB_TOKEN   — fine-grained PAT with Contents read/write
 //   ALLOWED_ORIGIN — e.g. https://bigaouette.com
+//   TURNSTILE_SECRET — Cloudflare Turnstile secret key
 
 const REPO_OWNER = "abbyfluoroethane";
 const REPO_NAME = "abbyfluoroethane.github.io";
@@ -80,6 +81,34 @@ export default {
     if (honeypot.length > 0) {
       // Bot detected — silent redirect, no commit
       return redirect(GUESTBOOK_URL);
+    }
+
+    // Turnstile verification
+    const turnstileResponse = formData.get("cf-turnstile-response") || "";
+    if (!turnstileResponse) {
+      return redirect(`${GUESTBOOK_URL}?error=spam`);
+    }
+
+    try {
+      const verifyRes = await fetch(
+        "https://challenges.cloudflare.com/turnstile/v0/siteverify",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            secret: env.TURNSTILE_SECRET,
+            response: turnstileResponse,
+            remoteip: request.headers.get("CF-Connecting-IP"),
+          }),
+        }
+      );
+      const result = await verifyRes.json();
+      if (!result.success) {
+        return redirect(`${GUESTBOOK_URL}?error=spam`);
+      }
+    } catch (err) {
+      console.error("Turnstile verification error:", err);
+      return redirect(`${GUESTBOOK_URL}?error=server`);
     }
 
     // Extract and validate fields
