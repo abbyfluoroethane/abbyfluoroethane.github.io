@@ -4,7 +4,7 @@ title: A Testament to the Resilience, Capability, and Enduring Impact of Our Por
 date: 2026-03-06
 ---
 
-## *$364 Million Buys a Lot of Silence*
+## *$364 million buys a lot of silence*
 
 In January, a Navajo man was detained by Immigration and Customs Enforcement officers for hours. He had his tribal citizenship card. He had his birth certificate—it didn't matter. They held him anyway. 
 
