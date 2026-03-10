@@ -42,3 +42,5 @@ Hoskin isn't just congratulating the new DHS secretary. He's congratulating the 
 While Cherokee Nation expands its DHS contract portfolio and rolls out congratulations, the Oglala Sioux have banned ICE from their lands. So have the Rosebud Sioux, the Chippewa Cree, and the Ute Indian Tribe. They chose their people over access. Hoskin chose a revenue stream.
 
 Cherokee Federal reported $364 million flowing back into tribal services last year. That's the price of the Chief's silence on what DHS does to Indians. Now you know what it costs.
+
+*A version of this op-ed was published in the Tahlequah Daily Press on March 10, 2026.*
