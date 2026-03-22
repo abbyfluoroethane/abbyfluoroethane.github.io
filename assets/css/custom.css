@@ -307,6 +307,67 @@ button.btn {
   margin: 1rem 0;
 }
 
+/* --- Image layout utilities --- */
+
+.img-pair {
+  display: flex;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.img-pair img {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+}
+
+.img-float-right,
+.img-float-left {
+  max-width: 40%;
+  margin: 0.5rem 0;
+}
+
+.img-float-right {
+  float: right;
+  margin-left: 1.5rem;
+}
+
+.img-float-left {
+  float: left;
+  margin-right: 1.5rem;
+}
+
+.img-float-right img,
+.img-float-left img {
+  margin: 0;
+}
+
+.img-center-sm {
+  max-width: 60%;
+  margin: 1rem auto;
+}
+
+.img-center-sm img {
+  margin: 0;
+}
+
+@media (max-width: 600px) {
+  .img-pair {
+    flex-direction: column;
+  }
+
+  .img-float-right,
+  .img-float-left {
+    float: none;
+    max-width: 100%;
+    margin: 1rem 0;
+  }
+
+  .img-center-sm {
+    max-width: 100%;
+  }
+}
+
 /* --- Content typography — scoped to window-pane --- */
 
 .window-pane { overflow-wrap: break-word; }
@@ -620,6 +681,14 @@ button.btn {
   text-align: center;
   color: var(--muted);
   font-size: 0.9rem;
+}
+
+/* --- Song.link widget --- */
+
+.songlink-embed {
+  width: 100%;
+  overflow: hidden;
+  border-radius: 10px;
 }
 
 /* --- Project preview --- */

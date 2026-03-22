@@ -11,8 +11,10 @@ Apple released MacBook Neo on March 11, and it might be the most fun product lau
 
 Somewhere along the way computers became boring, just tools to do work. It's easy to get caught up in raw specs, benchmarks, and optimization—especially in the tech sphere. MacBook Neo feels like Apple remembering that most people (me included!) just want something that feels good to use. It's something Apple got right years ago with the base MacBook, a laptop that in its final iteration was my favorite Apple design—until now. Between the colors, the size, and the more rounded edges compared to its contemporaries, Neo really feels like a callback to the laptops I fell in love with in elementary school.
 
-![MacBook 2010]({{site.baseurl}}/assets/images/macbook-unibody.jpg)
-![Macbook Neo]({{site.baseurl}}/assets/images/macbook-neo.jpg)
+<div class="img-pair">
+  <img src="{{site.baseurl}}/assets/images/macbook-unibody.jpg" alt="MacBook 2010">
+  <img src="{{site.baseurl}}/assets/images/macbook-neo.jpg" alt="Macbook Neo">
+</div>
 
 On top of style points, MacBook Neo is Apple's cheapest laptop ever—a $599 fanless 13-inch machine running the A18 Pro chip straight out of the iPhone 16 Pro, 8GB of unified memory, and a color accurate (98% sRGB) display. It's the first Mac to run an A-series chip instead of M-series—as long as you ignore [this fuckin' thing](https://en.wikipedia.org/wiki/Developer_Transition_Kit#Apple_Silicon_Developer_Transition_Kit_(2020))—and it starts at $499 for students. It replaces both my Framework 13 and my 2015 MacBook Pro, which means I consolidated two aging and unreliable laptops into one tiny $500 machine that smokes both of them. This thing flies compared to its predecessors!
 
