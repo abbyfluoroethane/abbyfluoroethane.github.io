@@ -1,5 +1,8 @@
 {% assign meta_description = page.description %}
 {% unless meta_description %}
+  {% assign meta_description = page.summary %}
+{% endunless %}
+{% unless meta_description %}
   {% assign meta_description = page.content | strip_html | strip_newlines | strip | truncatewords: 30 %}
 {% endunless %}
 {% if meta_description == blank %}
