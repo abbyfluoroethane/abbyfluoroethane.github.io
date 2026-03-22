@@ -3,6 +3,15 @@ title: Markdown Torture Test
 app_name: Torture Test
 ---
 
+ {% include music-widget.html url="https://music.apple.com/us/album/id-rather-sleep/1496245681?i=1496245706" %}
+
+## fedi post embed
+
+{% include fedi-post.html url="https://dorm.social/notes/ak3q5kx6d42400wf" %}
+{% include fedi-post.html url="https://tech.lgbt/@abbyfluoroethane/113240494137689875" %}
+{% include fedi-post.html url="https://tech.lgbt/@abbyfluoroethane/115648238694663574" %}
+{% include fedi-post.html url="https://dorm.social/notes/ak3pyp9qd42400w3" %}
+
 # heading 1
 ## heading 2
 ### heading 3

@@ -1,0 +1,424 @@
+{% assign post_url = include.url %}
+
+<div class="fedi-post" data-fedi-url="{{ post_url }}">
+  <div class="fedi-post-loading">Loading post...</div>
+  <div class="fedi-post-error hidden">
+    <span class="fedi-post-error-text"></span>
+    <a href="{{ post_url }}" target="_blank" rel="noopener noreferrer">View original post</a>
+  </div>
+  <div class="fedi-post-content hidden">
+    <div class="fedi-post-header">
+      <img class="fedi-post-avatar" src="" alt="">
+      <div class="fedi-post-author">
+        <span class="fedi-post-displayname"></span>
+        <span class="fedi-post-handle"></span>
+      </div>
+    </div>
+    <div class="fedi-post-body"></div>
+    <div class="fedi-post-media hidden"></div>
+    <div class="fedi-post-quote hidden">
+      <div class="fedi-post-quote-header">
+        <img class="fedi-post-quote-avatar" src="" alt="">
+        <div class="fedi-post-quote-author">
+          <span class="fedi-post-quote-displayname"></span>
+          <span class="fedi-post-quote-handle"></span>
+        </div>
+      </div>
+      <div class="fedi-post-quote-body"></div>
+      <div class="fedi-post-quote-media hidden"></div>
+    </div>
+    <div class="fedi-post-footer">
+      <a class="fedi-post-timestamp" href="{{ post_url }}" target="_blank" rel="noopener noreferrer"></a>
+      <div class="fedi-post-stats">
+        <span class="fedi-post-stat fedi-post-replies" title="Replies">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <span class="fedi-post-stat-count">0</span>
+        </span>
+        <span class="fedi-post-stat fedi-post-boosts" title="Boosts">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+          <span class="fedi-post-stat-count">0</span>
+        </span>
+        <span class="fedi-post-stat fedi-post-favs" title="Favorites">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <span class="fedi-post-stat-count">0</span>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var postUrl = '{{ post_url }}';
+  // Find this specific embed by data attribute (supports multiple embeds per page)
+  var container = document.currentScript.previousElementSibling;
+
+  function parseUrl(url) {
+    try {
+      var u = new URL(url);
+      var instance = u.origin;
+
+      // Misskey/Sharkey: /notes/{id}
+      var notesMatch = u.pathname.match(/^\/notes\/([a-zA-Z0-9]+)$/);
+      if (notesMatch) {
+        return { platform: 'misskey', instance: instance, id: notesMatch[1] };
+      }
+
+      // Mastodon: /@user/{id} or /@user@domain/{id} or /users/{user}/statuses/{id}
+      var mastoMatch = u.pathname.match(/^\/@[^\/]+\/(\d+)$/);
+      if (mastoMatch) {
+        return { platform: 'mastodon', instance: instance, id: mastoMatch[1] };
+      }
+
+      var statusMatch = u.pathname.match(/^\/users\/[^\/]+\/statuses\/(\d+)$/);
+      if (statusMatch) {
+        return { platform: 'mastodon', instance: instance, id: statusMatch[1] };
+      }
+
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function fetchMastodon(instance, id) {
+    return fetch(instance + '/api/v1/statuses/' + id)
+      .then(function(r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then(function(data) { return normalizeMastodon(data, instance); });
+  }
+
+  function stripQuoteInline(html) {
+    // Remove the "RE: <url>" line that Mastodon adds for quote posts
+    return html.replace(/<p class="quote-inline">[\s\S]*?<\/p>/, '');
+  }
+
+  function normalizeMastodon(data, instance) {
+    var acct = data.account.acct;
+    // If acct doesn't contain @, it's local to this instance
+    if (acct.indexOf('@') === -1) {
+      acct = acct + '@' + new URL(instance).hostname;
+    }
+
+    var post = {
+      author: {
+        displayName: data.account.display_name || data.account.username,
+        handle: '@' + acct,
+        avatarUrl: data.account.avatar,
+        profileUrl: data.account.url,
+        emojis: data.account.emojis || []
+      },
+      content: stripQuoteInline(data.content),
+      createdAt: data.created_at,
+      media: (data.media_attachments || []).map(function(a) {
+        return {
+          url: a.url,
+          previewUrl: a.preview_url || a.url,
+          altText: a.description || '',
+          type: a.type
+        };
+      }),
+      stats: {
+        replies: data.replies_count || 0,
+        boosts: data.reblogs_count || 0,
+        favs: data.favourites_count || 0
+      },
+      url: data.url || postUrl,
+      quotePost: null
+    };
+
+    // Mastodon quote posts: some instances use {quoted_status: ...}, others inline directly
+    var quoteData = data.quote
+      ? (data.quote.quoted_status || data.quote)
+      : null;
+    if (quoteData && quoteData.account) {
+      post.quotePost = normalizeMastodon(quoteData, instance);
+    } else if (data.quote_id) {
+      // Need to fetch the quoted post
+      post._quoteId = data.quote_id;
+      post._quoteInstance = instance;
+    }
+
+    return post;
+  }
+
+  function fetchMisskey(instance, id) {
+    return fetch(instance + '/api/notes/show', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ noteId: id })
+    })
+      .then(function(r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then(function(data) { return normalizeMisskey(data, instance); });
+  }
+
+  function parseMisskeyEmojis(emojis) {
+    if (!emojis) return [];
+    // Misskey emojis can be an object {shortcode: url} or an array [{name, url}]
+    if (Array.isArray(emojis)) {
+      return emojis.map(function(e) {
+        return { shortcode: e.name, url: e.url };
+      });
+    }
+    // Object format: {"shortcode": "url"}
+    return Object.keys(emojis).map(function(key) {
+      return { shortcode: key, url: emojis[key] };
+    });
+  }
+
+  function normalizeMisskey(data, instance) {
+    var host = data.user.host || new URL(instance).hostname;
+    var post = {
+      author: {
+        displayName: data.user.name || data.user.username,
+        handle: '@' + data.user.username + '@' + host,
+        avatarUrl: data.user.avatarUrl,
+        profileUrl: data.user.host
+          ? 'https://' + data.user.host + '/@' + data.user.username
+          : instance + '/@' + data.user.username,
+        emojis: parseMisskeyEmojis(data.user.emojis)
+      },
+      content: misskeyTextToHtml(data.text || ''),
+      createdAt: data.createdAt,
+      media: (data.files || []).map(function(f) {
+        return {
+          url: f.url,
+          previewUrl: f.thumbnailUrl || f.url,
+          altText: f.comment || '',
+          type: f.type && f.type.startsWith('video') ? 'video' : 'image'
+        };
+      }),
+      stats: {
+        replies: data.repliesCount || 0,
+        boosts: data.renoteCount || 0,
+        favs: Object.values(data.reactions || {}).reduce(function(a, b) { return a + b; }, 0)
+      },
+      url: data.uri || (instance + '/notes/' + data.id),
+      quotePost: null
+    };
+
+    // Misskey quote post: renote with text content
+    if (data.renote && data.text) {
+      post.quotePost = normalizeMisskey(data.renote, instance);
+    }
+
+    return post;
+  }
+
+  function misskeyTextToHtml(text) {
+    // Basic MFM to HTML: escape HTML, convert newlines, linkify URLs and mentions
+    var escaped = text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+
+    // Linkify URLs
+    escaped = escaped.replace(
+      /(https?:\/\/[^\s<]+)/g,
+      '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>'
+    );
+
+    // Linkify mentions
+    escaped = escaped.replace(
+      /@(\w+)@([\w.-]+)/g,
+      '<a href="https://$2/@$1" target="_blank" rel="noopener noreferrer">@$1@$2</a>'
+    );
+
+    // Newlines to <br>
+    escaped = escaped.replace(/\n/g, '<br>');
+
+    return escaped;
+  }
+
+  function renderEmojis(text, emojis) {
+    if (!emojis || emojis.length === 0) return text;
+    emojis.forEach(function(emoji) {
+      var pattern = new RegExp(':' + emoji.shortcode + ':', 'g');
+      text = text.replace(pattern,
+        '<img class="fedi-post-emoji" src="' + emoji.url + '" alt=":' + emoji.shortcode + ':" title=":' + emoji.shortcode + ':">'
+      );
+    });
+    return text;
+  }
+
+  function formatTimestamp(isoString) {
+    var date = new Date(isoString);
+    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    if (hours === 0) hours = 12;
+    var minuteStr = minutes < 10 ? '0' + minutes : minutes;
+    return months[date.getMonth()] + ' ' + date.getDate() + ', ' + date.getFullYear() +
+           ' \u00b7 ' + hours + ':' + minuteStr + ' ' + ampm;
+  }
+
+  function renderMedia(mediaContainer, mediaItems) {
+    if (!mediaItems || mediaItems.length === 0) return;
+
+    mediaContainer.classList.remove('hidden');
+    var gridClass = 'fedi-post-media-grid-' + Math.min(mediaItems.length, 4);
+    mediaContainer.classList.add(gridClass);
+
+    mediaItems.slice(0, 4).forEach(function(item) {
+      if (item.type === 'video' || item.type === 'gifv') {
+        var video = document.createElement('video');
+        video.src = item.url;
+        video.controls = true;
+        video.muted = item.type === 'gifv';
+        video.autoplay = item.type === 'gifv';
+        video.loop = item.type === 'gifv';
+        video.playsInline = true;
+        if (item.altText) video.title = item.altText;
+        mediaContainer.appendChild(video);
+      } else {
+        var link = document.createElement('a');
+        link.href = item.url;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        var img = document.createElement('img');
+        img.src = item.previewUrl;
+        img.alt = item.altText || 'Attached image';
+        img.loading = 'lazy';
+        link.appendChild(img);
+        mediaContainer.appendChild(link);
+      }
+    });
+  }
+
+  function renderPost(post) {
+    var el = {
+      content: container.querySelector('.fedi-post-content'),
+      loading: container.querySelector('.fedi-post-loading'),
+      avatar: container.querySelector('.fedi-post-content > .fedi-post-header .fedi-post-avatar'),
+      displayName: container.querySelector('.fedi-post-content > .fedi-post-header .fedi-post-displayname'),
+      handle: container.querySelector('.fedi-post-content > .fedi-post-header .fedi-post-handle'),
+      body: container.querySelector('.fedi-post-content > .fedi-post-body'),
+      media: container.querySelector('.fedi-post-content > .fedi-post-media'),
+      quote: container.querySelector('.fedi-post-quote'),
+      timestamp: container.querySelector('.fedi-post-timestamp'),
+      replies: container.querySelector('.fedi-post-replies .fedi-post-stat-count'),
+      boosts: container.querySelector('.fedi-post-boosts .fedi-post-stat-count'),
+      favs: container.querySelector('.fedi-post-favs .fedi-post-stat-count')
+    };
+
+    // Author
+    el.avatar.src = post.author.avatarUrl;
+    el.avatar.alt = post.author.displayName;
+    el.displayName.innerHTML = renderEmojis(
+      escapeHtml(post.author.displayName), post.author.emojis
+    );
+    el.handle.textContent = post.author.handle;
+
+    // Content
+    var content = post.content;
+    // Render custom emoji in content
+    if (post.author.emojis) {
+      content = renderEmojis(content, post.author.emojis);
+    }
+    el.body.innerHTML = content;
+
+    // Media
+    renderMedia(el.media, post.media);
+
+    // Quote post
+    if (post.quotePost) {
+      renderQuote(el.quote, post.quotePost);
+    }
+
+    // Footer
+    el.timestamp.textContent = formatTimestamp(post.createdAt);
+    el.timestamp.href = post.url;
+    el.replies.textContent = post.stats.replies;
+    el.boosts.textContent = post.stats.boosts;
+    el.favs.textContent = post.stats.favs;
+
+    // Show content, hide loading
+    el.loading.classList.add('hidden');
+    el.content.classList.remove('hidden');
+  }
+
+  function renderQuote(quoteEl, quotePost) {
+    quoteEl.classList.remove('hidden');
+
+    var avatar = quoteEl.querySelector('.fedi-post-quote-avatar');
+    var displayName = quoteEl.querySelector('.fedi-post-quote-displayname');
+    var handle = quoteEl.querySelector('.fedi-post-quote-handle');
+    var body = quoteEl.querySelector('.fedi-post-quote-body');
+    var media = quoteEl.querySelector('.fedi-post-quote-media');
+
+    avatar.src = quotePost.author.avatarUrl;
+    avatar.alt = quotePost.author.displayName;
+    displayName.innerHTML = renderEmojis(
+      escapeHtml(quotePost.author.displayName), quotePost.author.emojis
+    );
+    handle.textContent = quotePost.author.handle;
+
+    var content = quotePost.content;
+    if (quotePost.author.emojis) {
+      content = renderEmojis(content, quotePost.author.emojis);
+    }
+    body.innerHTML = content;
+
+    renderMedia(media, quotePost.media);
+  }
+
+  function escapeHtml(text) {
+    var div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  function showError(message) {
+    var errorEl = container.querySelector('.fedi-post-error');
+    var errorText = container.querySelector('.fedi-post-error-text');
+    var loading = container.querySelector('.fedi-post-loading');
+
+    errorText.textContent = message;
+    loading.classList.add('hidden');
+    errorEl.classList.remove('hidden');
+  }
+
+  // Main
+  var parsed = parseUrl(postUrl);
+  if (!parsed) {
+    showError('Could not parse post URL.');
+    return;
+  }
+
+  var fetchFn = parsed.platform === 'misskey' ? fetchMisskey : fetchMastodon;
+
+  fetchFn(parsed.instance, parsed.id)
+    .then(function(post) {
+      // If there's a deferred quote to fetch
+      if (post._quoteId) {
+        return fetchMastodon(post._quoteInstance, post._quoteId)
+          .then(function(quotePost) {
+            post.quotePost = quotePost;
+            return post;
+          })
+          .catch(function() {
+            // Quote fetch failed, render without it
+            return post;
+          });
+      }
+      return post;
+    })
+    .then(function(post) {
+      renderPost(post);
+    })
+    .catch(function(err) {
+      console.error('Fedi post embed error:', err);
+      showError('Failed to load post.');
+    });
+})();
+</script>

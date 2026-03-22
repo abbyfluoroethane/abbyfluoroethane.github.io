@@ -1051,6 +1051,268 @@ textarea:focus-visible {
   margin: 0;
 }
 
+/* --- Fedi post embed --- */
+
+.fedi-post {
+  border: 2px solid var(--primary);
+  padding: 0.75rem 1rem;
+  margin: 1rem 0;
+  max-width: 550px;
+}
+
+.fedi-post .hidden {
+  display: none !important;
+}
+
+.fedi-post-loading {
+  color: var(--muted);
+  font-style: italic;
+  padding: 0.5rem 0;
+}
+
+.fedi-post-error {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.5rem 0;
+}
+
+.fedi-post-error-text {
+  color: var(--muted);
+}
+
+.fedi-post-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.6rem;
+}
+
+.fedi-post img {
+  margin: 0rem;
+}
+
+.fedi-post-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1px solid var(--tertiary);
+}
+
+.fedi-post-author {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.fedi-post-displayname {
+  font-family: Chicago, serif;
+  font-weight: bold;
+  font-size: 0.9rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fedi-post-handle {
+  color: var(--muted);
+  font-size: 0.8rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fedi-post-emoji {
+  height: 1.2em;
+  vertical-align: middle;
+  margin: 0 0.05em;
+}
+
+.fedi-post-body {
+  margin-bottom: 0.35rem;
+  line-height: 1.5;
+  overflow-wrap: break-word;
+}
+
+.fedi-post-body a {
+  color: var(--accent);
+}
+
+.fedi-post-body p {
+  margin: 0 0 0.4em 0;
+}
+
+.fedi-post-body p:last-child {
+  margin-bottom: 0;
+}
+
+/* Media grid */
+.fedi-post-media {
+  margin-bottom: 0.5rem;
+  display: grid;
+  gap: 4px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.fedi-post-media-grid-1 {
+  grid-template-columns: 1fr;
+}
+
+.fedi-post-media-grid-2 {
+  grid-template-columns: 1fr 1fr;
+}
+
+.fedi-post-media-grid-3,
+.fedi-post-media-grid-4 {
+  grid-template-columns: 1fr 1fr;
+}
+
+.fedi-post-media a,
+.fedi-post-media > video {
+  display: block;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--tertiary);
+}
+
+.fedi-post-media img,
+.fedi-post-media video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* Quote post */
+.fedi-post-quote {
+  border: 1px solid var(--tertiary);
+  padding: 0.6rem 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.fedi-post-quote .fedi-post-quote-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.15rem;
+}
+
+.fedi-post-quote-avatar {
+  width: 20px;
+  height: 20px;
+  border-radius: 3px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.fedi-post-quote-author {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.fedi-post-quote-displayname {
+  font-family: Chicago, serif;
+  font-weight: bold;
+  font-size: 0.8rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fedi-post-quote-handle {
+  color: var(--muted);
+  font-size: 0.75rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fedi-post-quote-body {
+  font-size: 0.9rem;
+  line-height: 1.4;
+  overflow-wrap: break-word;
+}
+
+.fedi-post-quote-body a {
+  color: var(--accent);
+}
+
+.fedi-post-quote-body p {
+  margin: 0 0 0.3em 0;
+}
+
+.fedi-post-quote-body p:last-child {
+  margin-bottom: 0;
+}
+
+.fedi-post-quote-media {
+  margin-top: 0.4rem;
+  display: grid;
+  gap: 4px;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.fedi-post-quote-media a,
+.fedi-post-quote-media > video {
+  display: block;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--tertiary);
+}
+
+.fedi-post-quote-media img,
+.fedi-post-quote-media video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* Footer */
+.fedi-post-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-top: 0.4rem;
+  border-top: 1px solid var(--tertiary);
+}
+
+.fedi-post-timestamp {
+  color: var(--muted);
+  font-size: 0.8rem;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.fedi-post-timestamp:hover {
+  color: var(--accent);
+}
+
+.fedi-post-stats {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.fedi-post-stat {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.fedi-post-stat svg {
+  flex-shrink: 0;
+}
+
 /* ==========================================================================
    Mobile responsive
    ========================================================================== */
@@ -1133,6 +1395,12 @@ textarea:focus-visible {
 
   .about-image img {
     max-width: 96px !important;
+  }
+
+  .fedi-post-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
   }
 }
 
