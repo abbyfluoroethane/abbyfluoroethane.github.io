@@ -216,7 +216,7 @@ html[data-theme="mocha-pink"] body {
 .window {
   display: flex;
   margin: 0;
-  font-family: 'JetBrains Mono', Menlo, Chicago, Geneva, monospace;
+  font-family: 'Space Grotesk', Geneva, Helvetica, sans-serif;
 }
 
 /* --- Main window — desktop mode --- */
@@ -686,7 +686,10 @@ button.btn {
 /* --- Song.link widget --- */
 
 .songlink-embed {
+  display: block;
   width: 100%;
+  max-width: 550px;
+  margin: 1rem 0;
   overflow: hidden;
   border-radius: 10px;
 }
@@ -985,7 +988,7 @@ html[data-font="atkinson"] select {
 
 .guestbook-field input,
 .guestbook-field textarea {
-  font-family: 'JetBrains Mono', Menlo, Chicago, Geneva, monospace;
+  font-family: 'Space Grotesk', Geneva, Helvetica, sans-serif;
   font-size: 0.9rem;
   padding: 0.4rem 0.5rem;
   border: 2px solid var(--primary);
