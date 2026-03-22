@@ -101,7 +101,7 @@ I'm being drawn somewhere smaller, faster, and full of people who actually give 
   <img src="{{site.baseurl}}/assets/images/sfo-landing.png" alt="Plane landing">
 </div>
 
-I don't know if it gets better, nor can I promise myself a happy ending. The industry might collapse under its own hype, my next job might be worse, the bubble might pop before I get settled, but the alternative is staying in a role where you've already felt the emptiness. Existing in an organization whose mission I've already seen through, building toward a future I'm not sure I believe in.
+I don't know if it gets better, nor can I promise myself a happy ending. The industry might collapse under its own hype, my next job might be worse, the bubble might pop before I get settled, but the alternative is staying in a role where I've already felt the emptiness. Existing in an organization whose mission I've already seen through, building toward a future I'm not sure I believe in.
 
 I'm not a true believer. Not yet, at least. Maybe not in the same way I was at age 11 watching two boosters land for the first time, but I haven't ruled it out. My belief isn't dead, it just needs different soil. I'm taking a leap to find out if that soil exists.
 
