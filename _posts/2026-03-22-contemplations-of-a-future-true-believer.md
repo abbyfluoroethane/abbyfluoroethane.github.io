@@ -53,7 +53,7 @@ I can pretty much guarantee you I'll no longer have a job. Nor will my coworkers
 
 I use AI[^6] tools constantly. I wake up to a summary of my unread emails in Obsidian, I use Claude Code to build software, and I regularly use Claude for copyediting and sussing out various ideas I get before sinking too much time into them. I am far and away *not* anti-AI, I am *not* a luddite, and I personally consider myself to be somewhat on the accelerationist side of the argument. 
 
-If the argument for space datacenters is "it's cheaper than building on earth," the correct response isn't *"Hell yeah let's go to space."* The correct response is *"Why the fuck is it cheaper than building on earth?"* That's not a technology problem, it's a policy failure.
+If the argument for space datacenters is "it's cheaper than building on Earth," the correct response isn't *"Hell yeah let's go to space."* The correct response is *"Why the fuck is it cheaper than building on Earth?"* That's not a technology problem, it's a policy failure.
 
 A 100MW AI datacenter costs $3.5-5.5 billion to stand up and nearly a billion a year to run. That's real money but it's not insurmountable money—hyperscalers spend this routinely. The issue isn't the sticker price, it's what's *inside* that price.
 
@@ -75,13 +75,13 @@ California HSR makes me question if we *do* have the political will. Voters appr
 
 **This is explicitly not an anti-regulation argument.** Environmental review exists for good reasons, but when the process turns a $33 billion train into a $126 billion train that might run out of money before laying track, the implementation is broken. The goal of regulation is protection, it currently results in paralysis.
 
-If we fixed energy policy and permitting—if we could build on earth the way the TVA proved we can—space-based datacenters wouldn't pencil out. The entire forcing function that could revolutionize launch and compute in one go only exists because terrestrial infrastructure is broken. The dream of a space-industrial complex is being underwritten by dysfunction. 
+If we fixed energy policy and permitting—if we could build on Earth the way the TVA proved we can—space-based datacenters wouldn't pencil out. The entire forcing function that could revolutionize launch and compute in one go only exists because terrestrial infrastructure is broken. The dream of a space-industrial complex is being underwritten by dysfunction. 
 
 As it stands my job security depends on the continued brokenness of Earth-side infrastructure. The better we get at building things on the ground, the less reason there is to build them in space. Under no circumstances should it be cheaper to launch infrastructure into orbit than to build it on the ground. And yet here we are.
 
 ### V. Burning the House Down Instead of Remodeling
 
-Ground-based datacenter hardware has a robust afterlife. Hyperscalars can resell GPUs and recover over half of the original purchase price. Microsoft achieved a 90.9% reuse and recycling rate of servers and components in fiscal year 2024. Google has resold over 44 million hardware components from its data centers since 2015. Older compute gets cascaded down—training GPUs become inference GPUs, then get donated to universities for research, then get sold to hobbyists or harvested for components. Refurbishing equipment uses a fraction of the energy than producing a new device. 
+Ground-based datacenter hardware has a robust afterlife. Hyperscalers can resell GPUs and recover over half of the original purchase price. Microsoft achieved a 90.9% reuse and recycling rate of servers and components in fiscal year 2024. Google has resold over 44 million hardware components from its data centers since 2015. Older compute gets cascaded down—training GPUs become inference GPUs, then get donated to universities for research, then get sold to hobbyists or harvested for components. Refurbishing equipment uses a fraction of the energy than producing a new device. 
 
 When a terrestrial datacenter decommissions hardware, that silicon, gold, aluminum, steel, and lithium goes somewhere useful. When an orbital datacenter decommissions hardware, it burns up on reentry. Every material that could have been reclaimed instead becomes atmospheric pollution. *There is no secondhand market in orbit.* Orbital datacenters effectively burn the house down instead of remodeling.
 
