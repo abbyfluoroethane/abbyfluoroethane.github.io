@@ -32,6 +32,6 @@ welcome to my little corner of the internet. i build things that go to space, br
 
 ## contact me!
 
-[fedi | dormsoc](https://dorm.social/@abbyfluoroethane)<br>
+[fedi | tech.lgbt](https://tech.lgbt/@abbyfluoroethane)<br>
 [inst*gram](https://instagram.com/abbyfluoroethane)<br>
 email: abby@bigaouette.com
