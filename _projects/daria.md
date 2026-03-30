@@ -1,10 +1,10 @@
 ---
 title: Daria for Sharkey & Turtkey
-status: active
+status: archive
 featured: true
 article: false
-description: fediverse client designed to give Sharkey and Turtkey users a first-class experience.
-external_url: "https://github.com/ourdorm/daria"
-url_text: "View on GitHub"
+description: deprecated fediverse client designed to give Sharkey and Turtkey users a first-class experience.
+external_url:
+url_text:
 date: 2026-01-22
 ---
