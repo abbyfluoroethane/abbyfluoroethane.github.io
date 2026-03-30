@@ -23,7 +23,7 @@ Let's call it mismanagement of expectations. I came into Blue Origin with the ri
 
 Wow, shut the fuck up idiot. No you aren't, you actually just entered into the single most bureaucratic mess in the aerospace industry. You're gonna build the same thing three times due to design changes, watch your friends get laid off and hired back for no reason, wait three weeks for parts for something needed a month ago, and watch your competitor run circles around you in your own backyard **and you will like it.**
 
-Perhaps the thing that hit hardest was how little the people building alongside me seemed to just not care. To them this isn't necessarily a dream come true, it's just a paycheck. You would be shocked how many people I've had to inform that Project Kuiper[^3] is, in fact, an Amazon thing, not Blue Origin. They're not wrong for this—it *is* just a job—but as an enthusiast that knows the ins and outs of damn near every semi-major player in the industry it was definitely a culture shock that stung a little. I found myself wondering if someone like myself—whose enthusiasm, not experience got them the job—had a place in this role.
+Perhaps the thing that hit hardest was how the people building alongside me seemed to just not care. To them this isn't necessarily a dream come true, it's just a paycheck. You would be shocked how many people I've had to inform that Project Kuiper[^3] is, in fact, an Amazon thing, not Blue Origin. They're not wrong for this—it *is* just a job—but as an enthusiast that knows the ins and outs of damn near every semi-major player in the industry it was definitely a culture shock that stung a little. I found myself wondering if someone like myself—whose enthusiasm, not experience got them the job—had a place in this role.
 
 <div class="img-center-sm">
   <img src="https://www.blueorigin.com/_next/image?url=https%3A%2F%2Fd1o72l87sylvqg.cloudfront.net%2Fredstone%2Fgallery-blue-origin-new-glenn-ng-1-liftoff-horizontal.jpg&w=3840&q=75" alt="New Glenn NG-1 liftoff">
@@ -101,7 +101,7 @@ I'm being drawn somewhere smaller, faster, and full of people who actually give 
   <img src="{{site.baseurl}}/assets/images/sfo-landing.png" alt="Plane landing">
 </div>
 
-I don't know if it gets better, nor can I promise myself a happy ending. The industry might collapse under its own hype, my next job might be worse, the bubble might pop before I get settled, but the alternative is staying in a role where you've already felt the emptiness. Existing in an organization whose mission I've already seen through, building toward a future I'm not sure I believe in.
+I don't know if it gets better, nor can I promise myself a happy ending. The industry might collapse under its own hype, my next job might be worse, the bubble might pop before I get settled, but the alternative is staying in a role where I've already felt the emptiness. Existing in an organization whose mission I've already seen through, building toward a future I'm not sure I believe in.
 
 I'm not a true believer. Not yet, at least. Maybe not in the same way I was at age 11 watching two boosters land for the first time, but I haven't ruled it out. My belief isn't dead, it just needs different soil. I'm taking a leap to find out if that soil exists.
 
