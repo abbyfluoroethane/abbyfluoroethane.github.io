@@ -1,0 +1,8 @@
+{% assign post = include.post %}
+{% if post %}
+<div class="project standard-dialog">
+  <h2 class="post-card-title"><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h2>
+  <p class="post-card-date">{{ post.date | date: "%B %d, %Y" }}</p>
+  <p>{% if post.summary %}{{ post.summary }}{% else %}{{ post.excerpt | strip_html | truncatewords: 30 }}{% endif %}</p>
+</div>
+{% endif %}

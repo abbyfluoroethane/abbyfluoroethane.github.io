@@ -24,6 +24,7 @@
   {% include menubar.html %}
 
   <div class="desktop" id="desktop">
+    {% include desktop-icons.html %}
     <div class="window" id="main-window">
       <div class="title-bar" id="main-title-bar">
         <button class="close" id="main-close" aria-label="Close"></button>
@@ -49,6 +50,7 @@
           </div>
         </div>
       </div>
+      <div class="resize-grip" id="main-resize-grip" aria-hidden="true"></div>
     </div>
   </div>
 

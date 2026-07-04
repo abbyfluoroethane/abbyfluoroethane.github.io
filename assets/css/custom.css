@@ -153,6 +153,14 @@ html[data-theme="mocha-pink"] .window-pane img[src$=".svg"] {
   filter: invert(1);
 }
 
+/* The classic "Sound" desktop icon is a solid-black speaker, so it reads as a
+   dark blob on dark themes while the other (white-filled) icons stay bright.
+   Invert it on dark themes so it becomes a matching white speaker. */
+html[data-theme="monochrome-dark"] .desktop-icon-glyph img[src$="music.png"],
+html[data-theme="mocha-pink"] .desktop-icon-glyph img[src$="music.png"] {
+  filter: invert(1);
+}
+
 /* --- Desktop layout: body is a flex column filling the viewport --- */
 
 body {
@@ -200,6 +208,7 @@ ul.menu-bar {
   justify-content: center;
   padding: 1rem 2rem;
   overflow: hidden;
+  position: relative;
 }
 
 /* --- Starfield background for dark themes --- */
@@ -229,6 +238,134 @@ html[data-theme="mocha-pink"] body {
   overflow: hidden;
   box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.5);
   position: relative;
+  z-index: 10;
+}
+
+/* --- Draggable / resizable window --- */
+
+/* Once the user drags or resizes, the window is taken out of the flex-centering
+   flow and positioned absolutely within the .desktop. */
+#main-window.positioned {
+  position: absolute;
+  margin: 0;
+  max-width: none;
+  max-height: 100%; /* keep capped to desktop so the pane still scrolls internally */
+}
+
+#main-window.dragging,
+#main-window.resizing {
+  user-select: none;
+}
+
+/* Title bar acts as the drag handle on pointer devices */
+#main-title-bar {
+  cursor: move;
+}
+#main-title-bar button {
+  cursor: pointer;
+}
+
+/* Zoomed (maximized) window fills the desktop regardless of saved position */
+#main-window.positioned.zoomed {
+  left: 0 !important;
+  top: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Bottom-right resize grip (classic Mac corner box) */
+.resize-grip {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 15px;
+  height: 15px;
+  cursor: nwse-resize;
+  z-index: 6;
+  background-color: var(--secondary);
+  background-image: repeating-linear-gradient(315deg,
+    var(--primary) 0, var(--primary) 1px,
+    transparent 1px, transparent 3px);
+  border-top: 1px solid var(--primary);
+  border-left: 1px solid var(--primary);
+}
+
+#main-window.zoomed .resize-grip {
+  display: none;
+}
+
+/* --- Desktop shortcut icons --- */
+
+.desktop-icons {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  z-index: 1;
+}
+
+.desktop-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  width: 84px;
+  padding: 0.35rem 0.25rem;
+  text-decoration: none;
+  color: var(--primary);
+  cursor: pointer;
+  text-align: center;
+  border-radius: 4px;
+}
+
+.desktop-icon-glyph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 4px;
+}
+
+/* Authentic classic Mac OS icon bitmaps (thomasareed/Classic-Mac-icons) */
+.desktop-icon-glyph img {
+  width: 40px;
+  height: 40px;
+  margin: 0;
+  object-fit: contain;
+}
+
+.desktop-icon-label {
+  font-family: Chicago, serif;
+  font-size: 0.8rem;
+  line-height: 1.2;
+  padding: 0.05rem 0.35rem;
+  border-radius: 1px;
+}
+
+/* Finder-style hover: label gets a light box, like pointing at an icon */
+.desktop-icon:hover .desktop-icon-label {
+  background: var(--secondary);
+}
+
+/* Classic Mac selection: inverted label + darkened icon */
+.desktop-icon.selected .desktop-icon-label {
+  background: var(--primary);
+  color: var(--secondary);
+}
+
+.desktop-icon.selected .desktop-icon-glyph {
+  background: color-mix(in srgb, var(--primary) 16%, transparent);
+}
+
+.desktop-icon:focus-visible {
+  outline: none;
+}
+.desktop-icon:focus-visible .desktop-icon-label {
+  outline: 1px dotted var(--primary);
+  outline-offset: 1px;
 }
 
 html[data-theme="monochrome-dark"] #main-window,
@@ -683,6 +820,101 @@ button.btn {
   font-size: 0.9rem;
 }
 
+/* --- Last.fm recently-played list --- */
+
+.lastfm-recent {
+  margin-top: 1rem;
+}
+
+/* Scoped under .window-pane to override the generic `.window-pane ul/li`
+   spacing (margin-left: 2rem / margin: 0.5rem 0) that otherwise indents the
+   list and adds airy row gaps. */
+.window-pane .lastfm-recent-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.lastfm-recent-loading {
+  color: var(--muted);
+  font-style: italic;
+  padding: 0.5rem 0;
+}
+
+.window-pane .lastfm-recent-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 4px 0;
+  margin: 0;
+  border-bottom: 1px solid var(--tertiary);
+}
+
+/* Make the first/last rows flush to the card's padding box so the top and
+   bottom insets match the left inset (standard-dialog's uniform 10px). */
+.window-pane .lastfm-recent-item:first-child {
+  padding-top: 0;
+}
+
+.window-pane .lastfm-recent-item:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+/* Scoped under .window-pane to beat `.window-pane img { margin: 1rem 0 }`,
+   which was adding 16px above and below every thumbnail. */
+.window-pane .lastfm-recent-art {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border: 2px solid var(--primary);
+  background: var(--secondary);
+  object-fit: cover;
+  margin: 0;
+  display: block;
+}
+
+.lastfm-recent-meta {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.lastfm-recent-track {
+  font-family: Chicago, serif;
+  font-size: 1rem;
+  color: var(--primary);
+  text-decoration: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lastfm-recent-track:hover,
+.lastfm-recent-track:focus-visible {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.lastfm-recent-artist {
+  color: var(--muted);
+  font-size: 0.9rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lastfm-recent-time {
+  flex-shrink: 0;
+  color: var(--muted);
+  font-family: Chicago, serif;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  text-align: right;
+}
+
 /* --- Song.link widget --- */
 
 .songlink-embed {
@@ -698,6 +930,27 @@ button.btn {
 
 .project.standard-dialog {
   margin-bottom: 1rem;
+}
+
+.post-card-title {
+  margin-bottom: 0.25rem;
+}
+
+.post-card-title a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.post-card-title a:hover,
+.post-card-title a:focus-visible {
+  text-decoration: underline;
+}
+
+.post-card-date {
+  margin-top: 0;
+  color: var(--muted);
+  font-family: Chicago, serif;
+  font-size: 0.85rem;
 }
 
 .project-actions {
@@ -1347,6 +1600,16 @@ textarea:focus-visible {
     visibility: hidden;
   }
 
+  /* No free drag/resize on touch layouts */
+  .desktop-icons,
+  .resize-grip {
+    display: none;
+  }
+
+  #main-title-bar {
+    cursor: default;
+  }
+
   .window-pane {
     padding: 1rem;
   }
@@ -1382,6 +1645,10 @@ textarea:focus-visible {
     position: absolute;
     top: 0;
     right: 0;
+  }
+
+  .lastfm-recent-time {
+    display: none;
   }
 
   .lastfm-actions {

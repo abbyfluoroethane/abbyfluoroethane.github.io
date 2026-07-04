@@ -1,0 +1,176 @@
+{% assign username = include.username | default: site.lastfm.username %}
+{% assign api_key = include.api_key | default: site.lastfm.api_key %}
+{% assign count = include.count | default: 10 %}
+
+<div class="lastfm-recent standard-dialog">
+  <ul class="lastfm-recent-list" id="lastfm-recent-list" aria-live="polite">
+    <li class="lastfm-recent-loading" id="lastfm-recent-loading">Loading recent tracks…</li>
+  </ul>
+  <div class="lastfm-message hidden" id="lastfm-recent-error">
+    <span id="lastfm-recent-error-text"></span>
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  const LASTFM_API_URL = 'https://ws.audioscrobbler.com/2.0/';
+  const USERNAME = '{{ username }}';
+  const API_KEY = '{{ api_key }}';
+  const COUNT = {{ count }};
+  const UPDATE_INTERVAL = 120000; // 2 minutes
+  const CACHE_KEY = 'lastfm_recent_list';
+  const CACHE_TIMESTAMP_KEY = 'lastfm_recent_list_time';
+
+  let listEl, loadingEl, errorEl, errorTextEl;
+
+  document.addEventListener('DOMContentLoaded', function() {
+    listEl = document.getElementById('lastfm-recent-list');
+    loadingEl = document.getElementById('lastfm-recent-loading');
+    errorEl = document.getElementById('lastfm-recent-error');
+    errorTextEl = document.getElementById('lastfm-recent-error-text');
+    if (!listEl) return;
+
+    const cached = getCached();
+    if (cached) render(cached);
+
+    fetchAndUpdate();
+    setInterval(fetchAndUpdate, UPDATE_INTERVAL);
+  });
+
+  function fetchAndUpdate() {
+    // Fetch one extra so we can drop a "now playing" track and still show COUNT played songs
+    const url = `${LASTFM_API_URL}?method=user.getrecenttracks&user=${USERNAME}&api_key=${API_KEY}&format=json&limit=${COUNT + 1}&extended=0`;
+
+    fetch(url)
+      .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(data => {
+        const raw = data && data.recenttracks && data.recenttracks.track;
+        if (!raw) { throw new Error('No recent tracks'); }
+        const tracks = (Array.isArray(raw) ? raw : [raw])
+          .map(parseTrack)
+          .filter(t => !t.nowPlaying)
+          .slice(0, COUNT);
+        setCached(tracks);
+        render(tracks);
+        hideError();
+      })
+      .catch(err => {
+        console.error('Last.fm recent fetch error:', err);
+        const cached = getCached();
+        if (cached) { render(cached); }
+        else { showError('Unable to load recent tracks'); }
+      });
+  }
+
+  function parseTrack(track) {
+    return {
+      name: track.name || 'Unknown Track',
+      artist: (track.artist && track.artist['#text']) || 'Unknown Artist',
+      album: (track.album && track.album['#text']) || '',
+      url: track.url || '#',
+      image: albumArt(track),
+      uts: track.date && track.date.uts ? parseInt(track.date.uts, 10) : null,
+      nowPlaying: !!(track['@attr'] && track['@attr'].nowplaying === 'true')
+    };
+  }
+
+  function albumArt(track) {
+    const images = track.image || [];
+    const sizes = ['large', 'medium', 'extralarge'];
+    for (const size of sizes) {
+      const img = images.find(i => i.size === size);
+      if (img && img['#text']) return img['#text'];
+    }
+    const bg = getComputedStyle(document.documentElement).getPropertyValue('--secondary').trim() || '#FFFFFF';
+    const fg = getComputedStyle(document.documentElement).getPropertyValue('--muted').trim() || '#A5A5A5';
+    return 'data:image/svg+xml,' + encodeURIComponent(
+      '<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64">' +
+      '<rect width="64" height="64" fill="' + bg + '"/>' +
+      '<text x="32" y="32" text-anchor="middle" dy=".3em" fill="' + fg + '" font-size="9">♪</text></svg>'
+    );
+  }
+
+  function relativeTime(uts) {
+    if (!uts) return '';
+    const diff = Math.floor(Date.now() / 1000) - uts;
+    if (diff < 60) return 'just now';
+    if (diff < 3600) { const m = Math.floor(diff / 60); return m + ' min' + (m === 1 ? '' : 's') + ' ago'; }
+    if (diff < 86400) { const h = Math.floor(diff / 3600); return h + ' hour' + (h === 1 ? '' : 's') + ' ago'; }
+    const d = Math.floor(diff / 86400);
+    if (d < 7) return d + ' day' + (d === 1 ? '' : 's') + ' ago';
+    const date = new Date(uts * 1000);
+    return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+  }
+
+  function render(tracks) {
+    if (loadingEl) loadingEl.remove();
+    listEl.innerHTML = '';
+    tracks.forEach(t => {
+      const li = document.createElement('li');
+      li.className = 'lastfm-recent-item';
+
+      const img = document.createElement('img');
+      img.className = 'lastfm-recent-art';
+      img.src = t.image;
+      img.alt = t.album || t.name;
+      img.loading = 'lazy';
+
+      const meta = document.createElement('div');
+      meta.className = 'lastfm-recent-meta';
+
+      const name = document.createElement('a');
+      name.className = 'lastfm-recent-track';
+      name.href = t.url;
+      name.target = '_blank';
+      name.rel = 'noopener noreferrer';
+      name.textContent = t.name;
+
+      const artist = document.createElement('span');
+      artist.className = 'lastfm-recent-artist';
+      artist.textContent = t.artist;
+
+      meta.appendChild(name);
+      meta.appendChild(artist);
+
+      const time = document.createElement('span');
+      time.className = 'lastfm-recent-time';
+      time.textContent = relativeTime(t.uts);
+
+      li.appendChild(img);
+      li.appendChild(meta);
+      li.appendChild(time);
+      listEl.appendChild(li);
+    });
+  }
+
+  function getCached() {
+    try {
+      const c = localStorage.getItem(CACHE_KEY);
+      const ts = localStorage.getItem(CACHE_TIMESTAMP_KEY);
+      if (c && ts && (Date.now() - parseInt(ts, 10)) < UPDATE_INTERVAL) return JSON.parse(c);
+    } catch (e) { /* ignore */ }
+    return null;
+  }
+
+  function setCached(data) {
+    try {
+      localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+      localStorage.setItem(CACHE_TIMESTAMP_KEY, Date.now().toString());
+    } catch (e) { /* ignore */ }
+  }
+
+  function showError(msg) {
+    if (loadingEl) loadingEl.remove();
+    if (errorEl && errorTextEl) {
+      errorTextEl.textContent = msg;
+      errorEl.classList.remove('hidden');
+    }
+  }
+
+  function hideError() {
+    if (errorEl) errorEl.classList.add('hidden');
+  }
+})();
+</script>
