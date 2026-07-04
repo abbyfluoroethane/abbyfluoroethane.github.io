@@ -21,7 +21,7 @@ this is a fringe opinion. i frequently get into arguments about it. but apparent
 
 ### free, as in use
 
-a while back i published the [god i wish that were me public license](https://github.com/abbyfluoroethane/GIWTWM-PL). the joke explains itself if you know, and if you don't, i'm not explaining it. but underneath the bit is my actual position: everything i put on the internet is there to be used. copied, forked, sampled, trained on, whatever. i put it there. that was the point.
+a while back i published the [god i wish that were me public license](https://github.com/abbyfluoroethane/GIWTWMPL). the joke explains itself if you know, and if you don't, i'm not explaining it. but underneath the bit is my actual position: everything i put on the internet is there to be used. copied, forked, sampled, trained on, whatever. i put it there. that was the point.
 
 which brings me to the argument that actually makes people mad: **i don't care that AI models train on freely available data, and i don't think you should either.** or more precisely — i think you have to pick a lane. either you believe in open access, in which case openness doesn't come with an asterisk that says "except for uses i find distasteful," or you believe in access control, in which case go all in: DRM, licenses, paywalls, lawyers, the whole apparatus. both are coherent positions. what's incoherent is "information wants to be free (until a computer reads it)."
 
