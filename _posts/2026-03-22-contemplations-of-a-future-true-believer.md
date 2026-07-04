@@ -2,7 +2,7 @@
 layout: post
 title: Contemplations of a future true believer
 date: 2026-03-22
-summary: The launch industry is restructuring itself around a bet I can't evaluate from where I'm standing. I can only build the hardware I'm told to build, hope the demand is real, and figure out what comes next.
+summary: Orbital datacenters are scary.
 ---
 
 ## *But there are no winners in the game*[^1]
