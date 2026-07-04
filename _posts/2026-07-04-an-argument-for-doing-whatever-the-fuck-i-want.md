@@ -2,8 +2,6 @@
 layout: post
 title: an argument for doing whatever the fuck i want
 date: 2026-07-04
-redirect_from:
-  - /blog/an-arguement-for-doing-whatever-the-fuck-i-want/
 summary: "my case for copyright abolition: why copyleft doesn't go far enough, why the AI training discourse forces you to pick a lane, why enforcement is the real aggression, and why the best parts of the internet were built where the copyright never worked anyway."
 ---
 
