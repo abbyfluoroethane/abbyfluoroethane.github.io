@@ -5,7 +5,6 @@ app_name: Extras
 
 <div class="guestbook-clarus">
   <img src="{{ '/assets/images/clarus.png' | relative_url }}" alt="Clarus the Dogcow">
-  <p>Moof!</p>
 </div>
 
 {% include guestbook-form.html %}

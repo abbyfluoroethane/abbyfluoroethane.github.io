@@ -3,10 +3,6 @@ title: Projects
 app_name: Projects
 ---
 
-# projects
-
-stuff i've built
-
 ## active
 
 {% assign active_projects = site.projects | where: "status", "active" | sort: "date" | reverse %}
