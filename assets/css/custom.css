@@ -125,7 +125,11 @@ ul.menu > .menu-item > button:disabled:focus {
 /* Scrollbar arrow buttons, select dropdowns, and button borders use SVGs with
    hardcoded black/white fills. Invert them for dark themes. */
 
-/* Scrollbar arrow buttons: invert the hardcoded black-on-white SVGs */
+/* Scrollbar arrow buttons: invert the hardcoded black-on-white SVGs.
+   NOTE: Chromium ignores `filter` on ::-webkit-scrollbar-button, so the native
+   buttons actually render the raw white-box/black-arrow SVG in every theme. The
+   bottom-bar and fake-scrollbar arrows reuse the same SVGs on real elements —
+   we deliberately do NOT invert them, so they match the native buttons. */
 html[data-theme="monochrome-dark"] ::-webkit-scrollbar-button,
 html[data-theme="mocha-pink"] ::-webkit-scrollbar-button {
   filter: invert(1);
@@ -273,25 +277,240 @@ html[data-theme="mocha-pink"] body {
   height: 100% !important;
 }
 
-/* Bottom-right resize grip (classic Mac corner box) */
+/* Bottom-right resize grip — the authentic System 7 size box: two overlapping
+   outlined squares (a back square upper-left, a front square lower-right that
+   occludes it). Drawn with pseudo-elements so it tracks the theme colors. */
 .resize-grip {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  width: 15px;
-  height: 15px;
+  flex: none;
+  position: relative; /* anchors the absolutely-positioned size-box squares */
+  width: 22px; /* square size box, matched to the pane scrollbar width */
+  height: 22px;
   cursor: nwse-resize;
-  z-index: 6;
-  background-color: var(--secondary);
-  background-image: repeating-linear-gradient(315deg,
-    var(--primary) 0, var(--primary) 1px,
-    transparent 1px, transparent 3px);
+  /* Fixed white/black interior to match the arrow buttons, whose SVGs are a
+     hardcoded white box + black glyph in every theme. Only the outer frame
+     borders track the theme, like the other bottom-bar cells. */
+  background-color: #fff;
   border-top: 1px solid var(--primary);
   border-left: 1px solid var(--primary);
 }
+.resize-grip::before,
+.resize-grip::after {
+  content: "";
+  position: absolute;
+  width: 11px;
+  height: 11px;
+  box-sizing: border-box;
+  border: 2px solid #000; /* match the ~2px stroke weight of the arrow glyphs */
+  background: #fff;
+}
+/* back square (upper-left) */
+.resize-grip::before { top: 3px; left: 3px; }
+/* front square (lower-right) — painted after, so it overlaps and hides the
+   back square's corner, like the classic grow icon */
+.resize-grip::after { top: 8px; left: 8px; }
 
-#main-window.zoomed .resize-grip {
+/* --- Window bottom bar ---
+   Every System 7 document window carries a horizontal scroll bar along its
+   bottom with the size box docked at the right, present even when the content
+   doesn't scroll sideways. Ours is decorative (the panes don't scroll
+   horizontally) but it completes the frame — and because it sits in the flex
+   flow, the pane naturally ends above it, so the vertical scrollbar clears the
+   size box with no margin hack. */
+.window-bottom-bar {
+  flex: none;
+  display: flex;
+  align-items: stretch;
+  height: 22px;
+}
+.window-bottom-bar .hscroll-arrow {
+  flex: none;
+  width: 22px;
+  /* Render the arrow SVG at its intrinsic size so it fills the cell exactly
+     like the native ::-webkit-scrollbar-button (which uses no background-size). */
+  background: var(--secondary) center no-repeat;
+  border-top: 1px solid var(--primary);
+}
+.window-bottom-bar .hscroll-left {
+  background-image: url("../icon/scrollbar-left.svg");
+  border-right: 1px solid var(--primary);
+}
+.window-bottom-bar .hscroll-right {
+  background-image: url("../icon/scrollbar-right.svg");
+  border-left: 1px solid var(--primary);
+}
+.window-bottom-bar .hscroll-track {
+  flex: 1;
+  border-top: 1px solid var(--primary);
+  background-color: var(--secondary);
+  background-image:
+    linear-gradient(45deg, var(--primary) 25%, transparent 25%, transparent 75%, var(--primary) 75%, var(--primary)),
+    linear-gradient(45deg, var(--primary) 25%, transparent 25%, transparent 75%, var(--primary) 75%, var(--primary));
+  background-size: 4px 4px;
+  background-position: 0 0, 2px 2px;
+}
+
+/* --- Firefox scrollbars ---
+   Firefox ignores ::-webkit-scrollbar, so the checkerboard track and arrow
+   buttons can't be reproduced there. Fall back to the standard, themeable
+   properties: a paper-colored elevator on an ink-tinted track, echoing the
+   System 7 look as closely as Firefox allows. scrollbar-color/-width are
+   inherited, so this one rule covers the page and every .window-pane, and the
+   var()s keep it in sync with each theme.
+
+   Gated on browsers that DON'T support ::-webkit-scrollbar (Firefox), because
+   current Chromium disables its custom ::-webkit-scrollbar as soon as a
+   non-default scrollbar-color/-width is set — so applying this globally would
+   wipe out the checkerboard scrollbar in Chrome. */
+@supports not selector(::-webkit-scrollbar) {
+  html {
+    scrollbar-width: auto;
+    scrollbar-color: var(--secondary) color-mix(in srgb, var(--primary) 45%, var(--secondary));
+  }
+}
+
+/* ==========================================================================
+   Multi-window desktop
+   Every window opened by the window manager carries `.mac-window`, including
+   the initial page window. These rules generalise the #main-window chrome so
+   any number of windows can float, stack, and share the same look/behaviour.
+   ========================================================================== */
+
+/* Managed windows are absolutely positioned on the desktop once placed. */
+.mac-window.positioned {
+  position: absolute;
+  margin: 0;
+  max-width: none;
+  max-height: 100%;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.5);
+}
+
+.mac-window > .title-bar { cursor: move; }
+.mac-window > .title-bar button { cursor: pointer; }
+
+/* Internal scrolling pane, mirrored from #main-window. The bottom bar (in flex
+   flow) now provides the size-box clearance, so no pane margin is needed. */
+.mac-window > .window-pane {
+  flex: 1;
+  overflow-y: auto;
+  height: 0;
+  min-height: 0;
+}
+
+/* Zoomed (maximized) managed window fills the desktop. */
+.mac-window.positioned.zoomed {
+  left: 0 !important;
+  top: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  box-shadow: none;
+}
+
+/* Active vs. inactive (background) windows. The frontmost window keeps its
+   racing-stripe title bar; background windows drop the stripes, gray the title,
+   and hide their close/zoom boxes — exactly how System 7 dims a back window.
+   #main-window ships with `active` in the markup so no-JS users still see an
+   active title bar. */
+.mac-window:not(.active) > .title-bar {
+  background: none;
+}
+.mac-window:not(.active) > .title-bar .title {
+  color: var(--tertiary);
+}
+.mac-window:not(.active) > .title-bar button {
+  visibility: hidden;
+}
+
+/* WindowShade: double-clicking the title bar rolls the window up to just the
+   bar (System 7.5). The pane, separator and size box collapse away. */
+.mac-window.shaded {
+  height: auto !important;
+}
+.mac-window.shaded > .separator,
+.mac-window.shaded > .window-pane,
+.mac-window.shaded > .window-bottom-bar {
   display: none;
+}
+
+/* Ghost outline shown while dragging/resizing — the window itself stays put
+   and jumps to the outline on release, like pre-Mac OS 8 Finder. */
+.window-outline {
+  position: absolute;
+  box-sizing: border-box;
+  border: 2px dotted var(--primary);
+  background: none;
+  pointer-events: none;
+  z-index: 100000;
+}
+
+/* --- Fake vertical scrollbar (Firefox / no ::-webkit-scrollbar) ---
+   Firefox can't style scrollbars beyond width/color, so where native custom
+   scrollbars are unavailable the manager overlays this one on the pane's right
+   edge and syncs it to scrollTop. It reproduces the webkit look: checkerboard
+   track, arrow buttons, boxed elevator. The pane's native bar is hidden. */
+.window-pane.has-fake-scrollbar {
+  scrollbar-width: none; /* Firefox: hide the native bar */
+  /* Reserve the 22px overlay width in the layout so content is inset from the
+     scrollbar's inner edge — matching Chrome, where the native scrollbar eats
+     layout width and the 2rem padding sits inside it. */
+  padding-right: calc(2rem + 22px);
+}
+.window-pane.has-fake-scrollbar::-webkit-scrollbar {
+  display: none; /* only relevant when force-enabled for testing in Chrome */
+}
+.vscroll {
+  position: absolute;
+  right: 0;
+  width: 22px;
+  display: flex;
+  flex-direction: column;
+  z-index: 5;
+}
+.vscroll-btn {
+  flex: none;
+  height: 22px;
+  background: var(--secondary) center no-repeat; /* intrinsic size, like the native button */
+  border-left: 1px solid var(--primary);
+}
+.vscroll-up { background-image: url("../icon/scrollbar-up.svg"); }
+.vscroll-down { background-image: url("../icon/scrollbar-down.svg"); }
+.vscroll-track {
+  flex: 1;
+  position: relative;
+  border-left: 1px solid var(--primary);
+  background-color: var(--secondary);
+  background-image:
+    linear-gradient(45deg, var(--primary) 25%, transparent 25%, transparent 75%, var(--primary) 75%, var(--primary)),
+    linear-gradient(45deg, var(--primary) 25%, transparent 25%, transparent 75%, var(--primary) 75%, var(--primary));
+  background-size: 4px 4px;
+  background-position: 0 0, 2px 2px;
+}
+.vscroll-thumb {
+  position: absolute;
+  left: 0;
+  right: 0;
+  box-sizing: border-box;
+  background-color: var(--secondary);
+  border: 2px solid var(--primary);
+  cursor: default;
+}
+
+/* --- Apple menu: 1-bit System 7 Apple logo ---
+   The classic monochrome menu-bar apple: the real Rob Janoff silhouette
+   rasterized to a chunky pixel grid. currentColor so it matches the menu text
+   (ink on light themes, light on dark) and inverts on hover with the item. */
+.menu-bar > .apple-menu {
+  display: flex;
+  align-items: center;
+}
+.apple-glyph {
+  display: inline-flex;
+  align-items: center;
+}
+.apple-glyph svg {
+  width: auto;
+  height: 18px; /* size by height; apple aspect ~0.83 */
+  display: block;
+  image-rendering: pixelated;
 }
 
 /* --- Desktop shortcut icons --- */
@@ -976,18 +1195,12 @@ button.btn {
   border: 2px solid var(--primary);
   box-shadow: var(--box-shadow);
   overflow: hidden;
-  cursor: pointer;
   break-inside: avoid;
   margin-bottom: 1rem;
   display: block;
   width: 100%;
   line-height: 0;
   font-size: 0;
-}
-
-.masonry-item:hover {
-  box-shadow: 3px 3px 0 var(--primary);
-  transform: translateY(-2px);
 }
 
 .masonry-item img {
@@ -1118,11 +1331,18 @@ button.btn {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  /* No screen dimming — About/Acknowledgements float as plain windows. The
+     overlay only centers its window; it doesn't capture clicks, so the desktop
+     and its windows behind stay fully interactive. */
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1001;
+  pointer-events: none;
+}
+.modal-overlay > .window {
+  pointer-events: auto;
 }
 
 /* --- About modal content --- */
@@ -1600,9 +1820,10 @@ textarea:focus-visible {
     visibility: hidden;
   }
 
-  /* No free drag/resize on touch layouts */
+  /* No free drag/resize on touch layouts — hide the whole bottom bar (size box
+     and decorative horizontal scrollbar) and the desktop icons. */
   .desktop-icons,
-  .resize-grip {
+  .window-bottom-bar {
     display: none;
   }
 

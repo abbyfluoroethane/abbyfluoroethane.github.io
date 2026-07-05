@@ -25,7 +25,7 @@
 
   <div class="desktop" id="desktop">
     {% include desktop-icons.html %}
-    <div class="window" id="main-window">
+    <div class="window active" id="main-window">
       <div class="title-bar" id="main-title-bar">
         <button class="close" id="main-close" aria-label="Close"></button>
         <h1 class="title">{{ page.title | default: site.title }}</h1>
@@ -50,7 +50,12 @@
           </div>
         </div>
       </div>
-      <div class="resize-grip" id="main-resize-grip" aria-hidden="true"></div>
+      <div class="window-bottom-bar" aria-hidden="true">
+        <span class="hscroll-arrow hscroll-left"></span>
+        <span class="hscroll-track"></span>
+        <span class="hscroll-arrow hscroll-right"></span>
+        <div class="resize-grip" id="main-resize-grip"></div>
+      </div>
     </div>
   </div>
 
