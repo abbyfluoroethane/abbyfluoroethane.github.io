@@ -53,7 +53,9 @@
   --ctp-on-accent: #eff1f5;
 }
 
-/* ---- catppuccin mocha (dark) ---- */
+/* ---- catppuccin mocha (dark) ----
+   only the neutral tokens swap; accents stay latte in both themes so
+   the white tile foregrounds always have contrast */
 @media (prefers-color-scheme: dark) {
   :root {
     --ctp-base: #1e1e2e;
@@ -65,11 +67,6 @@
     --ctp-overlay1: #7f849c;
     --ctp-subtext0: #a6adc8;
     --ctp-text: #cdd6f4;
-    --ctp-pink: #f5c2e7;
-    --ctp-mauve: #cba6f7;
-    --ctp-lavender: #b4befe;
-    --ctp-teal: #94e2d5;
-    --ctp-on-accent: #11111b;
   }
 }
 
@@ -327,6 +324,11 @@ main > *:not(.tile-grid) { animation-delay: 120ms; }
 }
 .bg-ctp-surface {
   background-color: var(--ctp-surface0) !important;
+  color: var(--ctp-text) !important;
+}
+/* "black or white": near-black in mocha, near-white in latte */
+.bg-ctp-white {
+  background-color: var(--ctp-crust) !important;
   color: var(--ctp-text) !important;
 }
 

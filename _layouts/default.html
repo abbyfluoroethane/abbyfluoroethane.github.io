@@ -7,6 +7,10 @@
   <meta name="description" content="{{ page.description | default: site.description }}">
   <meta name="theme-color" media="(prefers-color-scheme: light)" content="#eff1f5">
   <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1e1e2e">
+  <link rel="icon" type="image/png" sizes="16x16" href="{{ '/assets/favicon/konata-16.png' | relative_url }}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ '/assets/favicon/konata-32.png' | relative_url }}">
+  <link rel="icon" type="image/png" sizes="192x192" href="{{ '/assets/favicon/konata-192.png' | relative_url }}">
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ '/assets/favicon/apple-touch-icon.png' | relative_url }}">
   <link rel="preload" href="{{ '/assets/fonts/selawkl.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="{{ '/assets/fonts/selawk.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/metro/3.0.18/css/metro.min.css" integrity="sha384-e62zLAmzTmk6W8y6LlKtvIKFJTbNGrra4U/Uk4lJp7BlEzTn3H5L25O0PH4LPpcQ" crossorigin="anonymous">
@@ -15,7 +19,7 @@
 <body>
   <div class="page-shell">
     <header class="site-header">
-      <p class="site-title"><span class="accent">foid</span>.space</p>
+      <p class="site-title">foid.space</p>
       <nav class="site-nav">
         <a href="{{ '/' | relative_url }}"{% if page.url == '/' %} class="current"{% endif %}>home</a>
         <a href="{{ '/about/' | relative_url }}"{% if page.url == '/about/' %} class="current"{% endif %}>about</a>

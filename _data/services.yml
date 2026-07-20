@@ -8,14 +8,15 @@
 #   icon  — fallback: a single character/emoji, used when no logo is set
 #   desc  — short description; shown on wide tiles and as hover tooltip
 #   size  — square (default) or wide
-#   color — pink (default), mauve, lavender, teal, or surface
+#   color — pink (default), mauve, lavender, teal, surface,
+#           or white (near-black in mocha / near-white in latte)
 
 - name: do
   url: https://do.foid.space
   logo: plane
   desc: plane
   size: wide
-  color: base
+  color: white
 
 - name: git
   url: https://git.foid.space
