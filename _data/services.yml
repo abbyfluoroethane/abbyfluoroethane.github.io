@@ -5,7 +5,8 @@
 #   url   — where the tile links (required)
 #   logo  — name of an svg in _includes/icons/ (drop new ones in there,
 #           single-path monochrome svgs from https://simpleicons.org work as-is)
-#   icon  — fallback: a single character/emoji, used when no logo is set
+#   img   — full-color raster icon: filename in assets/icons/, shown as-is
+#   icon  — fallback: a single character/emoji, used when no logo/img is set
 #   desc  — short description; shown on wide tiles and as hover tooltip
 #   size  — square (default) or wide
 #   color — pink (default), mauve, lavender, teal, orange, green, surface,
@@ -55,3 +56,9 @@
   logo: pocketid
   desc: pocket id
   color: green
+
+- name: updog
+  url: https://updog.foid.space
+  img: updog.png
+  desc: what's updog
+  color: surface

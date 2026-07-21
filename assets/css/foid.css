@@ -323,6 +323,12 @@ main > *:not(.tile-grid) { animation-delay: 120ms; }
   height: 100%;
   fill: currentColor;
 }
+.tile-content.iconic .icon img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
 .tile-desc {
   position: absolute;
   top: 0.5rem;
