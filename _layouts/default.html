@@ -19,7 +19,12 @@
 <body>
   <div class="page-shell">
     <header class="site-header">
+      {% if page.title %}
+      <p class="site-app-name"><a href="{{ '/' | relative_url }}">foid.space</a></p>
+      <p class="site-title">{{ page.title }}</p>
+      {% else %}
       <p class="site-title">foid.space</p>
+      {% endif %}
       <nav class="site-nav">
         <a href="{{ '/' | relative_url }}"{% if page.url == '/' %} class="current"{% endif %}>home</a>
         <a href="{{ '/about/' | relative_url }}"{% if page.url == '/about/' %} class="current"{% endif %}>about</a>

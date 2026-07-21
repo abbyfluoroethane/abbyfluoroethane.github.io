@@ -4,8 +4,6 @@ title: about
 permalink: /about/
 ---
 
-## about
-
 directory of services running on `*.foid.space`.
 
 i bought this domain as a shitpost and now most of my services live on it now! how embarassing!!!
