@@ -50,6 +50,8 @@
   --ctp-mauve: #8839ef;
   --ctp-lavender: #7287fd;
   --ctp-teal: #179299;
+  --ctp-peach: #fe640b;
+  --ctp-green: #40a02b;
   --ctp-on-accent: #eff1f5;
 }
 
@@ -257,6 +259,10 @@ main > *:not(.tile-grid) { animation-delay: 120ms; }
     margin-top: -28px;
     margin-left: -24px;
   }
+  .tile-content.iconic .icon.icon-wordmark {
+    width: 7rem;
+    margin-left: -3.5rem;
+  }
   /* metro's .tile-content uses height: inherit, which breaks under
      aspect-ratio sizing — make it track the tile instead */
   .tile-content {
@@ -306,6 +312,11 @@ main > *:not(.tile-grid) { animation-delay: 120ms; }
 .tile-content.iconic .icon {
   line-height: 64px;
 }
+/* wordmark-shaped logos get a wider box than square ones */
+.tile-content.iconic .icon.icon-wordmark {
+  width: 10rem;
+  margin-left: -5rem;
+}
 .tile-content.iconic .icon svg {
   display: block;
   width: 100%;
@@ -343,6 +354,14 @@ main > *:not(.tile-grid) { animation-delay: 120ms; }
 .bg-ctp-surface {
   background-color: var(--ctp-surface0) !important;
   color: var(--ctp-text) !important;
+}
+.bg-ctp-green {
+  background-color: var(--ctp-green) !important;
+  color: var(--ctp-on-accent) !important;
+}
+.bg-ctp-orange {
+  background-color: var(--ctp-peach) !important;
+  color: var(--ctp-on-accent) !important;
 }
 /* "black or white": near-black in mocha, near-white in latte */
 .bg-ctp-white {

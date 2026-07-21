@@ -6,7 +6,7 @@ layout: default
 {% for s in site.data.services %}
 {% assign size = s.size | default: 'square' %}
   <a class="{% if size == 'wide' %}tile-wide{% else %}tile{% endif %} bg-ctp-{{ s.color | default: 'pink' }}" href="{{ s.url }}" style="animation-delay: {{ forloop.index0 | times: 70 | plus: 180 }}ms"{% if s.desc %} title="{{ s.desc }}"{% endif %}>
-    <div class="tile-content iconic"><span class="icon">{% if s.logo %}{% include icons/{{ s.logo }}.svg %}{% else %}{{ s.icon | default: '●' }}{% endif %}</span></div>
+    <div class="tile-content iconic"><span class="icon{% if s.wordmark %} icon-wordmark{% endif %}">{% if s.logo %}{% include icons/{{ s.logo }}.svg %}{% else %}{{ s.icon | default: '●' }}{% endif %}</span></div>
     {% if size == 'wide' and s.desc %}<span class="tile-desc">{{ s.desc }}</span>{% endif %}
     <span class="tile-label">{{ s.name }}</span>
   </a>

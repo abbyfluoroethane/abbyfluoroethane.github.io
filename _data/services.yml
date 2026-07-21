@@ -8,8 +8,9 @@
 #   icon  — fallback: a single character/emoji, used when no logo is set
 #   desc  — short description; shown on wide tiles and as hover tooltip
 #   size  — square (default) or wide
-#   color — pink (default), mauve, lavender, teal, surface,
+#   color — pink (default), mauve, lavender, teal, orange, green, surface,
 #           or white (near-black in mocha / near-white in latte)
+#   wordmark — true if the logo is wide text (renders in a wider box)
 
 - name: do
   url: https://do.foid.space
@@ -24,6 +25,13 @@
   desc: forgejo
   color: pink
 
+- name: opal
+  url: https://opal.foid.space
+  logo: opal
+  wordmark: true
+  size: wide
+  color: orange
+
 - name: matrix
   url: https://matrix.foid.space
   logo: matrix
@@ -35,3 +43,15 @@
   logo: excalidraw
   desc: excalidraw
   color: teal
+
+- name: wiki
+  url: https://wiki.foid.space
+  logo: outline
+  desc: outline
+  color: mauve
+
+- name: auth
+  url: https://auth.foid.space
+  logo: pocketid
+  desc: pocket id
+  color: green
