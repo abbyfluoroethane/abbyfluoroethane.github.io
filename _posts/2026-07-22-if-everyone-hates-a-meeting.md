@@ -23,7 +23,7 @@ Every morning you participate in a mandatory gemba walk that covers exactly what
 
 Sounds miserable, right?
 
-A real gemba walk *can't be redundant with the EOD.* That's structurally impossible! If it's working, it surfaces the stuff the EOD didn't — that's the entire point of going to look. So when the walk is perfectly redundant, when it's just yesterday's summary read aloud on the move and my loud machinery, that redundancy isn't just a scheduling annoyance. It's a diagnosis. It means nobody's actually looking. We're not going to gemba to see reality; we're performing the shape of going to gemba. It's a zombie process — the ritual kept moving after the thing that animated it died.
+A real gemba walk *can't be redundant with the EOD.* That's structurally impossible! If it's working, it surfaces the stuff the EOD didn't — that's the entire point of going to look. So when the walk is perfectly redundant, when it's just yesterday's summary read aloud on the move and by loud machinery, that redundancy isn't just a scheduling annoyance. It's a diagnosis. It means nobody's actually looking. We're not going to gemba to see reality; we're performing the shape of going to gemba. It's a zombie process — the ritual kept moving after the thing that animated it died.
 
 I'm not anti-process. I'd defend gemba to anyone. That's exactly why the hollow version bothers me! It takes a practice whose whole value is *catching what you'd otherwise miss* and turns it into a walk where, by construction, we catch nothing.
 
