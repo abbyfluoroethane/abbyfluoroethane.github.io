@@ -33,6 +33,10 @@ A pointless meeting doesn't cost you the length of the meeting. Thinking about i
 
 Because this one moved earlier, I now have to be in the office an hour earlier. And transit doesn't flex around an arbitrary start time — the buses and trains line up how they line up, so getting in earlier means leaving earlier, which means an earlier bus, which means the whole day slides. The meeting itself is maybe ten or fifteen minutes of walking in a circle. The actual cost is closer to two hours, spent entirely outside the meeting, absorbed by the gravity well it creates around itself.
 
-*That* is the price of a zombie process. Not the time inside it — the way it warps everything it touches. An 8AM ritual that surfaces nothing reaches out through the transit schedule and eats the edges of your morning and your evening, and it does this every single day, in exchange for information you already had at 3PM yesterday.\n\nIf everyone hates a meeting, look closer. Maybe it's just necessary and unpleasant, and that's fine. But if everyone hates it *and it tells you nothing new* — if it's redundant by construction with something you already do — that redundancy is the tell. The meeting becomes an autopsy report. Something already died. Now you're just walking its corpse around the floor every morning.
+*That* is the price of a zombie process. Not the time inside it — the way it warps everything it touches. An 8AM ritual that surfaces nothing reaches out through the transit schedule and eats the edges of your morning and your evening, and it does this every single day, in exchange for information you already had at 3PM yesterday.
+
+If everyone hates a meeting, look closer.
+
+Maybe it's just necessary and unpleasant, and that's fine. But if everyone hates it *and it tells you nothing new* — if it's redundant by construction with something you already do — that redundancy is the tell. The meeting becomes an autopsy report. Something already died. Now you're just walking its corpse around the floor every morning.
 
 **Pick one.**
