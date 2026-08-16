@@ -15,8 +15,8 @@
 
 - name: do
   url: https://do.foid.space
-  logo: plane
-  desc: plane
+  logo: kaneo
+  desc: kaneo
   size: wide
   color: white
 
@@ -56,6 +56,12 @@
   logo: pocketid
   desc: pocket id
   color: green
+
+- name: do (legacy)
+  url: https://do-legacy.foid.space
+  logo: plane
+  desc: plane
+  color: white
 
 - name: updog
   url: https://updog.foid.space
