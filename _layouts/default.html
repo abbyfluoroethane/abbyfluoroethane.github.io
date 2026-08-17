@@ -14,21 +14,30 @@
   <link rel="preload" href="{{ '/assets/fonts/selawkl.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="{{ '/assets/fonts/selawk.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/metro/3.0.18/css/metro.min.css" integrity="sha384-e62zLAmzTmk6W8y6LlKtvIKFJTbNGrra4U/Uk4lJp7BlEzTn3H5L25O0PH4LPpcQ" crossorigin="anonymous">
-  <link rel="stylesheet" href="{{ '/assets/css/foid.css' | relative_url }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/metro/3.0.18/css/metro-icons.min.css" integrity="sha512-FkUlwUt7GJVrK3IUMpBf8e8ab73d3XwjvN1bjaRta6XTyzCNjEdpR4sK4WA9pB6gU2nClwnmPwZxhQGcYZOKEg==" crossorigin="anonymous">
+  <link rel="stylesheet" href="{{ '/assets/css/site.css' | relative_url }}">
 </head>
 <body>
   <div class="page-shell">
     <header class="site-header">
       {% if page.title %}
-      <p class="site-app-name"><a href="{{ '/' | relative_url }}">foid.space</a></p>
-      <p class="site-title">{{ page.title }}</p>
+      <p class="site-app-name"><a href="{{ '/' | relative_url }}">abby bigaouette</a></p>
+      <p class="site-title">{{ page.app_name | default: page.title }}</p>
       {% else %}
-      <p class="site-title">foid.space</p>
+      <p class="site-title">abby bigaouette</p>
       {% endif %}
+      {% unless page.url == '/' %}
       <nav class="site-nav">
         <a href="{{ '/' | relative_url }}"{% if page.url == '/' %} class="current"{% endif %}>home</a>
-        <a href="{{ '/about/' | relative_url }}"{% if page.url == '/about/' %} class="current"{% endif %}>about</a>
+        {% for s in site.data.nav %}
+        {% assign is_current = false %}
+        {% if page.url == s.url %}{% assign is_current = true %}{% endif %}
+        {% if s.name == 'projects' and page.collection == 'projects' %}{% assign is_current = true %}{% endif %}
+        {% if s.name == 'blog' and page.collection == 'posts' %}{% assign is_current = true %}{% endif %}
+        <a href="{{ s.url | relative_url }}"{% if is_current %} class="current"{% endif %}>{{ s.name }}</a>
+        {% endfor %}
       </nav>
+      {% endunless %}
     </header>
     <main>
 {{ content }}

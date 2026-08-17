@@ -2,13 +2,78 @@
 layout: default
 ---
 
-<div class="tile-grid">
-{% for s in site.data.services %}
-{% assign size = s.size | default: 'square' %}
-  <a class="{% if size == 'wide' %}tile-wide{% else %}tile{% endif %} bg-ctp-{{ s.color | default: 'pink' }}" href="{{ s.url }}" style="animation-delay: {{ forloop.index0 | times: 70 | plus: 180 }}ms"{% if s.desc %} title="{{ s.desc }}"{% endif %}>
-    <div class="tile-content iconic"><span class="icon{% if s.wordmark %} icon-wordmark{% endif %}">{% if s.logo %}{% include icons/{{ s.logo }}.svg %}{% elsif s.img %}<img src="{{ '/assets/icons/' | append: s.img | relative_url }}" alt="">{% else %}{{ s.icon | default: '●' }}{% endif %}</span></div>
-    {% if size == 'wide' and s.desc %}<span class="tile-desc">{{ s.desc }}</span>{% endif %}
-    <span class="tile-label">{{ s.name }}</span>
-  </a>
-{% endfor %}
+{% assign latest_post = site.posts | first %}
+
+<div class="home-layout">
+  <div class="home-intro">
+    <h1 class="home-heading">haii, i'm abby :3</h1>
+    <p>welcome to my little corner of the internet. i build things that go to space, break things that stay on earth, and occasionally muse about my thoughts.</p>
+  </div>
+
+  <div class="home-tiles">
+    <div class="tile-grid">
+    {% for s in site.data.nav %}
+    {% assign size = s.size | default: 'square' %}
+      <a class="{% if size == 'wide' %}tile-wide{% elsif size == 'large' %}tile-large{% else %}tile{% endif %} bg-ctp-{{ s.color | default: 'pink' }}{% if s.name == 'blog' or s.name == 'music' or s.name == 'projects' %} tile-live-tile{% endif %}" href="{{ s.url | relative_url }}"{% if s.desc %} title="{{ s.desc }}"{% endif %}>
+        {% if s.name == 'blog' %}
+        <div class="tile-live tile-live-caption">
+          <p class="tile-live-label">latest post</p>
+          {% if latest_post %}
+          <p class="tile-live-title">{{ latest_post.title }}</p>
+          {% assign latest_post_desc = latest_post.summary | default: latest_post.excerpt | strip_html | truncatewords: 20, "" %}
+          {% if latest_post_desc %}<p class="tile-live-desc">{{ latest_post_desc }}</p>{% endif %}
+          {% endif %}
+        </div>
+        {% elsif s.name == 'music' %}
+        <div class="tile-live">{% include lastfm-widget.html id="lastfm-tile" count=1 tile=true %}</div>
+        {% elsif s.name == 'projects' %}
+        {% assign featured_projects = site.projects | where: "featured", true %}
+        <div class="tile-live tile-live-caption tile-cycle" id="projects-cycle">
+          <p class="tile-live-label">featured project</p>
+          {% for p in featured_projects %}
+          <div class="tile-cycle-item{% if forloop.first %} is-active{% endif %}">
+            <p class="tile-live-title">{{ p.title }}</p>
+            <p class="tile-live-years">{{ p.date | date: "%Y" }} – present</p>
+            <p class="tile-live-desc">{{ p.description }}</p>
+          </div>
+          {% endfor %}
+        </div>
+        <script>
+        (function () {
+          var items = document.querySelectorAll("#projects-cycle .tile-cycle-item");
+          if (items.length < 2) return;
+          var i = 0;
+          setInterval(function () {
+            items[i].classList.remove("is-active");
+            i = (i + 1) % items.length;
+            items[i].classList.add("is-active");
+          }, 15000);
+        })();
+        </script>
+        {% else %}
+        <div class="tile-content iconic"><span class="icon {{ s.icon }}"></span></div>
+        {% if size == 'wide' and s.desc %}<span class="tile-desc">{{ s.desc }}</span>{% endif %}
+        {% endif %}
+        <span class="tile-label">{{ s.name }}</span>
+      </a>
+    {% endfor %}
+    </div>
+    <script>
+    (function () {
+      // stagger the entrance animation by visual row, not DOM order — grid-
+      // auto-flow: dense means a tile's position in the markup often isn't
+      // its position on screen, so a flat per-item delay wouldn't line rows
+      // up together.
+      var tiles = [].slice.call(document.querySelectorAll(".tile-grid > a"));
+      var tops = tiles.map(function (t) { return t.offsetTop; });
+      var rows = tops
+        .filter(function (top, i) { return tops.indexOf(top) === i; })
+        .sort(function (a, b) { return a - b; });
+      tiles.forEach(function (t) {
+        var row = rows.indexOf(t.offsetTop);
+        t.style.animationDelay = (180 + row * 70) + "ms";
+      });
+    })();
+    </script>
+  </div>
 </div>

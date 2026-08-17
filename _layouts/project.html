@@ -1,0 +1,19 @@
+---
+layout: default
+---
+<div class="post-layout">
+  <aside class="post-meta">
+    <p class="post-date">
+      <span class="status-pill status-{{ page.status }}">{{ page.status }}</span>
+      {% if page.date %}· {{ page.date | date: "%Y" }}{% endif %}
+    </p>
+    <h1 class="post-title">{{ page.title }}</h1>
+    {% if page.external_url and page.external_url != "" %}
+    <p><a class="btn" href="{{ page.external_url }}">{{ page.url_text | default: "external link" }}</a></p>
+    {% endif %}
+    <p class="back-link"><a href="{{ '/projects/' | relative_url }}">← back to projects</a></p>
+  </aside>
+  <article class="post-content">
+    {{ content }}
+  </article>
+</div>

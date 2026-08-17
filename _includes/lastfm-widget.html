@@ -1,0 +1,136 @@
+{% assign lfm_id = include.id | default: "lastfm" %}
+{% assign lfm_count = include.count | default: 1 %}
+{% assign lfm_tile = include.tile | default: false %}
+{% assign lfm_history_id = include.history_id %}
+<div id="{{ lfm_id }}" class="lastfm-widget{% if lfm_tile %} lastfm-widget-tile{% endif %}" data-user="{{ site.lastfm.username }}" data-key="{{ site.lastfm.api_key }}" data-count="{{ lfm_count }}" data-tile="{{ lfm_tile }}" data-history-id="{{ lfm_history_id }}">
+  <p class="{% if lfm_tile %}tile-live-label{% else %}lastfm-status{% endif %}">loading…</p>
+</div>
+<script>
+(function () {
+  var root = document.getElementById({{ lfm_id | jsonify }});
+  if (!root) return;
+  var user = root.dataset.user, key = root.dataset.key, count = root.dataset.count;
+  var tileMode = root.dataset.tile === "true";
+  var historyId = root.dataset.historyId;
+  var cacheKey = "lastfm:" + user;
+  var endpoint = "https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks"
+    + "&user=" + encodeURIComponent(user)
+    + "&api_key=" + encodeURIComponent(key)
+    + "&format=json&limit=" + encodeURIComponent(count);
+
+  function artUrl(t) {
+    var images = t.image || [];
+    for (var i = images.length - 1; i >= 0; i--) {
+      var src = images[i]["#text"];
+      if (src && src.indexOf("2a96cbd8b46e442fc41c2b86b821562f") === -1) return src;
+    }
+    return "";
+  }
+
+  function historyCard(t) {
+    var art = t.artist && (t.artist["#text"] || t.artist.name) || "unknown artist";
+    var name = t.name || "unknown track";
+    var url = t.url || "#";
+    var when = t.date && t.date["#text"];
+    var cover = artUrl(t);
+    return '<a class="card lastfm-history-card" href="' + url + '" target="_blank" rel="noopener">'
+      + (cover
+          ? '<img class="lastfm-history-cover" src="' + cover + '" alt="" onload="this.classList.add(&#39;is-loaded&#39;)">'
+          : '<span class="lastfm-history-cover lastfm-cover-empty" aria-hidden="true"></span>')
+      + '<span class="lastfm-history-info">'
+      + (when ? '<span class="card-date">' + when + '</span>' : '')
+      + '<span class="card-title">' + name + '</span>'
+      + '<span class="card-desc">' + art + '</span>'
+      + '</span>'
+      + '</a>';
+  }
+
+  function renderHistory(tracks) {
+    if (!historyId) return;
+    var el = document.getElementById(historyId);
+    if (!el) return;
+    var rest = tracks.slice(1);
+    el.innerHTML = rest.length
+      ? rest.map(historyCard).join("")
+      : '<p class="lastfm-status">nothing else scrobbled yet.</p>';
+  }
+
+  function render(tracks) {
+    if (!tracks || !tracks.length) {
+      root.innerHTML = tileMode
+        ? '<p class="tile-live-title">nothing scrobbled yet.</p>'
+        : '<p class="lastfm-status">nothing scrobbled yet.</p>';
+      return;
+    }
+    var first = tracks[0];
+    var nowPlaying = !!(first["@attr"] && first["@attr"].nowplaying === "true");
+    var label = nowPlaying ? "now playing" : "last played";
+
+    var artist = first.artist && (first.artist["#text"] || first.artist.name) || "unknown artist";
+    var album = first.album && first.album["#text"];
+    var cover = artUrl(first);
+
+    if (tileMode) {
+      root.innerHTML = '<p class="tile-live-label"></p>'
+        + '<p class="tile-live-title"></p>'
+        + '<p class="tile-live-artist"></p>'
+        + (album ? '<p class="tile-live-album"></p>' : '');
+      root.querySelector(".tile-live-label").textContent = label;
+      root.querySelector(".tile-live-title").textContent = first.name || "unknown track";
+      root.querySelector(".tile-live-artist").textContent = artist;
+      if (album) root.querySelector(".tile-live-album").textContent = album;
+
+      var tileEl = root.closest(".tile-live-tile");
+      if (tileEl && cover) {
+        tileEl.style.backgroundImage = "url('" + cover + "')";
+        tileEl.classList.add("has-art");
+      }
+      renderHistory(tracks);
+      return;
+    }
+
+    // aside mode: h2 label, square cover, h3 title, h4 artist/album
+    var url = first.url || "#";
+    root.innerHTML = '<h2 class="lastfm-label"></h2>'
+      + '<a class="lastfm-cover-link" href="' + url + '" target="_blank" rel="noopener">'
+      + (cover
+          ? '<img class="lastfm-cover" src="' + cover + '" alt="" onload="this.classList.add(&#39;is-loaded&#39;)">'
+          : '<span class="lastfm-cover lastfm-cover-empty" aria-hidden="true"></span>')
+      + '</a>'
+      + '<h3 class="lastfm-track-title"></h3>'
+      + '<h4 class="lastfm-track-artist"></h4>'
+      + (album ? '<h4 class="lastfm-track-album"></h4>' : '');
+    root.querySelector(".lastfm-label").textContent = label;
+    root.querySelector(".lastfm-track-title").textContent = first.name || "unknown track";
+    root.querySelector(".lastfm-track-artist").textContent = artist;
+    if (album) root.querySelector(".lastfm-track-album").textContent = album;
+    renderHistory(tracks);
+  }
+
+  function fromCache() {
+    try {
+      var cached = JSON.parse(localStorage.getItem(cacheKey) || "null");
+      if (cached && cached.tracks) render(cached.tracks);
+    } catch (e) {}
+  }
+
+  function refresh() {
+    fetch(endpoint)
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        var tracks = data && data.recenttracks && data.recenttracks.track;
+        if (!tracks) throw new Error("no track data");
+        if (!Array.isArray(tracks)) tracks = [tracks];
+        render(tracks);
+        localStorage.setItem(cacheKey, JSON.stringify({ tracks: tracks, at: Date.now() }));
+      })
+      .catch(function () {
+        if (!root.querySelector(".lastfm-track-title, .tile-live-title")) fromCache();
+      });
+  }
+
+  fromCache();
+  refresh();
+  setInterval(refresh, 120000);
+})();
+</script>

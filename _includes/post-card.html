@@ -1,0 +1,6 @@
+<div class="card post-card">
+  <p class="card-date">{{ include.post.date | date: "%B %-d, %Y" }}</p>
+  <h3 class="card-title"><a href="{{ include.post.url | relative_url }}">{{ include.post.title }}</a></h3>
+  <p class="card-desc">{{ include.post.summary | default: include.post.excerpt | strip_html | truncatewords: 40 }}</p>
+  <a class="card-link" href="{{ include.post.url | relative_url }}">read →</a>
+</div>

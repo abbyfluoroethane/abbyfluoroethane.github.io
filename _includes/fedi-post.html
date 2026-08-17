@@ -1,0 +1,7 @@
+{% assign fedi_url = include.url %}
+{% assign fedi_parts = fedi_url | split: "/" %}
+{% assign fedi_host = fedi_parts[2] %}
+<blockquote class="fedi-embed">
+  <p class="fedi-embed-label">post on {{ fedi_host }}</p>
+  <a href="{{ fedi_url }}">{{ fedi_url }}</a>
+</blockquote>

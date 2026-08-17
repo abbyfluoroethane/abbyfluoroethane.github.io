@@ -1,0 +1,16 @@
+<div class="card project-card">
+  <div class="card-head">
+    <h3 class="card-title">{{ include.project.title }}</h3>
+    <span class="status-pill status-{{ include.project.status }}">{{ include.project.status }}</span>
+  </div>
+  <p class="card-desc">{{ include.project.description }}</p>
+  <div class="card-meta">
+    {% if include.project.date %}<span class="card-date">{{ include.project.date | date: "%Y" }}</span>{% endif %}
+    {% if include.project.external_url and include.project.external_url != "" %}
+    <a class="card-link" href="{{ include.project.external_url }}">{{ include.project.url_text | default: "external link" }} →</a>
+    {% endif %}
+    {% if include.project.article %}
+    <a class="card-link" href="{{ include.project.url | relative_url }}">read more →</a>
+    {% endif %}
+  </div>
+</div>

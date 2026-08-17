@@ -1,7 +1,50 @@
-title: foid.space
-description: hub for the services running on *.foid.space
-url: "https://foid.space"
+title: abby bigaouette
+description: i build things that go to space, break things that stay on earth, and occasionally muse about my thoughts.
+url: "https://bigaouette.com"
 
 exclude:
   - README.md
   - LICENSE
+
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+
+markdown: kramdown
+kramdown:
+  smart_quotes: ["apos", "apos", "quot", "quot"]
+
+permalink: /blog/:title/
+
+collections:
+  projects:
+    output: true
+    permalink: /projects/:name/
+
+defaults:
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: post
+      app_name: blog
+  - scope:
+      path: ""
+      type: projects
+    values:
+      layout: project
+      app_name: projects
+
+# public, read-only widget key (same one already committed in the old
+# public repo) — fine to keep client-side, rotate at last.fm if desired.
+lastfm:
+  username: "abby_isnthere"
+  api_key: "3d59870650c4a720a39500c654d23eb1"
+
+# same Cloudflare Worker the old abbyfluoroethane.github.io guestbook
+# already uses in production — receives a classic form POST (Turnstile +
+# honeypot), commits the entry straight into this repo's
+# _data/guestbook.yml via the GitHub API, then redirects back here with a
+# ?signed=true / ?error=... query param.
+guestbook_endpoint: "https://guestbook.abbypaigeisnthere.workers.dev"
+guestbook_turnstile_sitekey: "0x4AAAAAACmqCJS3neNj8Cxb"

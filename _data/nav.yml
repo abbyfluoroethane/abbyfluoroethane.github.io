@@ -1,0 +1,52 @@
+# Tiles on the home page. Order here is display order.
+#
+# fields:
+#   name  — tile label, bottom-left of the tile (required)
+#   url   — where the tile links (required)
+#   icon  — a Metro UI icon font class from metro-icons.css (the "mif-"
+#           prefix), shown centered in the tile
+#   desc  — short description; shown on wide tiles and as hover tooltip
+#   size  — square (default), wide, or large
+#   color — the full catppuccin latte accent palette: rosewater, flamingo,
+#           pink (default), mauve, red, maroon, orange (peach), yellow,
+#           green, teal, sky, sapphire, blue, or lavender — plus the two
+#           neutrals, surface and white (near-black in mocha, near-white
+#           in latte)
+
+- name: music
+  url: /music/
+  icon: mif-music
+  size: large
+  color: orange
+
+- name: projects
+  url: /projects/
+  icon: mif-rocket
+  size: large
+  color: pink
+
+- name: blog
+  url: /blog/
+  icon: mif-pencil
+  size: wide
+  color: lavender
+
+- name: about
+  url: /about/
+  icon: mif-profile
+  color: sky 
+
+- name: resume
+  url: /resume/
+  icon: mif-trophy
+  color: yellow 
+
+- name: gallery
+  url: /gallery/
+  icon: mif-images
+  color: mauve 
+
+- name: guestbook
+  url: /guestbook/
+  icon: mif-mail
+  color: green
