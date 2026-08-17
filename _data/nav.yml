@@ -1,53 +1,71 @@
 # Tiles on the home page. Order here is display order.
 #
 # fields:
-#   name  — tile label, bottom-left of the tile (required)
-#   url   — where the tile links (required)
-#   icon  — a Metro UI icon font class from metro-icons.css (the "mif-"
-#           prefix), shown centered in the tile
-#   desc  — short description; shown on wide tiles and as hover tooltip
-#   size  — square (default), wide, or large
-#   color — the full catppuccin latte accent palette: rosewater, flamingo,
-#           pink (default), mauve, red, maroon, orange (peach), yellow,
-#           green, teal, sky, sapphire, blue, or lavender — plus the two
-#           neutrals, surface and white (near-black in mocha, near-white
-#           in latte)
+#   name   — tile label, bottom-left of the tile (required)
+#   url    — where the tile links (required)
+#   icon   — a Metro UI icon font class from metro-icons.css (the "mif-"
+#            prefix), shown centered in the tile
+#   size   — square (default), wide, or large
+#   color  — the full catppuccin latte accent palette: rosewater, flamingo,
+#            pink (default), mauve, red, maroon, orange (peach), yellow,
+#            green, teal, sky, sapphire, blue, or lavender — plus the two
+#            neutrals, surface and white (near-black in mocha, near-white
+#            in latte)
+#   navbar — whether the entry also appears in the nav bar shown on
+#            subpages. omit it and the entry is included, so a new tile
+#            can't drop out of the nav by accident; set it to false for
+#            something that should be a tile only.
 
 - name: music
   url: /music/
   icon: mif-music
   size: large
   color: orange
+  navbar: true
 
 - name: projects
   url: /projects/
   icon: mif-rocket
   size: large
   color: pink
+  navbar: true
 
 - name: blog
   url: /blog/
   icon: mif-pencil
   size: wide
   color: lavender
+  navbar: true
 
 - name: about
   url: /about/
   icon: mif-profile
-  color: sky 
+  color: sky
+  navbar: true
 
 - name: resume
   url: /resume/
   icon: mif-trophy
-  color: yellow 
+  color: yellow
+  navbar: true
 
 - name: gallery
   url: /gallery/
   icon: mif-images
-  color: mauve 
+  color: mauve
+  navbar: true
 
 - name: guestbook
   url: /guestbook/
   icon: mif-mail
   size: wide
   color: green
+  navbar: true
+
+# external
+- name: foid.space (external)
+  url: https://foid.space
+  icon: mif-cloud
+  color: teal
+  navbar: false
+

@@ -24,12 +24,26 @@ permalink: /guestbook/
     <h2>entries</h2>
     <div class="card-grid" id="guestbook-entries">
       {% for entry in site.data.guestbook %}
+      {%- comment -%}
+        entries are visitor-submitted (form -> worker -> _data/guestbook.yml),
+        so everything here is escaped, and the website link is restricted to
+        http(s) — splitting on "://" means anything without an absolute
+        http(s) scheme (javascript:, data:, protocol-relative //host) fails
+        the check and renders as plain text instead of a link.
+      {%- endcomment -%}
+      {% assign gb_url = "" %}
+      {% if entry.website %}
+        {% assign gb_scheme = entry.website | strip | split: '://' | first | downcase %}
+        {% if gb_scheme == 'http' or gb_scheme == 'https' %}
+          {% assign gb_url = entry.website | strip %}
+        {% endif %}
+      {% endif %}
       <div class="card guestbook-entry">
         <div class="guestbook-entry-header">
-          <strong>{% if entry.website %}<a href="{{ entry.website }}">{{ entry.name }}</a>{% else %}{{ entry.name }}{% endif %}</strong>
-          <span class="guestbook-entry-date">{{ entry.date }}</span>
+          <strong>{% if gb_url != "" %}<a href="{{ gb_url | escape }}" rel="nofollow ugc noopener">{{ entry.name | escape }}</a>{% else %}{{ entry.name | escape }}{% endif %}</strong>
+          <span class="guestbook-entry-date">{{ entry.date | escape }}</span>
         </div>
-        <p>{{ entry.message }}</p>
+        <p>{{ entry.message | escape }}</p>
       </div>
       {% endfor %}
     </div>

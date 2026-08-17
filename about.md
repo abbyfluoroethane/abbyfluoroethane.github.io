@@ -45,7 +45,7 @@ Before Blue Origin, I was head of design at the Tahlequah Daily Press, a newspap
 
 ## About this site
 
-This site is built with Jekyll and styled after Windows 8's Metro design language. It's open source, MIT licensed, and the code lives on GitHub. [Do whatever the fuck you want with it!]({{ site.baseurl }} /blog/an-argument-for-doing-whatever-the-fuck-i-want/)
+This site is built with Jekyll and styled after Windows 8's Metro design language. It's open source, MIT licensed, and the code lives on GitHub. [Do whatever the fuck you want with it!]({{ '/blog/an-argument-for-doing-whatever-the-fuck-i-want/' | relative_url }})
 
 It used to look like a classic Mac OS desktop, windows and all, but I got bored and rebuilt the whole thing.
 

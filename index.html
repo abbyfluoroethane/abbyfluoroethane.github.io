@@ -14,7 +14,7 @@ layout: default
     <div class="tile-grid">
     {% for s in site.data.nav %}
     {% assign size = s.size | default: 'square' %}
-      <a class="{% if size == 'wide' %}tile-wide{% elsif size == 'large' %}tile-large{% else %}tile{% endif %} bg-ctp-{{ s.color | default: 'pink' }}{% if s.name == 'blog' or s.name == 'music' or s.name == 'projects' or s.name == 'guestbook' %} tile-live-tile{% endif %}" href="{{ s.url | relative_url }}"{% if s.desc %} title="{{ s.desc }}"{% endif %}>
+      <a class="{% if size == 'wide' %}tile-wide{% elsif size == 'large' %}tile-large{% else %}tile{% endif %} bg-ctp-{{ s.color | default: 'pink' }}{% if s.name == 'blog' or s.name == 'music' or s.name == 'projects' or s.name == 'guestbook' %} tile-live-tile{% endif %}" href="{{ s.url | relative_url }}">
         {% if s.name == 'blog' %}
         <div class="tile-live tile-live-caption">
           <p class="tile-live-label">latest post</p>
@@ -43,15 +43,15 @@ layout: default
         <div class="tile-live tile-live-caption tile-cycle">
           <p class="tile-live-label">recent guestbook</p>
           {% for e in recent_entries %}
+          {%- comment -%} visitor-submitted — escape, same as /guestbook/ {%- endcomment -%}
           <div class="tile-cycle-item{% if forloop.first %} is-active{% endif %}">
-            <p class="tile-live-title">{{ e.name }}</p>
-            <p class="tile-live-desc">{{ e.message }}</p>
+            <p class="tile-live-title">{{ e.name | escape }}</p>
+            <p class="tile-live-desc">{{ e.message | escape }}</p>
           </div>
           {% endfor %}
         </div>
         {% else %}
         <div class="tile-content iconic"><span class="icon {{ s.icon }}"></span></div>
-        {% if size == 'wide' and s.desc %}<span class="tile-desc">{{ s.desc }}</span>{% endif %}
         {% endif %}
         <span class="tile-label">{{ s.name }}</span>
       </a>

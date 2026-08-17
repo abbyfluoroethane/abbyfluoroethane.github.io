@@ -12,7 +12,10 @@
   var user = root.dataset.user, key = root.dataset.key, count = root.dataset.count;
   var tileMode = root.dataset.tile === "true";
   var historyId = root.dataset.historyId;
-  var cacheKey = "lastfm:" + user;
+  // keyed by count as well as user: the home tile asks for 1 track and
+  // /music/ asks for 11, and a shared key let whichever page loaded last
+  // hand the other a payload too short to render
+  var cacheKey = "lastfm:" + user + ":" + count;
   var endpoint = "https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks"
     + "&user=" + encodeURIComponent(user)
     + "&api_key=" + encodeURIComponent(key)
@@ -27,22 +30,60 @@
     return "";
   }
 
+  // every string below comes from the last.fm API, so nothing is ever
+  // concatenated into markup — nodes are built and filled via textContent,
+  // and any URL bound for an href/src/css url() has to clear safeUrl first.
+  function safeUrl(u) {
+    return typeof u === "string" && /^https?:\/\//i.test(u) ? u : "";
+  }
+
+  function line(tag, cls, text) {
+    var el = document.createElement(tag);
+    el.className = cls;
+    el.textContent = text;
+    return el;
+  }
+
+  function coverEl(t, cls) {
+    var cover = safeUrl(artUrl(t));
+    if (!cover) {
+      var ph = document.createElement("span");
+      ph.className = cls + " lastfm-cover-empty";
+      ph.setAttribute("aria-hidden", "true");
+      return ph;
+    }
+    var img = document.createElement("img");
+    img.className = cls;
+    img.alt = "";
+    img.addEventListener("load", function () { img.classList.add("is-loaded"); });
+    img.src = cover;
+    return img;
+  }
+
+  function trackArtist(t) {
+    return t.artist && (t.artist["#text"] || t.artist.name) || "unknown artist";
+  }
+
   function historyCard(t) {
-    var art = t.artist && (t.artist["#text"] || t.artist.name) || "unknown artist";
-    var name = t.name || "unknown track";
-    var url = t.url || "#";
+    var href = safeUrl(t.url);
+    // a track with no usable link still gets a card, just not an anchor
+    var card = document.createElement(href ? "a" : "div");
+    card.className = "card lastfm-history-card";
+    if (href) {
+      card.href = href;
+      card.target = "_blank";
+      card.rel = "noopener";
+    }
+    card.appendChild(coverEl(t, "lastfm-history-cover"));
+
+    var info = document.createElement("span");
+    info.className = "lastfm-history-info";
     var when = t.date && t.date["#text"];
-    var cover = artUrl(t);
-    return '<a class="card lastfm-history-card" href="' + url + '" target="_blank" rel="noopener">'
-      + (cover
-          ? '<img class="lastfm-history-cover" src="' + cover + '" alt="" onload="this.classList.add(&#39;is-loaded&#39;)">'
-          : '<span class="lastfm-history-cover lastfm-cover-empty" aria-hidden="true"></span>')
-      + '<span class="lastfm-history-info">'
-      + (when ? '<span class="card-date">' + when + '</span>' : '')
-      + '<span class="card-title">' + name + '</span>'
-      + '<span class="card-desc">' + art + '</span>'
-      + '</span>'
-      + '</a>';
+    if (when) info.appendChild(line("span", "card-date", when));
+    info.appendChild(line("span", "card-title", t.name || "unknown track"));
+    info.appendChild(line("span", "card-desc", trackArtist(t)));
+    card.appendChild(info);
+    return card;
   }
 
   function renderHistory(tracks) {
@@ -50,39 +91,42 @@
     var el = document.getElementById(historyId);
     if (!el) return;
     var rest = tracks.slice(1);
-    el.innerHTML = rest.length
-      ? rest.map(historyCard).join("")
-      : '<p class="lastfm-status">nothing else scrobbled yet.</p>';
+    el.textContent = "";
+    if (!rest.length) {
+      el.appendChild(line("p", "lastfm-status", "nothing else scrobbled yet."));
+      return;
+    }
+    rest.forEach(function (t) { el.appendChild(historyCard(t)); });
   }
 
   function render(tracks) {
     if (!tracks || !tracks.length) {
-      root.innerHTML = tileMode
-        ? '<p class="tile-live-title">nothing scrobbled yet.</p>'
-        : '<p class="lastfm-status">nothing scrobbled yet.</p>';
+      root.textContent = "";
+      root.appendChild(line("p", tileMode ? "tile-live-title" : "lastfm-status", "nothing scrobbled yet."));
       return;
     }
     var first = tracks[0];
     var nowPlaying = !!(first["@attr"] && first["@attr"].nowplaying === "true");
     var label = nowPlaying ? "now playing" : "last played";
 
-    var artist = first.artist && (first.artist["#text"] || first.artist.name) || "unknown artist";
+    var artist = trackArtist(first);
     var album = first.album && first.album["#text"];
-    var cover = artUrl(first);
+    var title = first.name || "unknown track";
 
     if (tileMode) {
-      root.innerHTML = '<p class="tile-live-label"></p>'
-        + '<p class="tile-live-title"></p>'
-        + '<p class="tile-live-artist"></p>'
-        + (album ? '<p class="tile-live-album"></p>' : '');
-      root.querySelector(".tile-live-label").textContent = label;
-      root.querySelector(".tile-live-title").textContent = first.name || "unknown track";
-      root.querySelector(".tile-live-artist").textContent = artist;
-      if (album) root.querySelector(".tile-live-album").textContent = album;
+      root.textContent = "";
+      root.appendChild(line("p", "tile-live-label", label));
+      root.appendChild(line("p", "tile-live-title", title));
+      root.appendChild(line("p", "tile-live-artist", artist));
+      if (album) root.appendChild(line("p", "tile-live-album", album));
 
       var tileEl = root.closest(".tile-live-tile");
-      if (tileEl && cover) {
-        tileEl.style.backgroundImage = "url('" + cover + "')";
+      // cover goes into a css url() here, so it needs the same scheme check
+      // as any href — an unvalidated value could close the quote and inject
+      // further declarations
+      var tileCover = safeUrl(artUrl(first));
+      if (tileEl && tileCover) {
+        tileEl.style.backgroundImage = "url(" + JSON.stringify(tileCover) + ")";
         tileEl.classList.add("has-art");
       }
       renderHistory(tracks);
@@ -90,20 +134,21 @@
     }
 
     // aside mode: h2 label, square cover, h3 title, h4 artist/album
-    var url = first.url || "#";
-    root.innerHTML = '<h2 class="lastfm-label"></h2>'
-      + '<a class="lastfm-cover-link" href="' + url + '" target="_blank" rel="noopener">'
-      + (cover
-          ? '<img class="lastfm-cover" src="' + cover + '" alt="" onload="this.classList.add(&#39;is-loaded&#39;)">'
-          : '<span class="lastfm-cover lastfm-cover-empty" aria-hidden="true"></span>')
-      + '</a>'
-      + '<h3 class="lastfm-track-title"></h3>'
-      + '<h4 class="lastfm-track-artist"></h4>'
-      + (album ? '<h4 class="lastfm-track-album"></h4>' : '');
-    root.querySelector(".lastfm-label").textContent = label;
-    root.querySelector(".lastfm-track-title").textContent = first.name || "unknown track";
-    root.querySelector(".lastfm-track-artist").textContent = artist;
-    if (album) root.querySelector(".lastfm-track-album").textContent = album;
+    var href = safeUrl(first.url);
+    root.textContent = "";
+    root.appendChild(line("h2", "lastfm-label", label));
+    var coverLink = document.createElement(href ? "a" : "div");
+    coverLink.className = "lastfm-cover-link";
+    if (href) {
+      coverLink.href = href;
+      coverLink.target = "_blank";
+      coverLink.rel = "noopener";
+    }
+    coverLink.appendChild(coverEl(first, "lastfm-cover"));
+    root.appendChild(coverLink);
+    root.appendChild(line("h3", "lastfm-track-title", title));
+    root.appendChild(line("h4", "lastfm-track-artist", artist));
+    if (album) root.appendChild(line("h4", "lastfm-track-album", album));
     renderHistory(tracks);
   }
 
@@ -115,6 +160,9 @@
   }
 
   function refresh() {
+    // a backgrounded tab polling every 30s just burns quota against a
+    // public api key — skip while hidden, and catch up on the way back
+    if (document.hidden) return;
     fetch(endpoint)
       .then(function (r) { return r.json(); })
       .then(function (data) {
@@ -131,6 +179,9 @@
 
   fromCache();
   refresh();
-  setInterval(refresh, 120000);
+  setInterval(refresh, 30000);
+  document.addEventListener("visibilitychange", function () {
+    if (!document.hidden) refresh();
+  });
 })();
 </script>
