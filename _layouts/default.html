@@ -19,6 +19,16 @@
   <meta property="og:description" content="{{ og_description | escape }}">
   <meta property="og:url" content="{{ page.url | absolute_url }}">
   <meta property="og:image" content="{{ page.image | default: '/assets/favicon/konata-512.png' | absolute_url }}">
+  {%- comment -%}
+    "summary" and not "summary_large_image" on purpose: the fallback image is
+    the 512x512 favicon, and a large-image card crops a square badly. switch
+    to summary_large_image once a ~1200x630 share image exists.
+  {%- endcomment -%}
+  <meta name="twitter:card" content="{% if page.image %}summary_large_image{% else %}summary{% endif %}">
+  <meta name="twitter:title" content="{{ page.title | default: site.title | escape }}">
+  <meta name="twitter:description" content="{{ og_description | escape }}">
+  <meta name="twitter:image" content="{{ page.image | default: '/assets/favicon/konata-512.png' | absolute_url }}">
+  {% feed_meta %}
   <meta name="theme-color" media="(prefers-color-scheme: light)" content="#eff1f5">
   <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1e1e2e">
   <link rel="icon" type="image/png" sizes="16x16" href="{{ '/assets/favicon/konata-16.png' | relative_url }}">
