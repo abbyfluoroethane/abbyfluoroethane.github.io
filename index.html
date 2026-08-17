@@ -14,7 +14,7 @@ layout: default
     <div class="tile-grid">
     {% for s in site.data.nav %}
     {% assign size = s.size | default: 'square' %}
-      <a class="{% if size == 'wide' %}tile-wide{% elsif size == 'large' %}tile-large{% else %}tile{% endif %} bg-ctp-{{ s.color | default: 'pink' }}{% if s.name == 'blog' or s.name == 'music' or s.name == 'projects' or s.name == 'guestbook' %} tile-live-tile{% endif %}" href="{{ s.url | relative_url }}"{% if s.desc %} title="{{ s.desc }}"{% endif %}>
+      <a class="{% if size == 'wide' %}tile-wide{% elsif size == 'large' %}tile-large{% else %}tile{% endif %} bg-ctp-{{ s.color | default: 'pink' }}{% if s.name == 'blog' or s.name == 'music' or s.name == 'projects' or s.name == 'guestbook' %} tile-live-tile{% endif %}" href="{{ s.url | relative_url }}">
         {% if s.name == 'blog' %}
         <div class="tile-live tile-live-caption">
           <p class="tile-live-label">latest post</p>
@@ -52,7 +52,6 @@ layout: default
         </div>
         {% else %}
         <div class="tile-content iconic"><span class="icon {{ s.icon }}"></span></div>
-        {% if size == 'wide' and s.desc %}<span class="tile-desc">{{ s.desc }}</span>{% endif %}
         {% endif %}
         <span class="tile-label">{{ s.name }}</span>
       </a>

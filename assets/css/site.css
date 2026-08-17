@@ -393,17 +393,6 @@ main > *:not(.tile-grid) { animation-delay: 120ms; }
   margin-top: -20px;
   margin-left: -20px;
 }
-.tile-desc {
-  position: absolute;
-  top: 0.5rem;
-  left: 0.625rem;
-  right: 0.625rem;
-  z-index: 999;
-  font-size: 0.8125rem;
-  text-transform: lowercase;
-  opacity: 0.85;
-}
-
 /* ---- live tiles (blog / music on the home page) ---- */
 .tile-live-tile {
   display: block;
