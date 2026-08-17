@@ -43,9 +43,10 @@ layout: default
         <div class="tile-live tile-live-caption tile-cycle">
           <p class="tile-live-label">recent guestbook</p>
           {% for e in recent_entries %}
+          {%- comment -%} visitor-submitted — escape, same as /guestbook/ {%- endcomment -%}
           <div class="tile-cycle-item{% if forloop.first %} is-active{% endif %}">
-            <p class="tile-live-title">{{ e.name }}</p>
-            <p class="tile-live-desc">{{ e.message }}</p>
+            <p class="tile-live-title">{{ e.name | escape }}</p>
+            <p class="tile-live-desc">{{ e.message | escape }}</p>
           </div>
           {% endfor %}
         </div>
