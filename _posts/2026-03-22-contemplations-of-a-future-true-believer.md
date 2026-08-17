@@ -97,7 +97,7 @@ None of this is an exit speech. After everything—the disillusionment, the burn
 I'm being drawn somewhere smaller, faster, and full of people who actually give a shit about what they're building. I don't plan on leaving the industry, but I'm done with _this version_ of it. The same thing that got me into aerospace—enthusiasm, not experience—is the same thing pushing me to find a place where it actually matters. I'm not running from rockets, I'm running toward a version of the work that doesn't feel like building someone else's monument.
 
 <div class="img-center-sm">
-  <img src="{{ '/assets/images/sfo-landing.png' | relative_url }}" alt="Plane landing">
+  <img src="{{ '/assets/images/sfo-landing.jpg' | relative_url }}" alt="Plane landing" width="1600" height="1200" loading="lazy" decoding="async">
 </div>
 
 I don't know if it gets better, nor can I promise myself a happy ending. The industry might collapse under its own hype, my next job might be worse, the bubble might pop before I get settled, but the alternative is staying in a role where I've already felt the emptiness. Existing in an organization whose mission I've already seen through, building toward a future I'm not sure I believe in.
