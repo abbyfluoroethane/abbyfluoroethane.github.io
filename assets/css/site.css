@@ -272,6 +272,12 @@ main > *:not(.tile-grid) { animation-delay: 120ms; }
   grid-auto-rows: 160px;
   gap: 0;
   margin-top: 1rem;
+  /* cap the field at 6 columns: 6 x the 160px track, with gap: 0 there is
+     nothing else to account for. capping the width rather than switching to
+     repeat(6, 160px) keeps auto-fill free to drop to fewer columns as the
+     viewport narrows. the mobile block below sets its own 3-column track, and
+     no viewport it applies to is wide enough for this to interfere. */
+  max-width: 960px;
 }
 @media (min-width: 768px) {
   .tile-grid {
