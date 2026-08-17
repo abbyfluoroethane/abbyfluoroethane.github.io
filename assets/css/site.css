@@ -116,10 +116,6 @@ a:hover {
   outline-offset: 2px;
 }
 
-.accent {
-  color: var(--ctp-pink);
-}
-
 /* ---- windows 8 enter-page animation ---- */
 /* the WinJS deceleration curve: fast start, long glide to rest */
 @keyframes metro-enter {
@@ -139,8 +135,7 @@ a:hover {
 main > *:not(.tile-grid),
 .tile-grid .tile,
 .tile-grid .tile-wide,
-.tile-grid .tile-large,
-.site-footer {
+.tile-grid .tile-large {
   animation: metro-enter 0.7s cubic-bezier(0.1, 0.9, 0.2, 1) backwards;
 }
 .site-nav { animation-delay: 60ms; }
@@ -148,7 +143,6 @@ main > *:not(.tile-grid) { animation-delay: 120ms; }
 /* tiles get a per-row stagger set by JS (see index.html) once the grid has
    actually been laid out — dense packing means DOM order doesn't match
    visual row order, so a fixed per-item delay can't line rows up */
-.site-footer { animation-delay: 400ms; }
 
 @media (prefers-reduced-motion: reduce) {
   .site-app-name,
@@ -157,8 +151,7 @@ main > *:not(.tile-grid) { animation-delay: 120ms; }
   main > *:not(.tile-grid),
   .tile-grid .tile,
   .tile-grid .tile-wide,
-  .tile-grid .tile-large,
-  .site-footer {
+  .tile-grid .tile-large {
     animation: none;
   }
 }
@@ -258,13 +251,6 @@ main > *:not(.tile-grid) { animation-delay: 120ms; }
   }
 }
 
-.tagline {
-  margin: 1.5rem 0 0;
-  color: var(--ctp-subtext0);
-  font-size: 1.0625rem;
-  text-transform: lowercase;
-}
-
 /* ---- tiles ----
    Metro UI v3's own tile sizing is untouched: .tile/.tile-wide/.tile-large
    keep their framework-default fixed px dimensions (150, 310x150, 310x310)
@@ -324,12 +310,8 @@ main > *:not(.tile-grid) { animation-delay: 120ms; }
     margin-top: 0;
   }
   .tile,
-  .tile-small,
-  .tile-square,
   .tile-wide,
-  .tile-large,
-  .tile-big,
-  .tile-super {
+  .tile-large {
     width: 100%;
     height: 100%;
     margin: 0;
@@ -343,12 +325,8 @@ main > *:not(.tile-grid) { animation-delay: 120ms; }
 }
 
 .tile,
-.tile-small,
-.tile-square,
 .tile-wide,
-.tile-large,
-.tile-big,
-.tile-super {
+.tile-large {
   background-color: var(--ctp-surface0);
   color: var(--ctp-text);
   box-shadow: none;
@@ -356,22 +334,14 @@ main > *:not(.tile-grid) { animation-delay: 120ms; }
   transition: transform 0.1s ease;
 }
 .tile:hover,
-.tile-small:hover,
-.tile-square:hover,
 .tile-wide:hover,
-.tile-large:hover,
-.tile-big:hover,
-.tile-super:hover {
+.tile-large:hover {
   outline: 3px solid var(--ctp-overlay1);
   text-decoration: none;
 }
 .tile:active,
-.tile-small:active,
-.tile-square:active,
 .tile-wide:active,
-.tile-large:active,
-.tile-big:active,
-.tile-super:active {
+.tile-large:active {
   transform: scale(0.97);
   outline: 0;
 }
@@ -632,15 +602,6 @@ main img {
   }
 }
 
-.prose-page .post-date {
-  color: var(--ctp-subtext0);
-  font-size: 0.9375rem;
-  text-transform: lowercase;
-  margin: 0 0 0.25rem;
-}
-.prose-page .post-title {
-  margin: 0 0 1.5rem;
-}
 .back-link {
   margin-top: 3rem;
 }
@@ -687,12 +648,6 @@ main img {
 .resume-tagline {
   margin: 0.75rem 0 0;
   color: var(--ctp-subtext0);
-}
-.resume-contact {
-  margin: 1rem 0 0;
-}
-.resume-contact a {
-  text-decoration: none;
 }
 @media (max-width: 767px) {
   .post-meta {
@@ -1045,16 +1000,6 @@ img.lastfm-cover.is-loaded {
 }
 .guestbook-entry p {
   margin: 0;
-}
-
-/* ---- footer ---- */
-.site-footer {
-  margin-top: 3.5rem;
-}
-.site-footer p {
-  color: var(--ctp-subtext0);
-  font-size: 0.8125rem;
-  text-transform: lowercase;
 }
 
 /* ---- 404 ---- */
