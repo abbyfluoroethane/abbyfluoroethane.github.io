@@ -2,7 +2,7 @@
 layout: resume
 title: resume
 permalink: /resume/
-full_name: Abby Bigaouette
+full_name: 
 tagline: Rocket mechanic and quality complainer at Astra. Former Blue Origin.
 ---
 ## Experience

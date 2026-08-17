@@ -1,5 +1,5 @@
 ---
-title: Oklahoma GOP makes a fool of itself yet again
+title: "Op-Ed: Oklahoma GOP makes a fool of itself yet again"
 date: 2025-05-26
 ---
 
