@@ -49,4 +49,5 @@
 - name: guestbook
   url: /guestbook/
   icon: mif-mail
+  size: wide
   color: green

@@ -491,8 +491,9 @@ main > *:not(.tile-grid) { animation-delay: 120ms; }
   overflow: hidden;
 }
 /* the projects cycle tile is a full 2x2 large tile — plenty of room for a
-   longer description than the wide (2x1) blog tile gets. */
-.tile-cycle .tile-live-desc {
+   longer description than a wide (2x1) cycle tile (guestbook) gets, which
+   just keeps the same 3-line clamp as the other wide live tiles. */
+.tile-large.tile-cycle .tile-live-desc {
   -webkit-line-clamp: 5;
 }
 
