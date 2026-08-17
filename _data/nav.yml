@@ -5,7 +5,6 @@
 #   url   — where the tile links (required)
 #   icon  — a Metro UI icon font class from metro-icons.css (the "mif-"
 #           prefix), shown centered in the tile
-#   desc  — short description; shown on wide tiles and as hover tooltip
 #   size  — square (default), wide, or large
 #   color — the full catppuccin latte accent palette: rosewater, flamingo,
 #           pink (default), mauve, red, maroon, orange (peach), yellow,
