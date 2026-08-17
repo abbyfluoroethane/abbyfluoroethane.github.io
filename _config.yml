@@ -2,9 +2,16 @@ title: abby bigaouette
 description: i build things that go to space, break things that stay on earth, and occasionally muse about my thoughts.
 url: "https://bigaouette.com"
 
+# setting `exclude` replaces jekyll's default list rather than merging with
+# it, so the defaults have to be repeated here or they stop being excluded
+# (Gemfile was otherwise being published to /Gemfile)
 exclude:
   - README.md
   - LICENSE
+  - Gemfile
+  - Gemfile.lock
+  - vendor/
+  - node_modules/
 
 plugins:
   - jekyll-feed
