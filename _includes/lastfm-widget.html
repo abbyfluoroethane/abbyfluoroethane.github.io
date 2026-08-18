@@ -12,6 +12,7 @@
   var user = root.dataset.user, key = root.dataset.key, count = root.dataset.count;
   var tileMode = root.dataset.tile === "true";
   var historyId = root.dataset.historyId;
+  var tileEl = tileMode ? root.closest(".tile-live-tile") : null;
   // keyed by count as well as user: the home tile asks for 1 track and
   // /music/ asks for 11, and a shared key let whichever page loaded last
   // hand the other a payload too short to render
@@ -20,6 +21,13 @@
     + "&user=" + encodeURIComponent(user)
     + "&api_key=" + encodeURIComponent(key)
     + "&format=json&limit=" + encodeURIComponent(count);
+
+  // matches .art-layer's opacity transition in site.css — the outgoing cover
+  // is only detached once the incoming one has finished fading over it
+  var ART_FADE = 600;
+  // a cover request that never settles (dead cdn, offline mid-load) would
+  // otherwise leave the tile shimmering for the rest of the session
+  var ART_TIMEOUT = 8000;
 
   function artUrl(t) {
     var images = t.image || [];
@@ -32,124 +40,334 @@
 
   // every string below comes from the last.fm API, so nothing is ever
   // concatenated into markup — nodes are built and filled via textContent,
-  // and any URL bound for an href/src/css url() has to clear safeUrl first.
+  // and any URL bound for an href/src has to clear safeUrl first.
   function safeUrl(u) {
     return typeof u === "string" && /^https?:\/\//i.test(u) ? u : "";
   }
 
-  function line(tag, cls, text) {
-    var el = document.createElement(tag);
-    el.className = cls;
-    el.textContent = text;
-    return el;
+  function el(tag, cls) {
+    var node = document.createElement(tag);
+    node.className = cls;
+    return node;
   }
 
-  function coverEl(t, cls) {
-    var cover = safeUrl(artUrl(t));
-    if (!cover) {
-      var ph = document.createElement("span");
-      ph.className = cls + " lastfm-cover-empty";
-      ph.setAttribute("aria-hidden", "true");
-      return ph;
-    }
-    var img = document.createElement("img");
-    img.className = cls;
-    img.alt = "";
-    img.addEventListener("load", function () { img.classList.add("is-loaded"); });
-    img.src = cover;
-    return img;
+  // this script runs inline, right below the widget it owns — on /music/ the
+  // history list is further down the page and hasn't been parsed yet, so it
+  // gets looked up on demand rather than held from the start
+  var historyCache = null;
+  function historyList() {
+    if (!historyCache && historyId) historyCache = document.getElementById(historyId);
+    return historyCache;
+  }
+
+  function line(tag, cls, text) {
+    var node = el(tag, cls);
+    node.textContent = text;
+    return node;
   }
 
   function trackArtist(t) {
     return t.artist && (t.artist["#text"] || t.artist.name) || "unknown artist";
   }
 
+  /* ---- skeletons ----
+     the widget's shape is built once, up front, with a shimmering bar parked
+     in every slot. filling a slot in overwrites its bar, so text lands
+     without the layout shifting under it. */
+
+  function bar(width) {
+    var b = el("span", "skeleton skeleton-bar");
+    b.style.width = width;
+    b.setAttribute("aria-hidden", "true");
+    return b;
+  }
+
+  function setBar(node, width) {
+    node.hidden = false;
+    node.textContent = "";
+    node.appendChild(bar(width));
+  }
+
+  // last.fm leaves the album off plenty of scrobbles, so a slot with nothing
+  // to show is hidden rather than left holding an empty line
+  function setLine(node, text) {
+    node.hidden = !text;
+    node.textContent = text || "";
+  }
+
+  /* ---- album art ----
+     covers arrive at their own pace and swap out from under the poll, so
+     every cover on the site is a stack rather than a bare <img>: a shimmer
+     on top while one is in flight, the last.fm mark underneath for tracks
+     with no art, and one layer per cover so a new one can crossfade over
+     whatever is already on screen. */
+
+  function makeStack(cls) {
+    var stack = el("span", "art-stack is-loading " + cls);
+    var fallback = el("span", "art-fallback");
+    fallback.setAttribute("aria-hidden", "true");
+    var shimmer = el("span", "art-skeleton skeleton");
+    shimmer.setAttribute("aria-hidden", "true");
+    stack.appendChild(fallback);
+    stack.appendChild(shimmer);
+    return stack;
+  }
+
+  function settle(stack) {
+    stack.classList.remove("is-loading");
+    if (stack.artTimer) {
+      clearTimeout(stack.artTimer);
+      stack.artTimer = null;
+    }
+  }
+
+  function dropLayers(stack) {
+    [].slice.call(stack.querySelectorAll(".art-layer")).forEach(function (layer) {
+      layer.classList.remove("is-loaded");
+      setTimeout(function () { layer.remove(); }, ART_FADE);
+    });
+  }
+
+  function showFallback(stack) {
+    stack.classList.add("is-artless");
+    stack.classList.remove("has-art");
+    settle(stack);
+  }
+
+  // point a stack at a cover ("" for a track last.fm has no art for). the
+  // first cover is revealed by the shimmer lifting off it; every one after
+  // that crossfades over the cover already on screen.
+  function setArt(stack, url) {
+    if (!stack || stack.dataset.art === url) return;
+    stack.dataset.art = url;
+    if (!url) {
+      dropLayers(stack);
+      showFallback(stack);
+      return;
+    }
+
+    var firstPaint = stack.classList.contains("is-loading");
+    var outgoing = [].slice.call(stack.querySelectorAll(".art-layer"));
+    var layer = document.createElement("img");
+    // the first cover comes up opaque behind the shimmer, so it is simply
+    // there once the shimmer clears; later ones start transparent and fade
+    layer.className = "art-layer" + (firstPaint ? " is-loaded" : "");
+    layer.alt = "";
+    layer.addEventListener("load", function () {
+      if (stack.dataset.art !== url) {
+        layer.remove(); // a newer cover was asked for while this one loaded
+        return;
+      }
+      stack.classList.remove("is-artless");
+      stack.classList.add("has-art");
+      settle(stack);
+      if (!firstPaint) {
+        // reading a layout property forces the layer's opacity: 0 to be
+        // computed before the class lands, so the fade has a value to run
+        // from. a cached cover can fire load before the browser has styled
+        // the layer at all, and without this it just snaps in.
+        void layer.offsetWidth;
+        layer.classList.add("is-loaded");
+      }
+      setTimeout(function () {
+        outgoing.forEach(function (old) { old.remove(); });
+      }, firstPaint ? 0 : ART_FADE);
+    });
+    layer.addEventListener("error", function () {
+      layer.remove();
+      if (stack.dataset.art === url) showFallback(stack);
+    });
+    stack.appendChild(layer);
+    layer.src = url;
+
+    if (stack.artTimer) clearTimeout(stack.artTimer);
+    stack.artTimer = setTimeout(function () {
+      if (stack.dataset.art !== url) return;
+      // still nothing. if a cover from an earlier track is on screen, leave
+      // it there rather than dropping the mark on top of it; otherwise lift
+      // the shimmer and let the surface underneath stand in. either way the
+      // load handler above still takes over if the cover does turn up.
+      if (stack.classList.contains("has-art")) settle(stack);
+      else showFallback(stack);
+    }, ART_TIMEOUT);
+  }
+
+  /* ---- the now-playing block ---- */
+
+  var els = {};
+  var stack = null;
+  var rendered = false;
+  var lastSig = null;
+  var lastTracks = null;
+
+  function buildTile() {
+    root.textContent = "";
+    els.label = el("p", "tile-live-label");
+    els.title = el("p", "tile-live-title");
+    els.artist = el("p", "tile-live-artist");
+    els.album = el("p", "tile-live-album");
+    [els.label, els.title, els.artist, els.album].forEach(function (n) { root.appendChild(n); });
+    setBar(els.label, "40%");
+    setBar(els.title, "85%");
+    setBar(els.artist, "60%");
+    setBar(els.album, "45%");
+    // the art sits behind the whole tile, not just the text box, so its
+    // stack goes on the tile itself rather than inside this widget
+    if (tileEl) {
+      stack = makeStack("tile-art");
+      tileEl.insertBefore(stack, tileEl.firstChild);
+    }
+  }
+
+  function buildAside() {
+    root.textContent = "";
+    els.label = el("h2", "lastfm-label");
+    els.coverLink = el("a", "lastfm-cover-link");
+    stack = makeStack("lastfm-cover");
+    els.coverLink.appendChild(stack);
+    els.title = el("h3", "lastfm-track-title");
+    els.artist = el("h4", "lastfm-track-artist");
+    els.album = el("h4", "lastfm-track-album");
+    root.appendChild(els.label);
+    root.appendChild(els.coverLink);
+    [els.title, els.artist, els.album].forEach(function (n) { root.appendChild(n); });
+    setBar(els.label, "45%");
+    setBar(els.title, "80%");
+    setBar(els.artist, "55%");
+    setBar(els.album, "40%");
+  }
+
+  function setCoverLink(href) {
+    if (!els.coverLink) return;
+    if (href) {
+      els.coverLink.href = href;
+      els.coverLink.target = "_blank";
+      els.coverLink.rel = "noopener";
+    } else {
+      // an <a> with no href is inert and unfocusable, which is what a track
+      // last.fm gave no url for should be
+      els.coverLink.removeAttribute("href");
+      els.coverLink.removeAttribute("target");
+      els.coverLink.removeAttribute("rel");
+    }
+  }
+
+  function renderNow(first) {
+    var nowPlaying = !!(first["@attr"] && first["@attr"].nowplaying === "true");
+    setLine(els.label, nowPlaying ? "now playing" : "last played");
+    setLine(els.title, first.name || "unknown track");
+    setLine(els.artist, trackArtist(first));
+    setLine(els.album, first.album && first.album["#text"]);
+    setCoverLink(safeUrl(first.url));
+    setArt(stack, safeUrl(artUrl(first)));
+  }
+
+  // nothing to show, either because the account has no scrobbles or because
+  // last.fm couldn't be reached and there was no cached response to fall
+  // back on. the tile keeps its own colour and the last.fm mark.
+  function renderNotice(text) {
+    setLine(els.label, "");
+    setLine(els.title, text);
+    setLine(els.artist, "");
+    setLine(els.album, "");
+    setCoverLink("");
+    setArt(stack, "");
+    var list = historyList();
+    if (list) {
+      list.textContent = "";
+      list.removeAttribute("aria-busy");
+    }
+  }
+
+  /* ---- history list ---- */
+
   function historyCard(t) {
     var href = safeUrl(t.url);
     // a track with no usable link still gets a card, just not an anchor
-    var card = document.createElement(href ? "a" : "div");
-    card.className = "card lastfm-history-card";
+    var card = el(href ? "a" : "div", "card lastfm-history-card");
     if (href) {
       card.href = href;
       card.target = "_blank";
       card.rel = "noopener";
     }
-    card.appendChild(coverEl(t, "lastfm-history-cover"));
+    var cover = makeStack("lastfm-history-cover");
+    card.appendChild(cover);
 
-    var info = document.createElement("span");
-    info.className = "lastfm-history-info";
+    var info = el("span", "lastfm-history-info");
     var when = t.date && t.date["#text"];
     if (when) info.appendChild(line("span", "card-date", when));
     info.appendChild(line("span", "card-title", t.name || "unknown track"));
     info.appendChild(line("span", "card-desc", trackArtist(t)));
     card.appendChild(info);
+    setArt(cover, safeUrl(artUrl(t)));
     return card;
   }
 
+  function buildHistorySkeleton() {
+    var list = historyList();
+    if (!list) return;
+    list.textContent = "";
+    list.setAttribute("aria-busy", "true");
+    // one placeholder row per track the request will come back with, so the
+    // list doesn't grow into place once it lands
+    var rows = Math.max(1, (parseInt(count, 10) || 1) - 1);
+    for (var i = 0; i < rows; i++) {
+      var card = el("div", "card lastfm-history-card lastfm-history-skeleton");
+      card.setAttribute("aria-hidden", "true");
+      card.appendChild(el("span", "lastfm-history-cover skeleton"));
+      var info = el("span", "lastfm-history-info");
+      info.appendChild(bar("30%"));
+      info.appendChild(bar("70%"));
+      info.appendChild(bar("45%"));
+      card.appendChild(info);
+      list.appendChild(card);
+    }
+  }
+
   function renderHistory(tracks) {
-    if (!historyId) return;
-    var el = document.getElementById(historyId);
-    if (!el) return;
+    var list = historyList();
+    if (!list) return;
     var rest = tracks.slice(1);
-    el.textContent = "";
+    list.textContent = "";
+    list.removeAttribute("aria-busy");
     if (!rest.length) {
-      el.appendChild(line("p", "lastfm-status", "nothing else scrobbled yet."));
+      list.appendChild(line("p", "lastfm-status", "nothing else scrobbled yet."));
       return;
     }
-    rest.forEach(function (t) { el.appendChild(historyCard(t)); });
+    rest.forEach(function (t) { list.appendChild(historyCard(t)); });
+  }
+
+  /* ---- data ---- */
+
+  // the poll runs every 30s but the answer usually hasn't changed. rebuilding
+  // on an identical payload would restart every cover fade, so re-render only
+  // when something actually moved.
+  function signature(tracks) {
+    return tracks.map(function (t) {
+      return [t.name, trackArtist(t), t.album && t.album["#text"], artUrl(t),
+        t.date && t.date["#text"], t["@attr"] && t["@attr"].nowplaying].join("\u001f");
+    }).join("\u001e");
   }
 
   function render(tracks) {
     if (!tracks || !tracks.length) {
-      root.textContent = "";
-      root.appendChild(line("p", tileMode ? "tile-live-title" : "lastfm-status", "nothing scrobbled yet."));
+      if (!rendered) renderNotice("nothing scrobbled yet.");
+      rendered = true;
       return;
     }
-    var first = tracks[0];
-    var nowPlaying = !!(first["@attr"] && first["@attr"].nowplaying === "true");
-    var label = nowPlaying ? "now playing" : "last played";
-
-    var artist = trackArtist(first);
-    var album = first.album && first.album["#text"];
-    var title = first.name || "unknown track";
-
-    if (tileMode) {
-      root.textContent = "";
-      root.appendChild(line("p", "tile-live-label", label));
-      root.appendChild(line("p", "tile-live-title", title));
-      root.appendChild(line("p", "tile-live-artist", artist));
-      if (album) root.appendChild(line("p", "tile-live-album", album));
-
-      var tileEl = root.closest(".tile-live-tile");
-      // cover goes into a css url() here, so it needs the same scheme check
-      // as any href — an unvalidated value could close the quote and inject
-      // further declarations
-      var tileCover = safeUrl(artUrl(first));
-      if (tileEl && tileCover) {
-        tileEl.style.backgroundImage = "url(" + JSON.stringify(tileCover) + ")";
-        tileEl.classList.add("has-art");
-      }
-      renderHistory(tracks);
-      return;
-    }
-
-    // aside mode: h2 label, square cover, h3 title, h4 artist/album
-    var href = safeUrl(first.url);
-    root.textContent = "";
-    root.appendChild(line("h2", "lastfm-label", label));
-    var coverLink = document.createElement(href ? "a" : "div");
-    coverLink.className = "lastfm-cover-link";
-    if (href) {
-      coverLink.href = href;
-      coverLink.target = "_blank";
-      coverLink.rel = "noopener";
-    }
-    coverLink.appendChild(coverEl(first, "lastfm-cover"));
-    root.appendChild(coverLink);
-    root.appendChild(line("h3", "lastfm-track-title", title));
-    root.appendChild(line("h4", "lastfm-track-artist", artist));
-    if (album) root.appendChild(line("h4", "lastfm-track-album", album));
+    var sig = signature(tracks);
+    if (rendered && sig === lastSig) return;
+    lastSig = sig;
+    lastTracks = tracks;
+    rendered = true;
+    root.removeAttribute("aria-busy");
+    renderNow(tracks[0]);
     renderHistory(tracks);
+  }
+
+  function fillHistory() {
+    if (lastTracks) renderHistory(lastTracks);
+    else buildHistorySkeleton();
   }
 
   function fromCache() {
@@ -173,12 +391,25 @@
         localStorage.setItem(cacheKey, JSON.stringify({ tracks: tracks, at: Date.now() }));
       })
       .catch(function () {
-        if (!root.querySelector(".lastfm-track-title, .tile-live-title")) fromCache();
+        if (!rendered) fromCache();
+        if (!rendered) renderNotice("couldn't reach last.fm.");
       });
   }
 
+  root.setAttribute("aria-busy", "true");
+  if (tileMode) buildTile(); else buildAside();
   fromCache();
   refresh();
+  // the history list appears later in the document than this script, so its
+  // placeholders wait for the parser — and if a cached response already
+  // landed by then, it goes straight in instead
+  if (historyId) {
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", fillHistory);
+    } else {
+      fillHistory();
+    }
+  }
   setInterval(refresh, 30000);
   document.addEventListener("visibilitychange", function () {
     if (!document.hidden) refresh();
