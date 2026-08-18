@@ -62,6 +62,9 @@
   --ctp-blue: #1e66f5;
   --ctp-lavender: #7287fd;
   --ctp-on-accent: #eff1f5;
+  /* the highlight that sweeps across a skeleton — a lift off surface0, so
+     it brightens in latte and stays a whisper in mocha */
+  --skeleton-sheen: rgba(255, 255, 255, 0.6);
 }
 
 /* ---- catppuccin mocha (dark) ----
@@ -78,6 +81,7 @@
     --ctp-overlay1: #7f849c;
     --ctp-subtext0: #a6adc8;
     --ctp-text: #cdd6f4;
+    --skeleton-sheen: rgba(255, 255, 255, 0.07);
   }
 }
 
@@ -369,20 +373,139 @@ main > *:not(.tile-grid) { animation-delay: 120ms; }
   margin-top: -20px;
   margin-left: -20px;
 }
-/* ---- live tiles (blog / music on the home page) ---- */
-.tile-live-tile {
-  display: block;
-  background-size: cover;
-  background-position: center;
+/* ---- skeletons ----
+   every last.fm surface on the site waits on the same two round trips — the
+   api call, then the cover image — so they all shimmer the same way: a
+   surface0 block with a sheen sweeping across it. defined ahead of the
+   tile/widget rules below so those can override it on equal specificity. */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--ctp-surface0);
 }
-.tile-live-tile.has-art {
-  background-color: transparent;
-}
-.tile-live-tile.has-art::before {
+.skeleton::after {
   content: "";
   position: absolute;
   inset: 0;
+  background-image: linear-gradient(100deg, transparent 25%, var(--skeleton-sheen) 50%, transparent 75%);
+  transform: translateX(-100%);
+  animation: skeleton-sweep 1.6s ease-in-out infinite;
+}
+@keyframes skeleton-sweep {
+  to {
+    transform: translateX(100%);
+  }
+}
+/* one line of not-yet-arrived text. sized in em off whatever it's standing
+   in for, so the same bar suits a tile caption and a page heading — and a
+   step darker than a plain skeleton, since the tile's bars sit on top of
+   one rather than on the page. */
+.skeleton-bar {
+  display: inline-block;
+  width: 100%;
+  height: 0.8em;
+  vertical-align: middle;
+  background-color: var(--ctp-surface1);
+}
+@media (prefers-reduced-motion: reduce) {
+  /* the sheen parks off to the left, so dropping the animation leaves a
+     plain surface block rather than a frozen highlight */
+  .skeleton::after {
+    animation: none;
+  }
+}
+
+/* ---- album art ----
+   covers arrive at their own pace and change under the 30s poll, so every
+   one on the site is a stack (see _includes/lastfm-widget.html): a shimmer
+   on top while a cover is in flight, the last.fm mark underneath for tracks
+   with no art, and one <img> layer per cover so a new one can crossfade
+   over whatever is already showing. */
+.art-stack {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  background-color: var(--ctp-surface0);
+  --art-fallback-opacity: 0.45;
+}
+.art-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  object-fit: cover;
+  opacity: 0;
+  /* ART_FADE in _includes/lastfm-widget.html matches this duration */
+  transition: opacity 0.6s ease;
+}
+.art-layer.is-loaded {
+  opacity: 1;
+}
+.art-fallback {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+/* the mark is painted as a mask rather than an <img> so one file can be
+   tinted per surface. browsers without mask support just get nothing, which
+   is why the colour lives in here too. */
+@supports (mask-image: none) or (-webkit-mask-image: none) {
+  .art-fallback {
+    -webkit-mask: url("../images/lastfm.svg") center / 42% no-repeat;
+    mask: url("../images/lastfm.svg") center / 42% no-repeat;
+    background-color: currentColor;
+  }
+}
+.art-stack.is-artless .art-fallback {
+  opacity: var(--art-fallback-opacity);
+}
+.art-skeleton {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.45s ease;
+  pointer-events: none;
+}
+.art-stack.is-loading .art-skeleton {
+  opacity: 1;
+}
+
+/* ---- live tiles (blog / music on the home page) ---- */
+.tile-live-tile {
+  display: block;
+}
+/* the music tile's album art (the .art-stack above): a layer stack pinned
+   over the tile's own colour, under its text. the tile keeps its orange
+   underneath rather than going transparent — that's what a cover fades in
+   from, and what's left showing for a track with no art at all. */
+.tile-art {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-color: transparent;
+  color: var(--ctp-on-accent);
+  --art-fallback-opacity: 0.32;
+}
+/* legibility scrim under the tile's text, fading in with the art it exists
+   for — on an art-less tile the flat accent colour is contrast enough */
+.tile-art::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
   background: linear-gradient(to bottom, rgba(17, 17, 27, 0.85), rgba(17, 17, 27, 0.15) 65%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  pointer-events: none;
+}
+.tile-art.has-art::after {
+  opacity: 1;
 }
 .tile-live {
   position: absolute;
@@ -805,32 +928,26 @@ main img {
 }
 .lastfm-history-cover {
   flex: 0 0 auto;
-  display: block;
   width: 56px;
   height: 56px;
-  margin: 0;
-  object-fit: cover;
+  color: var(--ctp-overlay0);
 }
-img.lastfm-history-cover {
-  opacity: 0;
-  transition: opacity 0.35s ease;
-}
-img.lastfm-history-cover.is-loaded {
-  opacity: 1;
-}
-.lastfm-history-cover.lastfm-cover-empty {
-  /* the shared .lastfm-cover-empty rule sizes the big aside placeholder
-     (100% width, square aspect-ratio) — pin the thumbnail back to its own
-     fixed size so an art-less track doesn't blow up the whole card */
-  width: 56px;
-  height: 56px;
-  aspect-ratio: auto;
-  background: var(--ctp-surface0);
+/* the mark has to read at 56px, where the share that suits a full-size
+   cover comes out too small to recognise */
+.lastfm-history-cover .art-fallback {
+  -webkit-mask-size: 62%;
+  mask-size: 62%;
 }
 .lastfm-history-info {
   display: flex;
   flex-direction: column;
+  flex: 1 1 auto;
   min-width: 0;
+}
+/* placeholder rows, one per track still in flight: the bars sit where the
+   scrobble time, title and artist land */
+.lastfm-history-skeleton .lastfm-history-info {
+  gap: 0.4rem;
 }
 .lastfm-history-info .card-title,
 .lastfm-history-info .card-desc,
@@ -915,23 +1032,10 @@ img.lastfm-history-cover.is-loaded {
   display: block;
   margin: 0 0 1.25rem;
 }
-.lastfm-cover,
-.lastfm-cover-empty {
-  display: block;
+.lastfm-cover {
   width: 100%;
   aspect-ratio: 1;
-  margin: 0;
-  object-fit: cover;
-}
-img.lastfm-cover {
-  opacity: 0;
-  transition: opacity 0.4s ease;
-}
-img.lastfm-cover.is-loaded {
-  opacity: 1;
-}
-.lastfm-cover-empty {
-  background: var(--ctp-surface0);
+  color: var(--ctp-overlay0);
 }
 .lastfm-track-title {
   margin: 0 0 0.25rem;
