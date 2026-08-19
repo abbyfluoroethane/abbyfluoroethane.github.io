@@ -23,7 +23,15 @@ permalink: /guestbook/
   <article class="post-content">
     <h2>entries</h2>
     <div class="card-grid" id="guestbook-entries">
-      {% for entry in site.data.guestbook %}
+      {%- comment -%}
+        the worker appends new entries to the end of _data/guestbook.yml, so
+        file order is oldest first — walk it backwards to lead with the most
+        recent, same as the home tile does. reversing rather than sorting on
+        date keeps entries signed on the same day in the order they actually
+        arrived, which the date alone (no time of day) can't recover.
+      {%- endcomment -%}
+      {% assign guestbook_entries = site.data.guestbook | reverse %}
+      {% for entry in guestbook_entries %}
       {%- comment -%}
         entries are visitor-submitted (form -> worker -> _data/guestbook.yml),
         so everything here is escaped, and the website link is restricted to
