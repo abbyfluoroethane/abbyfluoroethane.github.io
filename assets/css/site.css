@@ -65,6 +65,26 @@
   /* the highlight that sweeps across a skeleton — a lift off surface0, so
      it brightens in latte and stays a whisper in mocha */
   --skeleton-sheen: rgba(255, 255, 255, 0.6);
+
+  --mono: "Cascadia Code", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  /* syntax colours for code blocks. the accents above deliberately stay
+     latte in both themes, which reads fine as a tile background but not as
+     text on a dark block — so code carries its own tokens, and these do
+     swap with the theme. */
+  --code-comment: #8c8fa1;
+  --code-keyword: #8839ef;
+  --code-string: #40a02b;
+  --code-number: #fe640b;
+  --code-function: #1e66f5;
+  --code-class: #df8e1d;
+  --code-constant: #fe640b;
+  --code-tag: #1e66f5;
+  --code-attr: #df8e1d;
+  --code-operator: #179299;
+  --code-punct: #6c6f85;
+  --code-added: #40a02b;
+  --code-removed: #d20f39;
 }
 
 /* ---- catppuccin mocha (dark) ----
@@ -82,6 +102,20 @@
     --ctp-subtext0: #a6adc8;
     --ctp-text: #cdd6f4;
     --skeleton-sheen: rgba(255, 255, 255, 0.07);
+
+    --code-comment: #7f849c;
+    --code-keyword: #cba6f7;
+    --code-string: #a6e3a1;
+    --code-number: #fab387;
+    --code-function: #89b4fa;
+    --code-class: #f9e2af;
+    --code-constant: #fab387;
+    --code-tag: #89b4fa;
+    --code-attr: #f9e2af;
+    --code-operator: #94e2d5;
+    --code-punct: #a6adc8;
+    --code-added: #a6e3a1;
+    --code-removed: #f38ba8;
   }
 }
 
@@ -691,10 +725,46 @@ main h3 {
   font-weight: 600;
   margin: 1.5rem 0 0.5rem;
 }
+main h4 {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  margin: 1.5rem 0 0.4rem;
+}
+main h5 {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  margin: 1.25rem 0 0.35rem;
+}
+main h6 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ctp-subtext0);
+  margin: 1.25rem 0 0.35rem;
+}
+/* a float belongs to the section it was written in — every heading and rule
+   starts a new one, so neither can be allowed to ride up alongside it */
+main h1,
+main h2,
+main h3,
+main h4,
+main h5,
+main h6,
+main hr {
+  clear: both;
+}
 main p,
 main li {
   max-width: 62ch;
   line-height: 1.6;
+}
+/* a bare URL or a long identifier has no break opportunity in it, so left
+   alone it sets the width of the column and takes the page sideways with it.
+   <pre> is white-space: pre and ignores this — long code lines scroll in
+   their own box instead. */
+main {
+  overflow-wrap: break-word;
 }
 main blockquote {
   margin: 1rem 0;
@@ -704,10 +774,136 @@ main blockquote {
   max-width: 62ch;
 }
 main code {
-  font-family: "Cascadia Code", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-family: var(--mono);
   font-size: 0.9em;
   background: var(--ctp-mantle);
   padding: 0.1em 0.3em;
+}
+/* fenced, indented and hand-written blocks. the padding and background are
+   the <pre>'s here — left on the inner <code> by the rule above, every line
+   would carry its own little box — and the long-line overflow is the <pre>'s
+   to scroll, rather than the page's to widen. */
+main pre {
+  margin: 1.5rem 0;
+  padding: 1rem 1.125rem;
+  background: var(--ctp-mantle);
+  border-left: 3px solid var(--ctp-surface1);
+  font-family: var(--mono);
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  overflow-x: auto;
+}
+main pre code {
+  display: block;
+  padding: 0;
+  background: none;
+  font-size: inherit;
+}
+/* rouge nests the block in two wrapper divs of its own; neither may add a
+   second box around the one the <pre> already has. the div. qualifier is
+   load-bearing: rouge puts class="highlight" on the <pre> as well, and a
+   bare .highlight would outrank `main pre` and strip the box it just set. */
+main div.highlighter-rouge,
+main div.highlight {
+  margin: 0;
+  padding: 0;
+  background: none;
+}
+
+/* ---- syntax highlighting (rouge) ---- */
+main .highlight :is(.c, .ch, .cd, .cm, .cp, .cpf, .c1, .cs) {
+  color: var(--code-comment);
+  font-style: italic;
+}
+main .highlight :is(.k, .kc, .kd, .kn, .kp, .kr, .kv) {
+  color: var(--code-keyword);
+}
+main .highlight :is(.s, .sa, .sb, .sc, .dl, .sd, .s2, .se, .sh, .si, .sx, .sr, .s1, .ss) {
+  color: var(--code-string);
+}
+main .highlight :is(.m, .mb, .mf, .mh, .mi, .mo, .il) {
+  color: var(--code-number);
+}
+main .highlight :is(.nf, .fm) {
+  color: var(--code-function);
+}
+main .highlight :is(.nc, .nn, .ne, .kt) {
+  color: var(--code-class);
+}
+main .highlight :is(.no, .nb, .bp) {
+  color: var(--code-constant);
+}
+main .highlight .nt {
+  color: var(--code-tag);
+}
+main .highlight .na {
+  color: var(--code-attr);
+}
+main .highlight :is(.o, .ow) {
+  color: var(--code-operator);
+}
+main .highlight .p {
+  color: var(--code-punct);
+}
+main .highlight .gi {
+  color: var(--code-added);
+}
+main .highlight :is(.gd, .err) {
+  color: var(--code-removed);
+}
+main .highlight :is(.gh, .gu) {
+  color: var(--code-comment);
+  font-weight: 600;
+}
+main .highlight .gs {
+  font-weight: 600;
+}
+main .highlight .ge {
+  font-style: italic;
+}
+
+/* ---- tables ----
+   display: block is what lets a table too wide for the column scroll inside
+   itself; left as a table box it has no scroll container of its own and
+   pushes the whole page sideways instead. kramdown writes column alignment
+   as an inline style on each cell, so it still wins over the default here. */
+main table {
+  display: block;
+  overflow-x: auto;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+main th,
+main td {
+  padding: 0.5rem 0.875rem;
+  border-bottom: 1px solid var(--ctp-surface0);
+  text-align: left;
+  vertical-align: top;
+}
+main thead th {
+  border-bottom: 2px solid var(--ctp-overlay0);
+  font-weight: 600;
+  white-space: nowrap;
+}
+main tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+/* kramdown hands maths back as source unless MathJax is on the page (see
+   _layouts/default.html) — dress it as source so an opted-out page reads as
+   a deliberate choice rather than a rendering failure */
+main .math {
+  font-family: var(--mono);
+  font-size: 0.9em;
+}
+main div.math {
+  margin: 1.5rem 0;
+  padding: 1rem 1.125rem;
+  background: var(--ctp-mantle);
+  border-left: 3px solid var(--ctp-surface1);
+  overflow-x: auto;
 }
 main img {
   max-width: 100%;
@@ -715,17 +911,37 @@ main img {
   display: block;
   margin: 1.5rem 0;
 }
+/* ---- image helpers ----
+   each of these matches either a wrapping element or the image itself, so a
+   post can hang the class off a kramdown IAL and stay in markdown instead of
+   dropping into raw HTML:
+
+     ![alt](/a.jpg){: .img-float-right}
+     ![alt](/a.jpg){: .img-center-sm}
+
+     ![one](/a.jpg) ![two](/b.jpg)
+     {: .img-pair}
+
+   the <div class="img-float-right"> form earlier posts use still works. */
 .img-pair {
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
+  margin: 1.5rem 0;
+  /* written as a paragraph it would otherwise inherit the prose measure and
+     stop short of the column it is sitting in */
+  max-width: none;
 }
 .img-pair img {
   flex: 1 1 220px;
-  margin: 1.5rem 0;
+  min-width: 0;
+  margin: 0;
 }
 .img-center-sm {
-  max-width: 480px;
+  /* min(), not a bare 480px: on a wrapper element that would cap the box,
+     but hung on the image itself it is a licence to grow to 480px whatever
+     the column is doing — which walks straight off a phone screen */
+  max-width: min(480px, 100%);
   margin: 1.5rem auto;
 }
 .img-center-sm img {
@@ -734,7 +950,7 @@ main img {
 @media (min-width: 768px) {
   .img-float-left,
   .img-float-right {
-    max-width: 320px;
+    max-width: min(320px, 100%);
   }
   .img-float-left {
     float: left;
@@ -814,6 +1030,18 @@ main img {
   .post-layout--aside-last .post-content {
     order: 1;
   }
+}
+/* grid items are min-width: auto by default, so anything that refuses to
+   shrink — a wide table, a long line of code — widens the column instead of
+   scrolling inside it, and takes the whole page sideways with it. flow-root
+   is so the article contains its own floats rather than letting a tall one
+   spill past the end of the post. */
+.post-content {
+  display: flow-root;
+  min-width: 0;
+}
+.post-meta {
+  min-width: 0;
 }
 /* the grid column is already the width constraint here — the site-wide
    62ch cap on main p/li was fighting it, leaving the post column half-empty */

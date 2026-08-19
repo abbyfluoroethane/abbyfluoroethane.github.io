@@ -6,6 +6,7 @@ date: 2026-08-19
 permalink: /extras/markdown/
 description: every markdown construct this site can emit, on one page, to find the gaps in the stylesheet.
 sitemap: false
+mathjax: true
 ---
 
 Every construct kramdown can emit, in the same layout a blog post renders in,
@@ -26,9 +27,10 @@ different problem from the stylesheet not covering it.
 ##### h5 — the quick brown fox
 ###### h6 — the quick brown fox
 
-Only `h1`, `h2` and `h3` have rules under `main` today; `h4`–`h6` are here to
-show what they fall back to. The `h1` above is the second on the page — the
-post title in the sidebar is the first.
+All six have rules under `main`. The `h1` above is the second on the page —
+the post title in the sidebar is the first. Every heading also carries
+`clear: both`, so a floated image can't ride up past the section it was
+written in.
 
 ### a heading directly above a paragraph
 
@@ -346,35 +348,56 @@ An image with a title, wrapped in a link:
 
 [![MacBook Neo]({{ '/assets/images/macbook-neo.jpg' | relative_url }} "the title attribute")](https://example.com)
 
-An image inline in a sentence — ![the last.fm mark]({{ '/assets/images/lastfm.svg' | relative_url }}) — sitting among text.
+An image written inline in a sentence — ![the last.fm mark]({{ '/assets/images/lastfm.svg' | relative_url }}) — which lands on its own line
+anyway, because `main img` is `display: block` for the benefit of posts. The
+mark is also an SVG carrying only a `viewBox`, so it has no intrinsic size to
+fall back on and takes the full width it is offered. Both are the styling
+working as intended rather than faults; an inline mark wants explicit
+dimensions and a rule of its own.
 
 An image whose source does not resolve, so only the alt text is left:
 
 ![this alt text is all that should render]({{ '/assets/images/does-not-exist.png' | relative_url }})
 
-The site's own image helpers, which posts use as raw HTML rather than through
-markdown:
+### the image helpers
 
-<div class="img-pair">
-  <img src="{{ '/assets/images/macbook-unibody.jpg' | relative_url }}" alt="MacBook 2010" loading="lazy" decoding="async">
-  <img src="{{ '/assets/images/macbook-neo.jpg' | relative_url }}" alt="MacBook Neo" loading="lazy" decoding="async">
-</div>
+`.img-pair`, `.img-float-left`, `.img-float-right` and `.img-center-sm` all
+take a kramdown IAL, so a post writes them in markdown and never drops into
+raw HTML. Attributes ride along in the same braces:
 
-<div class="img-float-right">
-  <img src="{{ '/assets/images/sfo-landing.jpg' | relative_url }}" alt="Boeing 737 on approach to SFO" loading="lazy" decoding="async">
-</div>
+```
+![alt](/a.jpg){: .img-float-right loading="lazy"}
+
+![one](/a.jpg) ![two](/b.jpg)
+{: .img-pair}
+```
+
+A pair, written as one paragraph with a block IAL under it:
+
+![MacBook 2010]({{ '/assets/images/macbook-unibody.jpg' | relative_url }}){: loading="lazy" decoding="async"}
+![MacBook Neo]({{ '/assets/images/macbook-neo.jpg' | relative_url }}){: loading="lazy" decoding="async"}
+{: .img-pair}
+
+A right float, with a span IAL on the image itself:
+
+![Boeing 737 on approach to SFO]({{ '/assets/images/sfo-landing.jpg' | relative_url }}){: .img-float-right loading="lazy" decoding="async"}
 
 Text set beside a right-floated image. This paragraph needs to run long enough
 to actually wrap around the float, otherwise the helper has nothing to prove.
-The float should clear before the next heading, and the text should not crowd
-the image's edge.
+The float clears at the next heading, and the text should not crowd the
+image's edge.
 
-<div class="img-float-left">
-  <img src="{{ '/assets/images/macbook-unibody.jpg' | relative_url }}" alt="MacBook 2010" loading="lazy" decoding="async">
-</div>
+A left float, and a short paragraph after it — deliberately too short to reach
+the bottom of the image, which is the case that used to leave the float
+hanging into whatever came next:
 
-The same again on the left, with another paragraph long enough to wrap past
-the bottom of the image so the clearing behaviour is visible either way.
+![MacBook 2010]({{ '/assets/images/macbook-unibody.jpg' | relative_url }}){: .img-float-left loading="lazy" decoding="async"}
+
+One short line.
+
+### centred and constrained
+
+![Boeing 737 on approach to SFO]({{ '/assets/images/sfo-landing.jpg' | relative_url }}){: .img-center-sm loading="lazy" decoding="async"}
 
 ## raw html blocks
 
@@ -411,11 +434,12 @@ article, in a `div.footnotes` with its own ordered list and return arrows.[^seco
 
 ## math
 
-**Known non-feature.** GitHub Pages sets `math_engine` to MathJax, but no
-MathJax script is loaded on this site, so kramdown's output is left as bare
-LaTeX delimiters in the text — `\(` … `\)` inline and `\[` … `\]` for display.
-Both should appear below as literal source rather than as equations. Styling
-cannot fix this; loading MathJax, or turning the engine off, would.
+GitHub Pages forces `math_engine` to MathJax and the setting cannot be turned
+off from `_config.yml`, so kramdown always emits `\(` … `\)` and `\[` … `\]`
+delimiters. This page sets `mathjax: true` in its front matter, which is what
+loads MathJax — see `_layouts/default.html`. Both of the following should
+render as typeset equations. On a page without that flag they stay as source,
+which `site.css` marks up as such rather than leaving loose in the prose.
 
 Inline: $$e^{i\pi} + 1 = 0$$
 
