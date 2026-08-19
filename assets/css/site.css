@@ -476,6 +476,25 @@ main > *:not(.tile-grid) { animation-delay: 120ms; }
   opacity: 1;
 }
 
+/* ---- caption / cover handover ----
+   the caption and the cover belong to the same track, so they turn over as
+   one (the timing lives in _includes/lastfm-widget.html): the caption dips
+   out across the first half of the cover's crossfade and comes back over the
+   second, so it is never readable against art from a different track. */
+.lastfm-swap {
+  transition: opacity 0.2s ease;
+}
+.lastfm-swap.is-swapping {
+  opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  /* no dip — the caption just changes over on the beat the cover does,
+     rather than blinking out and back with the transition removed */
+  .lastfm-swap.is-swapping {
+    opacity: 1;
+  }
+}
+
 /* ---- live tiles (blog / music on the home page) ---- */
 .tile-live-tile {
   display: block;

@@ -70,6 +70,32 @@
     return t.artist && (t.artist["#text"] || t.artist.name) || "unknown artist";
   }
 
+  // last.fm gives every scrobble time twice: date["#text"] rendered in UTC,
+  // and date.uts as a unix timestamp. formatting the timestamp puts the time
+  // in whatever zone the visitor is actually in. the locale is pinned to
+  // en-GB because it reproduces last.fm's own "17 Aug 2026, 19:01" exactly,
+  // so the zone is the only thing that changes.
+  var whenFormat = window.Intl && Intl.DateTimeFormat
+    ? new Intl.DateTimeFormat("en-GB", {
+        day: "2-digit", month: "short", year: "numeric",
+        hour: "2-digit", minute: "2-digit",
+      })
+    : null;
+
+  // a <time> carrying the exact instant, or null for a track with no
+  // scrobble time (the now-playing one). falls back to last.fm's own UTC
+  // string if the timestamp is missing or unparseable.
+  function scrobbleTime(t) {
+    var d = t.date || {};
+    var secs = parseInt(d.uts, 10);
+    var at = whenFormat && isFinite(secs) ? new Date(secs * 1000) : null;
+    var text = at ? whenFormat.format(at) : d["#text"];
+    if (!text) return null;
+    var stamp = line("time", "card-date", text);
+    if (at) stamp.setAttribute("datetime", at.toISOString());
+    return stamp;
+  }
+
   /* ---- skeletons ----
      the widget's shape is built once, up front, with a shimmering bar parked
      in every slot. filling a slot in overwrites its bar, so text lands
@@ -134,15 +160,33 @@
     settle(stack);
   }
 
+  // a cover we are not going to get, because it errored or because it never
+  // settled. if a cover from an earlier track is still on screen, leave it
+  // there rather than dropping the mark on top of it; otherwise lift the
+  // shimmer and let the surface underneath stand in.
+  function giveUp(stack) {
+    if (stack.classList.contains("has-art")) settle(stack);
+    else showFallback(stack);
+  }
+
   // point a stack at a cover ("" for a track last.fm has no art for). the
   // first cover is revealed by the shimmer lifting off it; every one after
   // that crossfades over the cover already on screen.
-  function setArt(stack, url) {
-    if (!stack || stack.dataset.art === url) return;
+  // onReady fires once the stack has settled on the url asked for, whether
+  // that ended in a cover, the mark, or a cover that never came. it does not
+  // fire at all if a newer url supersedes this one — that call owns the
+  // stack, and brings its own onReady.
+  function setArt(stack, url, onReady) {
+    var ready = onReady || function () {};
+    if (!stack || stack.dataset.art === url) {
+      ready();
+      return;
+    }
     stack.dataset.art = url;
     if (!url) {
       dropLayers(stack);
       showFallback(stack);
+      ready();
       return;
     }
 
@@ -172,23 +216,24 @@
       setTimeout(function () {
         outgoing.forEach(function (old) { old.remove(); });
       }, firstPaint ? 0 : ART_FADE);
+      ready();
     });
     layer.addEventListener("error", function () {
       layer.remove();
-      if (stack.dataset.art === url) showFallback(stack);
+      if (stack.dataset.art !== url) return;
+      giveUp(stack);
+      ready();
     });
     stack.appendChild(layer);
     layer.src = url;
 
     if (stack.artTimer) clearTimeout(stack.artTimer);
     stack.artTimer = setTimeout(function () {
+      // still nothing. the load handler above still takes over if the cover
+      // does turn up after this.
       if (stack.dataset.art !== url) return;
-      // still nothing. if a cover from an earlier track is on screen, leave
-      // it there rather than dropping the mark on top of it; otherwise lift
-      // the shimmer and let the surface underneath stand in. either way the
-      // load handler above still takes over if the cover does turn up.
-      if (stack.classList.contains("has-art")) settle(stack);
-      else showFallback(stack);
+      giveUp(stack);
+      ready();
     }, ART_TIMEOUT);
   }
 
@@ -199,13 +244,60 @@
   var rendered = false;
   var lastSig = null;
   var lastTracks = null;
+  // set once the widget has settled on a message instead of a track, so the
+  // history list doesn't shimmer on as if a response were still coming
+  var noticed = false;
+
+  /* ---- caption / cover handover ----
+     a cover crossfades in over ART_FADE, so writing the new title the moment
+     the payload lands captions the outgoing album with the incoming track.
+     the caption is held back until the cover it belongs to is ready, and
+     then dips out across the first half of that crossfade and returns over
+     the second — so it is never legible against art from another track. */
+
+  // the caption changes over at the midpoint of the cover's crossfade, where
+  // the two are blended evenly and neither owns the tile. .lastfm-swap in
+  // site.css dips it out over 200ms, deliberately shorter than this: the
+  // caption has to be gone *before* the incoming cover is the one you can
+  // see, not at the same moment.
+  var TEXT_SWAP = ART_FADE / 2;
+  var textShown = false;
+  var swapTimer = null;
+  var swapId = 0;
+
+  function fadeCaption(out) {
+    [els.label, els.title, els.artist, els.album].forEach(function (n) {
+      if (n) n.classList.toggle("is-swapping", out);
+    });
+  }
+
+  function cancelSwap() {
+    swapId++;
+    if (swapTimer) {
+      clearTimeout(swapTimer);
+      swapTimer = null;
+    }
+    fadeCaption(false);
+  }
+
+  function handOver(apply) {
+    var id = ++swapId;
+    if (swapTimer) clearTimeout(swapTimer);
+    fadeCaption(true);
+    swapTimer = setTimeout(function () {
+      if (id !== swapId) return; // a further track landed mid-dip
+      swapTimer = null;
+      apply();
+      fadeCaption(false);
+    }, TEXT_SWAP);
+  }
 
   function buildTile() {
     root.textContent = "";
-    els.label = el("p", "tile-live-label");
-    els.title = el("p", "tile-live-title");
-    els.artist = el("p", "tile-live-artist");
-    els.album = el("p", "tile-live-album");
+    els.label = el("p", "tile-live-label lastfm-swap");
+    els.title = el("p", "tile-live-title lastfm-swap");
+    els.artist = el("p", "tile-live-artist lastfm-swap");
+    els.album = el("p", "tile-live-album lastfm-swap");
     [els.label, els.title, els.artist, els.album].forEach(function (n) { root.appendChild(n); });
     setBar(els.label, "40%");
     setBar(els.title, "85%");
@@ -221,13 +313,13 @@
 
   function buildAside() {
     root.textContent = "";
-    els.label = el("h2", "lastfm-label");
+    els.label = el("h2", "lastfm-label lastfm-swap");
     els.coverLink = el("a", "lastfm-cover-link");
     stack = makeStack("lastfm-cover");
     els.coverLink.appendChild(stack);
-    els.title = el("h3", "lastfm-track-title");
-    els.artist = el("h4", "lastfm-track-artist");
-    els.album = el("h4", "lastfm-track-album");
+    els.title = el("h3", "lastfm-track-title lastfm-swap");
+    els.artist = el("h4", "lastfm-track-artist lastfm-swap");
+    els.album = el("h4", "lastfm-track-album lastfm-swap");
     root.appendChild(els.label);
     root.appendChild(els.coverLink);
     [els.title, els.artist, els.album].forEach(function (n) { root.appendChild(n); });
@@ -254,29 +346,53 @@
 
   function renderNow(first) {
     var nowPlaying = !!(first["@attr"] && first["@attr"].nowplaying === "true");
-    setLine(els.label, nowPlaying ? "now playing" : "last played");
-    setLine(els.title, first.name || "unknown track");
-    setLine(els.artist, trackArtist(first));
-    setLine(els.album, first.album && first.album["#text"]);
-    setCoverLink(safeUrl(first.url));
-    setArt(stack, safeUrl(artUrl(first)));
+    var label = nowPlaying ? "now playing" : "last played";
+    var title = first.name || "unknown track";
+    var artist = trackArtist(first);
+    var album = first.album && first.album["#text"];
+    var href = safeUrl(first.url);
+    var art = safeUrl(artUrl(first));
+
+    function apply() {
+      setLine(els.label, label);
+      setLine(els.title, title);
+      setLine(els.artist, artist);
+      setLine(els.album, album);
+      setCoverLink(href);
+    }
+
+    // the first track in goes straight to the screen: what it replaces is the
+    // skeleton, and there is no outgoing cover for it to caption wrongly.
+    // holding it back for the art would only mean staring at bars for as long
+    // as the cover takes.
+    if (!textShown) {
+      textShown = true;
+      cancelSwap();
+      apply();
+      setArt(stack, art);
+      return;
+    }
+    setArt(stack, art, function () { handOver(apply); });
   }
 
   // nothing to show, either because the account has no scrobbles or because
   // last.fm couldn't be reached and there was no cached response to fall
   // back on. the tile keeps its own colour and the last.fm mark.
   function renderNotice(text) {
+    noticed = true;
+    // whatever cover was on its way is no longer coming, so nothing is left
+    // to hand over to — and the next real track counts as a first paint again
+    cancelSwap();
+    textShown = false;
     setLine(els.label, "");
     setLine(els.title, text);
     setLine(els.artist, "");
     setLine(els.album, "");
     setCoverLink("");
     setArt(stack, "");
-    var list = historyList();
-    if (list) {
-      list.textContent = "";
-      list.removeAttribute("aria-busy");
-    }
+    // a message is as settled as a track — nothing else is on its way
+    root.removeAttribute("aria-busy");
+    clearHistory();
   }
 
   /* ---- history list ---- */
@@ -294,8 +410,8 @@
     card.appendChild(cover);
 
     var info = el("span", "lastfm-history-info");
-    var when = t.date && t.date["#text"];
-    if (when) info.appendChild(line("span", "card-date", when));
+    var when = scrobbleTime(t);
+    if (when) info.appendChild(when);
     info.appendChild(line("span", "card-title", t.name || "unknown track"));
     info.appendChild(line("span", "card-desc", trackArtist(t)));
     card.appendChild(info);
@@ -322,6 +438,13 @@
       card.appendChild(info);
       list.appendChild(card);
     }
+  }
+
+  function clearHistory() {
+    var list = historyList();
+    if (!list) return;
+    list.textContent = "";
+    list.removeAttribute("aria-busy");
   }
 
   function renderHistory(tracks) {
@@ -360,13 +483,18 @@
     lastSig = sig;
     lastTracks = tracks;
     rendered = true;
+    noticed = false;
     root.removeAttribute("aria-busy");
     renderNow(tracks[0]);
     renderHistory(tracks);
   }
 
+  // the list is parsed after the script that owns it, so by the time this
+  // runs the widget may already have settled — on a track, or on a notice
+  // that ran while historyList() was still null
   function fillHistory() {
     if (lastTracks) renderHistory(lastTracks);
+    else if (noticed) clearHistory();
     else buildHistorySkeleton();
   }
 
