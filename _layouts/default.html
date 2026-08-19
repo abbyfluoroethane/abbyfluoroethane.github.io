@@ -40,6 +40,17 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/metro/3.0.18/css/metro.min.css" integrity="sha384-e62zLAmzTmk6W8y6LlKtvIKFJTbNGrra4U/Uk4lJp7BlEzTn3H5L25O0PH4LPpcQ" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/metro/3.0.18/css/metro-icons.min.css" integrity="sha512-FkUlwUt7GJVrK3IUMpBf8e8ab73d3XwjvN1bjaRta6XTyzCNjEdpR4sK4WA9pB6gU2nClwnmPwZxhQGcYZOKEg==" crossorigin="anonymous">
   <link rel="stylesheet" href="{{ '/assets/css/site.css' | relative_url }}">
+  {%- comment -%}
+    github-pages forces kramdown's math_engine to mathjax and the setting
+    can't be turned off from _config.yml, so a page using $$…$$ emits bare
+    \( \) and \[ \] delimiters into the prose unless MathJax is there to
+    pick them up. those are MathJax 3's own defaults, so the script needs no
+    configuring — just loading. opt in per page with `mathjax: true` in the
+    front matter; every other page pays nothing.
+  {%- endcomment -%}
+  {% if page.mathjax %}
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js" integrity="sha384-M5jmNxKC9EVnuqeMwRHvFuYUE8Hhp0TgBruj/GZRkYtiMrCRgH7yvv5KY+Owi7TW" crossorigin="anonymous"></script>
+  {% endif %}
 </head>
 <body>
   <div class="page-shell">

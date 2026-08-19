@@ -24,9 +24,7 @@ Wow, shut the fuck up idiot. No you aren't, you actually just entered into the s
 
 Perhaps the thing that hit hardest was how the people building alongside me seemed to just not care. To them this isn't necessarily a dream come true, it's just a paycheck. You would be shocked how many people I've had to inform that Project Kuiper[^3] is, in fact, an Amazon thing, not Blue Origin. They're not wrong for this—it *is* just a job—but as an enthusiast that knows the ins and outs of damn near every semi-major player in the industry it was definitely a culture shock that stung a little. I found myself wondering if someone like myself—whose enthusiasm, not experience got them the job—had a place in this role.
 
-<div class="img-center-sm">
-  <img src="https://www.blueorigin.com/_next/image?url=https%3A%2F%2Fd1o72l87sylvqg.cloudfront.net%2Fredstone%2Fgallery-blue-origin-new-glenn-ng-1-liftoff-horizontal.jpg&w=3840&q=75" alt="New Glenn NG-1 liftoff">
-</div>
+![New Glenn NG-1 liftoff](https://www.blueorigin.com/_next/image?url=https%3A%2F%2Fd1o72l87sylvqg.cloudfront.net%2Fredstone%2Fgallery-blue-origin-new-glenn-ng-1-liftoff-horizontal.jpg&w=3840&q=75){: .img-center-sm}
 
 It's a weird feeling getting your dream job and feeling nothing but emptiness. I regained most of the excitement after the first launch of New Glenn—which, thank god, actually hit me the way I needed it to—but the disillusionment lingered. We weren't doing this for the benefit of anyone but a small group of billionaires and the Space Force, the good things—science, exploration, and discovery—were just a secondary side effect. It was hard not to let burnout seep in given where the launch industry started pivoting midway through 2025.
 
@@ -38,9 +36,7 @@ As outlined in [this article](https://lavieohana.medium.com/starship-iv-the-futu
 
 These aren't speculative startups—these are two industry stalwarts betting the next decade of their launch manifest, not to mention their entire futures, on AI compute demand holding. New Glenn exists in part because of Project Sunrise and Terawave. Starship's business case entirely depends on deploying Starlink—and now orbital datacenters—at scale.
 
-<div class="img-float-right">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/b/be/Sputnik_asm.jpg" alt="Sputnik">
-</div>
+![Sputnik](https://upload.wikimedia.org/wikipedia/commons/b/be/Sputnik_asm.jpg){: .img-float-right}
 
 Lavie argues this could be the thing that ushers in the next revolution—not evolution—in the launch industry, an event on the same scale as the first flight of R7 and launch of *Sputnik*. According to napkin math **space based datacenters already pencil out** when using the rough economics of current launch vehicles and Starlink as a stand-in. In fact—if going off just power generation—Starlink already sits at ~0.2% of datacenter power demand, a truly staggering figure. If successful this serves as effectively an infinite money glitch that enables a true space-industrial complex. This could be our bridge to the rest of the solar system, a gateway to worlds we could only dream of exploring in the next 10 generations.
 
@@ -62,9 +58,7 @@ The bottleneck isn't generation—it's transmission, grid interconnection, permi
 
 That said, power generation is the largest non-hardware operational cost for datacenters. As Technology Connections recently laid out on YouTube, solar is already the cheapest electricity generation source in history. Global investment in solar in 2024 exceeded investment in all other electricity generation technologies combined. We could easily capitalize on this to make terrestrial compute even cheaper, yet we choose to continue burning dinosaurs instead of building.
 
-<div class="img-float-left">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Sequoyah_Nuclear_Generating_Station.jpg" alt="Tennessee Valley Authority Sequoyah Generating Station">
-</div>
+![Tennessee Valley Authority Sequoyah Generating Station](https://upload.wikimedia.org/wikipedia/commons/a/a4/Sequoyah_Nuclear_Generating_Station.jpg){: .img-float-left}
 
 The Tennessee Valley Authority was created in 1933 as a federally-owned corporation to provide electricity, flood control, and economic development to the Tennessee Valley. It's now the sixth-largest power supplier and largest public utility in the country, and it receives no taxpayer funding—it operates on its own revenue.
 
@@ -96,9 +90,7 @@ None of this is an exit speech. After everything—the disillusionment, the burn
 
 I'm being drawn somewhere smaller, faster, and full of people who actually give a shit about what they're building. I don't plan on leaving the industry, but I'm done with _this version_ of it. The same thing that got me into aerospace—enthusiasm, not experience—is the same thing pushing me to find a place where it actually matters. I'm not running from rockets, I'm running toward a version of the work that doesn't feel like building someone else's monument.
 
-<div class="img-center-sm">
-  <img src="{{ '/assets/images/sfo-landing.jpg' | relative_url }}" alt="Plane landing" width="1600" height="1200" loading="lazy" decoding="async">
-</div>
+![Plane landing]({{ '/assets/images/sfo-landing.jpg' | relative_url }}){: .img-center-sm width="1600" height="1200" loading="lazy" decoding="async"}
 
 I don't know if it gets better, nor can I promise myself a happy ending. The industry might collapse under its own hype, my next job might be worse, the bubble might pop before I get settled, but the alternative is staying in a role where I've already felt the emptiness. Existing in an organization whose mission I've already seen through, building toward a future I'm not sure I believe in.
 
