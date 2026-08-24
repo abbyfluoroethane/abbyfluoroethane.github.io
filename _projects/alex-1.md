@@ -3,11 +3,9 @@ title: "ALEx-1" rocket engine
 status: active
 featured: true
 article: true
-description: in-development IPA-nitrous rocket engine pushing 1000N thrust. heatsink "cooled."
+description: "in-development IPA-nitrous rocket engine pushing 1000N thrust."
 date: 2025-07-08
 ---
-
-# ALEx-1A
 
 In-development diesel-LOX rocket engine pushing 1000N thrust.
 
