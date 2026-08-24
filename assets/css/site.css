@@ -310,12 +310,21 @@ main > *:not(.tile-grid) { animation-delay: 120ms; }
   grid-auto-rows: 160px;
   gap: 0;
   margin-top: 1rem;
-  /* cap the field at 6 columns: 6 x the 160px track, with gap: 0 there is
+  /* cap the field at 4 columns: 4 x the 160px track, with gap: 0 there is
      nothing else to account for. capping the width rather than switching to
-     repeat(6, 160px) keeps auto-fill free to drop to fewer columns as the
+     repeat(4, 160px) keeps auto-fill free to drop to fewer columns as the
      viewport narrows. the mobile block below sets its own 3-column track, and
      no viewport it applies to is wide enough for this to interfere. */
-  max-width: 960px;
+  max-width: 640px;
+}
+/* six columns, but only once the row genuinely holds them: 120px of left
+   shell padding + a 320px intro + the 56px gap + 960px of tiles + 64px of
+   right padding is 1520 on the nose. below that the field would push the
+   page sideways, so it stays at four. */
+@media (min-width: 1520px) {
+  .tile-grid {
+    max-width: 960px;
+  }
 }
 @media (min-width: 768px) {
   .tile-grid {
@@ -979,9 +988,17 @@ main img {
   grid-template-columns: 1fr;
   gap: 1.5rem;
 }
-@media (min-width: 768px) {
+/* the aside never narrows past 320px — two tile columns, the width the rest
+   of the site is measured in. a percentage alone let it fall to ~190px on a
+   tablet, which is too narrow to read a date and a title in.
+
+   1000, not 768: 120px of left shell padding + the 320px floor + the 48px
+   gap + a 448px content column + 64px of right padding is just under 1000.
+   below that the two of them cannot both hold their minimum, so the layout
+   stacks instead of squeezing. */
+@media (min-width: 1000px) {
   .post-layout {
-    grid-template-columns: 33% 66%;
+    grid-template-columns: minmax(320px, 33%) minmax(0, 1fr);
     gap: 3rem;
     align-items: start;
   }
@@ -994,7 +1011,7 @@ main img {
   .post-layout {
     /* leaves the last quarter of the row empty on purpose — a true middle
        column, not just "meta plus everything else" */
-    grid-template-columns: 25% 50%;
+    grid-template-columns: minmax(320px, 25%) minmax(0, 50%);
   }
 }
 .post-meta .post-date {
@@ -1013,7 +1030,7 @@ main img {
   margin: 0.75rem 0 0;
   color: var(--ctp-subtext0);
 }
-@media (max-width: 767px) {
+@media (max-width: 999px) {
   .post-meta {
     display: flex;
     flex-direction: column;
@@ -1088,9 +1105,18 @@ main img {
   gap: 1.25rem;
   margin-top: 1.5rem;
 }
-@media (min-width: 768px) {
+/* 1200, not 768: the intro column is floored at 320px (see .post-meta below
+   for the same floor), and 120 + 320 + 56 + 640 + 64 is 1200. narrower than
+   that and there is no room for both at their minimums, so they stack rather
+   than squeeze.
+
+   the tile track is max-content — that resolves to .tile-grid's max-width, so
+   the field always gets its whole 4 or 6 columns and the intro takes what is
+   left up to 420px. any slack lands on the right, which is where the start
+   screen wants it. */
+@media (min-width: 1200px) {
   .home-layout {
-    grid-template-columns: minmax(260px, 420px) 1fr;
+    grid-template-columns: minmax(320px, 420px) max-content;
     gap: 3.5rem; /* horizontal only once side-by-side — not the stacked row gap */
     align-items: start;
   }
