@@ -11,6 +11,12 @@ tagline: Rocket mechanic and quality complainer at Astra. Former Blue Origin.
 ### Quality Technician, Astra
 #### **2026 – Present**
 
+- Inspect and troubleshoot hardware quality issues on the production line.
+- Document nonconformances and support root cause investigations per AS9100-compliant procedures.
+- Interpret engineering drawings and GD&T callouts to verify part and assembly conformance.
+- Coordinate with production and engineering teams to resolve quality issues and prevent recurrence.
+- Maintain inspection records and calibration of tools and equipment.
+
 ### Production Technician, Astra
 #### **2026 – 2026**
 
