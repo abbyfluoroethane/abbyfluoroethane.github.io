@@ -1,5 +1,5 @@
 ---
-title: "ALEx-1" rocket engine
+title: "ALEx-1 rocket engine"
 status: active
 featured: true
 article: true
