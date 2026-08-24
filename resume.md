@@ -22,51 +22,29 @@ tagline: Rocket mechanic and quality complainer at Astra. Former Blue Origin.
 - Assemble and test pneumatic, hydraulic, and monopropellant subassemblies for New Glenn's first stage.
 - Install high-performance cryogenic insulation systems (Cryogel-Z, SOFI, MLI) and proprietary thermal protection materials.
 - Operate in cleanroom and ESD controlled environments to preserve component cleanliness and system integrity.
-- Perform precision drilling, reaming, and machining operations on large-scale aerospace structures using hand and power tools.
+- Do precision drilling, reaming, and machining operations on large-scale aerospace structures using hand and power tools.
 - Certified in Laser Operation and part marking per AS478 and internal specifications.
 - Inspect parts and assemblies using calipers, micrometers, dial indicators, and engineer's scales to verify dimensional conformance.
 - Interpret engineering drawings, GD&T callouts, and 3D models in Creo to execute complex build sequences.
-- Perform avionics work including soldering, wire harness fabrication, installation, connector pinning, and inspection.
+- Do avionics work including soldering, wire harness fabrication, installation, connector pinning, and inspection.
 - Assist in rigging and crane operations for oversized and heavy components.
-- Document all work per AS9100-compliant procedures; execute and provide feedback on work instructions.
-- Support test campaigns including setup, execution, and teardown of high-pressure proof tests, leak tests, and system-level functional checkouts; log data and complete test documentation per procedure requirements.
+- Document all work per AS9100-compliant procedures. Execute work instructions and give feedback on them.
+- Support test campaigns including setup, execution, and teardown of high-pressure proof tests, leak tests, and system-level functional checkouts. Log data and complete test documentation per procedure requirements.
 - Contributed code bugfixes to internal software products.
 
 ### Head of Design, Tahlequah Daily Press
 #### **2022 – 2024**
 
 - Managed production of two daily newspapers and 10+ annual magazines, coordinating across editorial, advertising, and print teams.
-- Overhauled production workflows, leading to an 88% improvement in ability to meet daily print deadlines.
-
-## Projects
-
-### OPAL (Operations, Procedures, Assets, Logistics)
-#### **2026 – Present**
-
-- Building lightweight ERP software for small teams building complex hardware, with CAD integration with Onshape.
-- Supports AI agent integration with out-of-box MCP server.
-
-### Liquid Propulsion
-#### **2023 – Present**
-
-- Developing a 1000N (225 lbf) IPA/nitrous oxide bipropellant engine, including GSE design, propellant handling, and test operations.
-- Fired a subscale hybrid motor, gaining hands-on experience with high-pressure gas systems, nitrous oxide handling, and test stand setup/teardown.
-- Fabricate custom fluid lines including tube bending, flaring, and oxygen-compatible cleaning for propellant system components.
-
-### Project Longinus
-#### **2023 – Present**
-
-- Designed, assembled, and debugged custom avionics PCBs including RP2040-based flight computers with dual-redundant pyro channels and LoRa telemetry.
-- Created detailed engineering drawings and work instructions for suppliers and assembly operations.
-- Fabricates airframe components using composites layup and vacuum bagging.
+- Overhauled production workflows. As a result, the ability to meet daily print deadlines improved 88%.
 
 ## Skills
 
-**Fabrication/Fluids:** Sheet metal forming · tube bending and flaring · TIG and MIG welding · composites layup and vacuum bagging (fiberglass, carbon fiber) · riveting (CherryMax, solid) · nutplate installation (click bond, riveted) · precision drilling, reaming, and deburring · 3D printing (FDM, SLA, SLS) · helicoil installation · harness routing · safety wire/cable · torque application and marking · rigging and crane operations · band saw · drill press · hydraulic press · manual mill and lathe · oxygen-compatible cleaning
+**Fabrication/Fluids:** sheet metal forming · composites layup and vacuum bagging (fiberglass, carbon fiber) · riveting · nutplate installation (click bond, riveted) · precision drilling, reaming, and deburring · 3D printing (FDM, SLA, SLS) · helicoil installation · harness routing · safety wire/cable · torque application and marking · rigging and crane operations · band saw · drill press · hydraulic press · precision cleaning 
 
-**Technical:** CAD (Creo, Onshape, Autodesk Fusion, KiCad) · inspection (calipers, micrometers, dial indicators, engineer's scales; GD&T interpretation) · high-pressure proof and leak testing · hydraulic and pneumatic system testing · system integration · project management
+**Technical:** CAD (Creo, Onshape, Autodesk Fusion, KiCad) · inspection · high-pressure proof and leak testing · hydraulic and pneumatic system testing · system integration · project management
 
-**Software:** Python · C# .NET · Web Development (HTML, CSS, JavaScript, Jekyll, Jinja2, Astro)
+**Software:** Python · C# .NET · Web Development (HTML, CSS, TypeScript, Jekyll, Jinja2, Astro)
 
 **Design & Media:** Adobe Creative Cloud (Illustrator, InDesign, Photoshop) · Serif Affinity (Designer, Photo, Publisher) · DaVinci Resolve · AP Style
 
