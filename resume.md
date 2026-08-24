@@ -2,9 +2,10 @@
 layout: resume
 title: resume
 permalink: /resume/
-full_name: 
+full_name: Hi, I'm Abby.
 tagline: Rocket mechanic and quality complainer at Astra. Former Blue Origin.
 ---
+
 ## Experience
 
 ### Quality Technician, Astra
