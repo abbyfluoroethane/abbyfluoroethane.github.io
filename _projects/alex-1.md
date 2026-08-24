@@ -7,6 +7,4 @@ description: "in-development IPA-nitrous rocket engine pushing 1000N thrust."
 date: 2025-07-08
 ---
 
-In-development diesel-LOX rocket engine pushing 1000N thrust.
-
-![ALEx-1](../assets/images/thrusty-boi.png)
+![ALEx-1](/assets/images/thrusty-boi.png)
