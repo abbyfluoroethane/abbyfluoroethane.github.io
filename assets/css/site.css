@@ -1023,6 +1023,25 @@ main img {
 .post-meta .post-title {
   margin: 0;
 }
+/* the standfirst under the title: light and large enough to read as part of
+   the headline, quiet enough not to compete with it */
+.post-meta .post-subtitle {
+  margin: 0.625rem 0 0;
+  font-size: 1.125rem;
+  font-weight: 300;
+  line-height: 1.45;
+  color: var(--ctp-subtext0);
+}
+/* the credit line, pitched with the other small caps of the chrome — the
+   app name above the title and a tile's label */
+.post-meta .post-attribution {
+  margin: 0.875rem 0 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: lowercase;
+  color: var(--ctp-overlay1);
+}
 .post-meta .back-link {
   margin-top: 1.5rem;
 }

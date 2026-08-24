@@ -2,6 +2,8 @@
 layout: post
 app_name: extras
 title: markdown
+subtitle: Every construct kramdown can emit, in the layout a *post* renders in.
+attribution: "Style stress test — see [the source](https://github.com/abbyfluoroethane/abbyfluoroethane.github.io/blob/metro-rebuild/extras/markdown.md)"
 date: 2026-08-19
 permalink: /extras/markdown/
 description: every markdown construct this site can emit, on one page, to find the gaps in the stylesheet.
