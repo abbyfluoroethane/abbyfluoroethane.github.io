@@ -19,8 +19,8 @@ layout: default
       because the element is already a paragraph; the corollary is that these
       are single-paragraph fields, which is all either one is for.
     {%- endcomment -%}
-    {% if page.subtitle %}<p class="post-subtitle">{{ page.subtitle | markdownify | remove: '<p>' | remove: '</p>' | strip }}</p>{% endif %}
-    {% if page.attribution %}<p class="post-attribution">{{ page.attribution | markdownify | remove: '<p>' | remove: '</p>' | strip }}</p>{% endif %}
+    {% if page.subtitle %}<h2 class="post-subtitle">{{ page.subtitle | markdownify | remove: '<p>' | remove: '</p>' | strip }}</h2>{% endif %}
+    {% if page.attribution %}<h4 class="post-attribution">{{ page.attribution | markdownify | remove: '<p>' | remove: '</p>' | strip }}</h4>{% endif %}
     <p class="back-link"><a href="{{ '/blog/' | relative_url }}">← back to blog</a></p>
   </aside>
   <article class="post-content">
