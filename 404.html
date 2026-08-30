@@ -2,8 +2,19 @@
 layout: default
 title: "404"
 permalink: /404.html
+bare: true
 ---
-<div class="not-found">
-  <p class="not-found-code">404</p>
-  <p class="not-found-text">this tile doesn't exist. <a href="{{ '/' | relative_url }}">go home</a>.</p>
+<div class="bsod" role="alert" aria-live="polite">
+  <div class="bsod-inner">
+    <p class="bsod-face" aria-hidden="true">:(</p>
+    <p class="bsod-text">
+      This page doesn't exist. <br>
+      You may have entered the URL wrong, or the link has gone stale.
+    </p>
+    <div class="bsod-detail">
+      <p class="bsod-detail-line">If you'd like to know more, you can search online later for this error:</p>
+      <p class="bsod-code">0x00000404 PAGE_NOT_FOUND</p>
+      <p class="bsod-detail-line"><a href="{{ '/' | relative_url }}">go home</a></p>
+    </div>
+  </div>
 </div>

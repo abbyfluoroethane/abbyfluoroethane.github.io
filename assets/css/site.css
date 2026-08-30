@@ -1409,17 +1409,82 @@ main img {
   margin: 0;
 }
 
-/* ---- 404 ---- */
-.not-found-code {
-  margin: 2rem 0 0;
-  font-size: clamp(6rem, 25vw, 12rem);
+/* ---- 404: windows 8 "sad face" bluescreen homage ----
+   a real bluescreen is a fixed hardware-level blue, not a themed surface, so
+   this is the one page on the site that ignores the --ctp light/dark tokens
+   on purpose — a "dark mode bluescreen" would just be a different color and
+   defeat the reference. #1a73c9 was picked over a couple of period-accurate
+   candidates for its white-text contrast (4.84:1, clears AA); it still reads
+   as the right blue. layout uses page.bare (see _layouts/default.html) to
+   drop the Metro header/nav entirely — the real thing has no chrome. */
+.bsod {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  overflow-y: auto;
+  /* top-anchored at a fixed 17vh, not vertically centered — a real
+     bluescreen sits at the same spot from the top regardless of how long
+     the stop message is (there's a lot of empty blue below it), which a
+     flex-centered block would get wrong the moment content height changes.
+     17vh and the ~200px left inset both come from measuring a real
+     1920x1080 sad-face screenshot (top edge ~184px = 17.0% of height, left
+     edge ~203px = 10.6% of width) rather than eyeballing it. left margin
+     is its own value, not reused from .page-shell's 7.5rem — that matches
+     the rest of the site's edge but landed short of the reference here. */
+  padding: 13vh 1.5rem 3rem 0.625rem;
+  background: #1a73c9;
+  color: #fff;
+}
+@media (min-width: 768px) {
+  .bsod {
+    padding: 13vh 4rem 3rem 12.5rem;
+  }
+}
+.bsod-inner {
+  max-width: 720px;
+}
+.bsod-face {
+  /* sizes below are measured off a real 1920x1080 sad-face screenshot
+     (glyph ink height ~179px for ":(" at line-height:1, main text ~40px at
+     line-height:1.5) rather than guessed. the face's font-size runs bigger
+     than that raw 179px target because Segoe UI isn't installed outside
+     Windows — this paints in Selawik (its open substitute, already loaded
+     sitewide), whose "(" glyph is shorter relative to its em-box, so the
+     size is inflated to land on the same rendered ink height instead of
+     the same nominal font-size. */
+  margin: 0 0 1.5rem;
+  font-size: clamp(6.5rem, 11vw, 13.3125rem);
   font-weight: 300;
   line-height: 1;
-  color: var(--ctp-pink);
 }
-.not-found-text {
-  font-size: 1.25rem;
-  text-transform: lowercase;
+.bsod-text {
+  margin: 0 0 2rem;
+  max-width: 42ch;
+  font-size: clamp(1.75rem, 2.1vw, 2.5rem);
+  font-weight: 300;
+  line-height: 1.5;
+}
+.bsod-detail {
+  font-size: 1.125rem;
+  font-weight: 300;
+  line-height: 1.6;
+}
+.bsod-detail-line {
+  margin: 0 0 0.5rem;
+}
+.bsod-code {
+  margin: 0 0 1.25rem;
+  font-family: "Cascadia Code", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  letter-spacing: 0.02em;
+}
+.bsod-detail a,
+.bsod-detail a:visited {
+  color: #fff;
+  text-decoration: underline;
+}
+.bsod-detail a:hover {
+  color: #fff;
+  opacity: 0.85;
 }
 
 /* ---- live tiles on short 2.05:1 mobile wide tiles: room is tight, so
