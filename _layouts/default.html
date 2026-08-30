@@ -53,6 +53,14 @@
   {% endif %}
 </head>
 <body>
+  {%- comment -%}
+    page.bare skips the Metro chrome (header, nav, page-shell padding)
+    entirely for a page that needs to own the whole viewport — the 404's
+    bluescreen homage is the only user of this so far.
+  {%- endcomment -%}
+  {% if page.bare %}
+{{ content }}
+  {% else %}
   <div class="page-shell">
     <header class="site-header">
       {% if page.title %}
@@ -85,5 +93,6 @@
 {{ content }}
     </main>
   </div>
+  {% endif %}
 </body>
 </html>
