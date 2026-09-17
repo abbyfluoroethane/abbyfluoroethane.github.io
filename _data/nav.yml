@@ -20,7 +20,7 @@
   url: /music/
   icon: mif-music
   size: large
-  color: orange
+  color: red
   navbar: true
 
 - name: projects
