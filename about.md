@@ -29,25 +29,23 @@ permalink: /about/
 
 ## Haiii, I'm Abby :3
 
-Welcome to my little corner of the internet. I build things that go to space, break things that stay on Earth, and occasionally muse about my thoughts on this site.
+Welcome to my website. I build things that go to space, break things that stay on Earth, and occasionally muse about my thoughts on this site.
 
 ### What I do for fun
 
-Outside of work, I build things that fly. I'm working on ALEx-1, a liquid rocket engine that runs on IPA and nitrous oxide. I also write open source software like OPAL, a lightweight ERP/MES for individuals and small teams that build hardware.
+I'm working on ALEx-1, a liquid rocket engine that runs on diesel and nitrous oxide. I also write open source software.
 
 ### What I do professionally
 
-I'm a quality technician at Astra. I inspect and troubleshoot hardware quality on the production line. Before that, I was a production technician at Astra. I built and tested Hall Effect Thruster components.
+I'm a Quality Engineer at Astra. I inspect and troubleshoot hardware issues on the production line. Before that, I was a Production Technician at working on the Astra Spacecraft Engine.
 
-Before Astra I spent two years at Blue Origin as a subassembly technician, during which I built most of the parts on the first stage of New Glenn. That work covered fluid systems, cryogenic insulation, avionics, and large structures on flight hardware.
+Before Astra I spent two years at Blue Origin as a Subassembly Technician, during which I built most of the parts on the first stage of New Glenn. That work covered fluid systems, cryogenic insulation, avionics, and large structures on flight hardware.
 
-Before Blue Origin, I was head of design at the Tahlequah Daily Press, a newspaper in Tahlequah, Oklahoma. I led production for two daily papers and more than ten yearly magazines.
+Before Blue Origin, I was Head of Design at the Tahlequah Daily Press. I led production for two daily papers and more than ten yearly magazines.
 
 ## About this site
 
-This site is built with Jekyll and styled after Windows 8's Metro design language. It's open source, MIT licensed, and the code lives on GitHub. [Do whatever the fuck you want with it!]({{ '/blog/an-argument-for-doing-whatever-the-fuck-i-want/' | relative_url }})
-
-It used to look like a classic Mac OS desktop, windows and all, but I got bored and rebuilt the whole thing.
+This site is built with Jekyll and styled after Windows 8's Metro design language. It's open source, [do whatever the fuck you want with it!]({{ '/blog/an-argument-for-doing-whatever-the-fuck-i-want/' | relative_url }})
 
   </article>
 </div>
