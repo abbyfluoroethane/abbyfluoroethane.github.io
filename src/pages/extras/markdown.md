@@ -3,7 +3,7 @@ layout: ../../layouts/MarkdownPostLayout.astro
 app_name: extras
 title: markdown
 subtitle: Every construct the markdown pipeline can emit, in the layout a *post* renders in.
-attribution: "Style stress test — see [the source](https://github.com/abbyfluoroethane/abbyfluoroethane.github.io/blob/metro-rebuild/extras/markdown.md)"
+attribution: "Style stress test — see [the source](https://github.com/abbyfluoroethane/abbyfluoroethane.github.io/blob/metro-rebuild/src/pages/extras/markdown.md)"
 date: 2026-08-19
 description: every markdown construct this site can emit, on one page, to find the gaps in the stylesheet.
 mathjax: true
