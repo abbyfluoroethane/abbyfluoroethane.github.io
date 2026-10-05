@@ -1,5 +1,5 @@
 ---
-layout: ../layouts/pages/DefaultPage.astro
+layout: ../layouts/MarkdownPageLayout.astro
 title: GS1 internal names
 ---
 

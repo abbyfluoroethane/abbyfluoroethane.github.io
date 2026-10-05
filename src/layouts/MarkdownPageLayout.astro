@@ -1,0 +1,13 @@
+---
+// Layout for plain markdown pages in src/pages (gleh). Markdown pages pass
+// their front matter as `frontmatter`.
+import Base from './Base.astro';
+
+export interface Props {
+  frontmatter: { title: string; description?: string };
+}
+const { title, description } = Astro.props.frontmatter;
+---
+<Base {title} {description}>
+  <slot />
+</Base>

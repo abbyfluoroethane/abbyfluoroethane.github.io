@@ -1,8 +1,0 @@
----
-// Wrapper for plain .md pages: reads frontmatter, wraps Base.
-import Base from '../Base.astro';
-const { frontmatter } = Astro.props;
----
-<Base title={frontmatter.title} description={frontmatter.description} currentPath={Astro.url.pathname}>
-  <slot />
-</Base>

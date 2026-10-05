@@ -1,5 +1,5 @@
 ---
-layout: ../../layouts/pages/PostPage.astro
+layout: ../../layouts/MarkdownPostLayout.astro
 app_name: extras
 title: markdown
 subtitle: Every construct kramdown can emit, in the layout a *post* renders in.

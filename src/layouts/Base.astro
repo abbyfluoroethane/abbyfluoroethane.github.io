@@ -1,50 +1,47 @@
 ---
+import '../styles/site.css';
+import selawkLight from '../assets/fonts/selawkl.woff2?url';
+import selawkRegular from '../assets/fonts/selawk.woff2?url';
 import { site } from '../site';
-import nav from '../data/nav.yml';
+import { getNav } from '../lib/collections';
+import { formatXmlDate } from '../lib/format';
 
 export interface Props {
   title?: string;
   description?: string;
+  /** Share image, as a root-relative or absolute URL. */
   image?: string;
+  /** Header label. Defaults to the title. */
   appName?: string;
+  /** Skip the header and nav, for a page that owns the whole viewport (404). */
   bare?: boolean;
+  /** Load MathJax for \( \) and \[ \] delimiters. */
   mathjax?: boolean;
   ogType?: 'website' | 'article';
   publishedTime?: Date;
-  currentPath: string;
-  currentSection?: 'projects' | 'blog';
 }
 
 const {
   title,
-  description,
+  description = site.description,
   image,
   appName,
   bare = false,
   mathjax = false,
   ogType = 'website',
   publishedTime,
-  currentPath,
-  currentSection,
 } = Astro.props;
 
-const abs = (p: string) => new URL(p, Astro.site ?? site.url).href;
-const ogDescription = description || site.description;
+const path = Astro.url.pathname;
+const abs = (p: string) => new URL(p, Astro.site).href;
 const fullTitle = title ? `${title} · ${site.title}` : site.title;
-const ogTitle = title || site.title;
-const ogImage = abs(image || '/assets/favicon/konata-512.png');
-const ogUrl = abs(currentPath);
-const published = publishedTime
-  ? publishedTime.toISOString().replace(/\.\d+Z$/, '+00:00')
-  : undefined;
-const isHome = currentPath === '/';
-const navItems = (nav as Array<{ name: string; url: string; navbar?: boolean }>).filter(
-  (s) => s.navbar !== false,
-);
-const isCurrent = (s: { name: string; url: string }) =>
-  currentPath === s.url ||
-  (s.name === 'projects' && currentSection === 'projects') ||
-  (s.name === 'blog' && currentSection === 'blog');
+const ogTitle = title ?? site.title;
+const ogImage = abs(image ?? '/assets/favicon/konata-512.png');
+const isHome = path === '/';
+// The blog and projects nav links stay current on their child pages.
+const isCurrent = (url: string) =>
+  path === url || (['/blog/', '/projects/'].includes(url) && path.startsWith(url));
+const nav = (await getNav()).filter((s) => s.navbar);
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -52,55 +49,58 @@ const isCurrent = (s: { name: string; url: string }) =>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{fullTitle}</title>
-  <meta name="description" content={ogDescription}>
+  <meta name="description" content={description}>
+  <link rel="canonical" href={abs(path)}>
   <meta property="og:type" content={ogType}>
-  {ogType === 'article' && published && <meta property="article:published_time" content={published}>}
+  {publishedTime && <meta property="article:published_time" content={formatXmlDate(publishedTime)}>}
   <meta property="og:site_name" content={site.title}>
   <meta property="og:title" content={ogTitle}>
-  <meta property="og:description" content={ogDescription}>
-  <meta property="og:url" content={ogUrl}>
+  <meta property="og:description" content={description}>
+  <meta property="og:url" content={abs(path)}>
   <meta property="og:image" content={ogImage}>
+  {/* "summary", not "summary_large_image", for the fallback: the fallback is
+      the square favicon, and a large card crops a square badly. */}
   <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'}>
   <meta name="twitter:title" content={ogTitle}>
-  <meta name="twitter:description" content={ogDescription}>
+  <meta name="twitter:description" content={description}>
   <meta name="twitter:image" content={ogImage}>
-  <link type="application/rss+xml" rel="alternate" href={abs('/feed.xml')} title={site.title}>
+  <link rel="alternate" type="application/rss+xml" href={abs('/feed.xml')} title={site.title}>
+  <link rel="sitemap" href="/sitemap-index.xml">
   <meta name="theme-color" media="(prefers-color-scheme: light)" content="#eff1f5">
   <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1e1e2e">
   <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/konata-16.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/konata-32.png">
   <link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon/konata-192.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">
-  <link rel="preload" href="/assets/fonts/selawkl.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/assets/fonts/selawk.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href={selawkLight} as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href={selawkRegular} as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/metro/3.0.18/css/metro.min.css" integrity="sha384-e62zLAmzTmk6W8y6LlKtvIKFJTbNGrra4U/Uk4lJp7BlEzTn3H5L25O0PH4LPpcQ" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/metro/3.0.18/css/metro-icons.min.css" integrity="sha512-FkUlwUt7GJVrK3IUMpBf8e8ab73d3XwjvN1bjaRta6XTyzCNjEdpR4sK4WA9pB6gU2nClwnmPwZxhQGcYZOKEg==" crossorigin="anonymous">
-  <link rel="stylesheet" href="/assets/css/site.css">
   {mathjax && <script is:inline defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js" integrity="sha384-M5jmNxKC9EVnuqeMwRHvFuYUE8Hhp0TgBruj/GZRkYtiMrCRgH7yvv5KY+Owi7TW" crossorigin="anonymous"></script>}
 </head>
 <body>
   {bare ? <slot /> : (
-  <div class="page-shell">
-    <header class="site-header">
-      {title ? (
-        <>
-          <p class="site-app-name"><a href="/">abby bigaouette</a></p>
-          <p class="site-title">{appName || title}</p>
-        </>
-      ) : (
-        <p class="site-title">abby bigaouette</p>
-      )}
-      {!isHome && (
-        <nav class="site-nav">
-          <a href="/">home</a>
-          {navItems.map((s) => <a href={s.url} class={isCurrent(s) ? 'current' : undefined}>{s.name}</a>)}
-        </nav>
-      )}
-    </header>
-    <main>
-      <slot />
-    </main>
-  </div>
+    <div class="page-shell">
+      <header class="site-header">
+        {title ? (
+          <>
+            <p class="site-app-name"><a href="/">{site.title}</a></p>
+            <p class="site-title">{appName ?? title}</p>
+          </>
+        ) : (
+          <p class="site-title">{site.title}</p>
+        )}
+        {!isHome && (
+          <nav class="site-nav">
+            <a href="/">home</a>
+            {nav.map((s) => <a href={s.url} class:list={{ current: isCurrent(s.url) }}>{s.name}</a>)}
+          </nav>
+        )}
+      </header>
+      <main>
+        <slot />
+      </main>
+    </div>
   )}
 </body>
 </html>

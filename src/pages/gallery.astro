@@ -1,24 +1,29 @@
 ---
+import { getCollection } from 'astro:content';
+import { getImage, Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
-import gallery from '../data/gallery.yml';
 
-// When the alt text equals the visible caption the image is decorative for
-// screen readers; announcing both repeats the sentence. The first row is
-// above the fold so it loads eagerly. .gallery-item's aspect-ratio reserves
-// space, so no width/height is needed.
-const items = (gallery as { filename: string; alt?: string; caption?: string }[]).map((img, i) => ({
-  src: `/assets/images/gallery/${img.filename}`,
-  alt: img.caption && img.alt === img.caption ? '' : (img.alt ?? ''),
-  caption: img.caption,
-  loading: i < 4 ? 'eager' : 'lazy',
-}));
+const photos = (await getCollection('gallery')).sort((a, b) => a.data.order - b.data.order);
+
+// When the alt text equals the visible caption, the image is decorative for
+// screen readers: announcing both repeats the same sentence. The first row is
+// above the fold, so it loads eagerly. The link opens a large version.
+const items = await Promise.all(
+  photos.map(async ({ data }, i) => ({
+    image: data.image,
+    full: (await getImage({ src: data.image, width: Math.min(data.image.width, 2400) })).src,
+    alt: data.caption && data.alt === data.caption ? '' : data.alt,
+    caption: data.caption,
+    loading: i < 4 ? ('eager' as const) : ('lazy' as const),
+  })),
+);
 ---
-<Base title="gallery" currentPath="/gallery/">
+<Base title="gallery">
   <div class="gallery-grid">
-    {items.map((img) => (
-      <a class="gallery-item" href={img.src} target="_blank" rel="noopener">
-        <img src={img.src} alt={img.alt} loading={img.loading as 'eager' | 'lazy'} decoding="async" />
-        {img.caption && <span class="gallery-caption">{img.caption}</span>}
+    {items.map((item) => (
+      <a class="gallery-item" href={item.full} target="_blank" rel="noopener">
+        <Image src={item.image} alt={item.alt} widths={[400, 800]} sizes="(min-width: 768px) 25vw, 50vw" loading={item.loading} />
+        {item.caption && <span class="gallery-caption">{item.caption}</span>}
       </a>
     ))}
   </div>
