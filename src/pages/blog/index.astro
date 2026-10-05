@@ -4,10 +4,31 @@ import CardGrid from '../../components/CardGrid.astro';
 import PostCard from '../../components/PostCard.astro';
 import { getPosts } from '../../lib/collections';
 
+// Group by year, newest first, like the groups on the Windows 8 Start screen.
 const posts = await getPosts();
+const years = [...new Set(posts.map((p) => p.data.date.getUTCFullYear()))];
+const groups = years.map((year) => ({
+  year,
+  posts: posts.filter((p) => p.data.date.getUTCFullYear() === year),
+}));
 ---
 <Base title="blog">
-  <CardGrid>
-    {posts.map((post) => <PostCard {post} />)}
-  </CardGrid>
+  {groups.map(({ year, posts }) => (
+    <section aria-labelledby={`year-${year}`}>
+      <h2 id={`year-${year}`}>{year}</h2>
+      <CardGrid>
+        {posts.map((post) => <PostCard {post} />)}
+      </CardGrid>
+    </section>
+  ))}
 </Base>
+
+<style>
+  /* Groups sit 80px apart, the Windows 8 gap between groups. */
+  h2 {
+    margin: var(--space-16) 0 var(--space-4);
+  }
+  section:first-child h2 {
+    margin-top: 0;
+  }
+</style>

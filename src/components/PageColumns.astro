@@ -53,14 +53,6 @@ const { asideLast = false, prose = true } = Astro.props;
     display: flow-root;
   }
 
-  /* The column is already the width limit, so drop the 62ch cap from
-     global.css, which would leave the column half empty. */
-  .post-content :global(p),
-  .post-content :global(li),
-  .post-content :global(blockquote) {
-    max-width: none;
-  }
-
   /* ---- aside basics ---- */
   .post-meta :global(h2) {
     margin: var(--space-8) 0 var(--space-2);

@@ -11,7 +11,6 @@ export interface Props {
     attribution?: string;
     description?: string;
     mathjax?: boolean;
-    app_name?: string;
   };
 }
 const { frontmatter: fm } = Astro.props;
@@ -23,7 +22,7 @@ const { frontmatter: fm } = Astro.props;
   attribution={fm.attribution}
   description={fm.description}
   mathjax={fm.mathjax}
-  appName={fm.app_name}
+  back={{ href: '/', label: 'back to home' }}
 >
   <slot />
 </PostLayout>

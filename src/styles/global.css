@@ -92,6 +92,10 @@
   --type-body-weight: 400;
   --type-body-leading: 1.6;
   --type-title-weight: 600; /* the "title" style: body size, semibold */
+  /* Long-form reading text. The Windows 8 reading apps (News, Reader) set
+     articles larger than the 15px UI body. */
+  --type-reading: 1.125rem; /* 18px */
+  --type-reading-leading: 1.65;
   --type-caption: 0.75rem; /* 12px (9pt): dates, labels */
   --type-caption-weight: 400;
   --type-caption-leading: 1.4;
