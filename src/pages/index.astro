@@ -56,6 +56,7 @@ const iconOf = (icon: string) => icon.replace(/^mif-/, '') as IconName;
           <Tile {...tile} live>
             <TileLive caption cycle>
               <p class="tile-live-label">featured project</p>
+              <div class="tile-cycle-viewport">
               {featuredProjects.map((p, i) => (
                 <div class={`tile-cycle-item${i === 0 ? ' is-active' : ''}`}>
                   <p class="tile-live-title">{p.data.title}</p>
@@ -63,6 +64,7 @@ const iconOf = (icon: string) => icon.replace(/^mif-/, '') as IconName;
                   <p class="tile-live-desc">{p.data.description}</p>
                 </div>
               ))}
+              </div>
             </TileLive>
           </Tile>
         );
@@ -70,12 +72,14 @@ const iconOf = (icon: string) => icon.replace(/^mif-/, '') as IconName;
           <Tile {...tile} live>
             <TileLive caption cycle>
               <p class="tile-live-label">recent guestbook</p>
+              <div class="tile-cycle-viewport">
               {recentEntries.map((e, i) => (
                 <div class={`tile-cycle-item${i === 0 ? ' is-active' : ''}`}>
                   <p class="tile-live-title">{e.name}</p>
                   <p class="tile-live-desc">{e.message}</p>
                 </div>
               ))}
+              </div>
             </TileLive>
           </Tile>
         );
@@ -86,26 +90,33 @@ const iconOf = (icon: string) => icon.replace(/^mif-/, '') as IconName;
 </Base>
 
 <style>
+  /* Intro and tiles are two Start screen groups. Main begins at the
+     content-top line on desktop, so the layout adds no top margin there. */
   .home-layout {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 1.25rem;
-    margin-top: 1.5rem;
+    gap: var(--space-8);
   }
-  /* 1200 and not 768: the intro column is floored at 320px, and 120 + 320 +
-     56 + 640 + 64 is 1200. Narrower than that there is no room for both, so
+  @media (min-width: 768px) {
+    .home-layout {
+      gap: var(--space-16); /* groups are 80px apart */
+    }
+  }
+  /* 1224 and not 768: the intro column is floored at 320px, and 120 + 320 +
+     80 + 640 + 64 is 1224. Narrower than that there is no room for both, so
      they stack. The tile track is max-content, so the field always gets its
      whole 4 or 6 columns and the intro takes the rest up to 420px. */
-  @media (min-width: 1200px) {
+  @media (min-width: 1224px) {
     .home-layout {
       grid-template-columns: minmax(320px, 420px) max-content;
-      gap: 3.5rem; /* side by side, so not the stacked row gap */
       align-items: start;
     }
   }
+  /* The greeting is the screen's title: content title size, Light. */
   .home-heading {
-    margin: 0 0 1rem;
-    font-size: clamp(2.25rem, 6vw, 3rem);
-    font-weight: 300;
+    margin: 0 0 var(--space-4);
+    font-size: var(--type-title-lg);
+    font-weight: var(--type-title-lg-weight);
+    line-height: var(--type-title-lg-leading);
   }
 </style>

@@ -11,13 +11,16 @@ const Tag = href ? 'a' : 'button';
 
 <style>
   .btn {
-    display: inline-block;
-    padding: 0.6rem 1.25rem;
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--touch-target);
+    padding: 0 var(--space-4);
     border: 0;
     background: var(--ctp-pink);
     color: var(--ctp-on-accent);
-    font-size: 1rem;
-    font-weight: 600;
+    font-size: var(--type-body);
+    font-weight: var(--type-title-weight);
+    line-height: var(--type-body-leading);
     text-decoration: none;
   }
   .btn:hover {

@@ -31,7 +31,7 @@ const { asideLast = false, prose = true } = Astro.props;
   .post-layout {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 1.5rem;
+    gap: var(--space-8);
   }
 
   /* Grid items default to min-width: auto, so a wide table or long code line
@@ -53,44 +53,26 @@ const { asideLast = false, prose = true } = Astro.props;
     display: flow-root;
   }
 
-  /* The column is already the width limit, so drop the 62ch cap that .prose
-     puts on paragraphs, which would leave the column half empty. The scoped
-     selector (class + attribute + element) outranks .prose p by specificity,
-     not by load order. */
+  /* The column is already the width limit, so drop the 62ch cap from
+     global.css, which would leave the column half empty. */
   .post-content :global(p),
   .post-content :global(li),
   .post-content :global(blockquote) {
     max-width: none;
   }
 
-  /* ---- aside basics (the aside is not .prose, so it sets its own) ---- */
-  .post-meta :global(h1) {
-    font-size: clamp(2.25rem, 6vw, 3rem); /* same scale as .prose h1 */
-    font-weight: 300;
-    letter-spacing: -0.02em;
-    margin: 0 0 1rem;
-  }
+  /* ---- aside basics ---- */
   .post-meta :global(h2) {
-    font-size: clamp(1.75rem, 5vw, 2.25rem); /* same scale as .prose h2 */
-    font-weight: 300;
-    text-transform: lowercase;
-    margin: 2rem 0 0.5rem;
-  }
-  .post-meta :global(p),
-  .post-meta :global(li) {
-    max-width: 62ch;
-    line-height: 1.6;
-  }
-  .post-meta :global(.back-link a) {
-    text-decoration: none;
+    margin: var(--space-8) 0 var(--space-2);
   }
 
-  /* Stacked: the back link goes above the title. */
+  /* Back: the Windows 8 back button, a circled arrow, then the label. The
+     whole row is the 40px target; the label keeps the link accessible. */
   .post-meta :global(.back-link) {
-    order: -1;
-    margin: 0 0 1rem;
+    order: -1; /* stacked: above the title */
+    margin: 0 0 var(--space-4);
+    max-width: none;
   }
-
   /* Stacked: about page reads the bio first, links and contact last. */
   .post-layout--aside-last .post-meta {
     order: 2;
@@ -99,19 +81,20 @@ const { asideLast = false, prose = true } = Astro.props;
     order: 1;
   }
 
-  /* 1000px, not 768px: 120px shell padding + 320px aside floor + 48px gap
+  /* 1000px, not 768px: 120px shell padding + 320px aside floor + 60px gap
      + 448px content + 64px right padding is just under 1000. Below that
      both columns cannot hold their minimum, so they stack. */
   @media (min-width: 1000px) {
     .post-layout {
+      /* off-grid: 320px is the narrowest aside that holds a title */
       grid-template-columns: minmax(320px, 33%) minmax(0, 1fr);
-      gap: 3rem;
+      gap: var(--space-12);
       align-items: start;
     }
     .post-meta {
       display: block;
       position: sticky;
-      top: 3rem;
+      top: var(--space-8);
     }
     .post-layout--aside-last .post-meta,
     .post-layout--aside-last .post-content {
@@ -119,7 +102,7 @@ const { asideLast = false, prose = true } = Astro.props;
     }
     .post-meta :global(.back-link) {
       order: 0;
-      margin: 1.5rem 0 0;
+      margin: var(--space-6) 0 0;
     }
   }
 
@@ -127,61 +110,50 @@ const { asideLast = false, prose = true } = Astro.props;
     .post-layout {
       /* Aside is a quarter, content is half; the last quarter stays empty on
          purpose so the content reads as a true middle column. */
-      grid-template-columns: minmax(320px, 25%) minmax(0, 50%);
+      grid-template-columns: minmax(320px, 25%) minmax(0, 50%); /* off-grid: 320px aside floor */
+      gap: var(--space-16);
     }
   }
 
-  /* ---- aside typography ---- */
+  /* ---- aside metadata ---- */
   .post-meta :global(.post-date) {
-    color: var(--ctp-subtext0);
-    font-size: 0.9375rem;
+    margin: 0 0 var(--space-1);
+    font-size: var(--type-caption);
+    line-height: var(--type-caption-leading);
     text-transform: lowercase;
-    margin: 0 0 0.375rem;
+    color: var(--ctp-subtext0);
   }
+  /* h1 from global.css is already the title step; h2 on the resume needs it. */
   .post-meta :global(.post-title) {
     margin: 0;
+    font-size: var(--type-title-lg);
+    font-weight: var(--type-title-lg-weight);
+    line-height: var(--type-title-lg-leading);
   }
-  /* Short line under the title (resume), quieter than the title. */
+  /* Short line under the name (resume). */
   .post-meta :global(.post-tagline) {
-    margin: 0.75rem 0 0;
+    margin: var(--space-3) 0 0;
+    font-size: var(--type-item);
+    font-weight: var(--type-item-weight);
+    line-height: var(--type-item-leading);
     color: var(--ctp-subtext0);
   }
-  /* Standfirst: large and light enough to read as part of the headline. It
-     is an <h2>, so undo the lowercase section-heading style; a standfirst is
-     prose and keeps its capitals. */
+  /* Standfirst: the item step, so it stays clearly below the 36px title. A
+     second Light step would sit too close to the title in a 320px column. It
+     is an <h2>, so it overrides the section-heading style. */
   .post-meta :global(.post-subtitle) {
-    margin: 0.625rem 0 0;
-    font-size: 1.125rem;
-    font-weight: 300;
-    line-height: 1.45;
-    text-transform: none;
+    margin: var(--space-3) 0 0;
+    font-size: var(--type-item);
+    font-weight: var(--type-item-weight);
+    line-height: var(--type-item-leading);
     color: var(--ctp-subtext0);
   }
-  /* Credit line: small chrome text like a tile label, but keeps its case. */
+  /* Credit line: the title style at caption size. */
   .post-meta :global(.post-attribution) {
-    margin: 0.875rem 0 0;
-    font-size: 0.8125rem;
-    font-weight: 600;
-    line-height: 1.5;
-    letter-spacing: 0.02em;
-    text-transform: none;
-    color: var(--ctp-overlay1);
-  }
-
-  /* ---- embedded fediverse post in markdown (content from src/content) ---- */
-  .post-content :global(.fedi-embed) {
-    margin: 1.5rem 0;
-    padding: 1rem 1.25rem;
-    background: var(--ctp-mantle);
-    border-left: 3px solid var(--ctp-lavender);
-  }
-  .post-content :global(.fedi-embed-label) {
-    margin: 0 0 0.25rem;
-    font-size: 0.8125rem;
-    text-transform: lowercase;
+    margin: var(--space-3) 0 0;
+    font-size: var(--type-caption);
+    font-weight: var(--type-title-weight);
+    line-height: var(--type-caption-leading);
     color: var(--ctp-subtext0);
-  }
-  .post-content :global(.fedi-embed a) {
-    word-break: break-all;
   }
 </style>

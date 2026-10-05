@@ -9,9 +9,9 @@ const { post } = Astro.props;
 const href = `/blog/${post.id}/`;
 const description = truncateWords(post.data.summary ?? excerpt(post.body), 40);
 ---
+<!-- The title link is stretched over the row, so no separate "read" link. -->
 <div class="card post-card">
   <p class="card-date">{formatLongDate(post.data.date)}</p>
   <h3 class="card-title"><a {href}>{post.data.title}</a></h3>
   <p class="card-desc">{description}</p>
-  <a class="card-link" {href}>read →</a>
 </div>

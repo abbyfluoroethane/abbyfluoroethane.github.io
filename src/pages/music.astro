@@ -3,7 +3,6 @@ import Base from '../layouts/Base.astro';
 import PageColumns from '../components/PageColumns.astro';
 import LastfmWidget from '../components/LastfmWidget.astro';
 import { site } from '../site';
-// Runtime-built history cards share the global card rules.
 ---
 <Base title="music" description="a live look at what i've been listening to, pulled from last.fm.">
 <PageColumns prose={false}>
@@ -19,37 +18,29 @@ import { site } from '../site';
 </Base>
 
 <style>
-  /* The cards are built at runtime by lastfm.ts, so they are reached with
-     :global() under this scoped container. */
+  /* The rows are built at runtime by lastfm.ts, so they are reached with
+     :global() under this scoped container. The row itself is the link and
+     inherits the flat hover fill from .card in cards.css. */
   .history :global(.lastfm-status) {
-    margin: 0 0 0.25rem;
-    font-size: 0.8125rem;
+    margin: 0;
+    font-size: var(--type-caption);
+    font-weight: var(--type-caption-weight);
+    line-height: var(--type-caption-leading);
     text-transform: lowercase;
     color: var(--ctp-subtext0);
   }
   .history :global(.lastfm-history-card) {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    padding: 0.6rem 0.75rem;
-    color: var(--ctp-text);
-    text-decoration: none;
-  }
-  .history :global(.lastfm-history-card:hover .card-title) {
-    color: var(--ctp-pink);
+    gap: var(--space-2); /* hard-edged art next to text: the 10px gutter */
+    min-height: var(--touch-target);
   }
   .history :global(.lastfm-history-cover) {
     flex: 0 0 auto;
-    /* Small thumbnail beside a two-line card. */
-    width: 56px;
-    height: 56px;
+    /* Four grid units square: as tall as the three lines of text beside it. */
+    width: calc(4 * var(--space-4));
+    height: calc(4 * var(--space-4));
     color: var(--ctp-overlay0);
-  }
-  /* The mark has to read at 56px, where the share that suits a full-size
-     cover comes out too small to recognise. */
-  .history :global(.lastfm-history-cover .art-fallback) {
-    -webkit-mask-size: 62%;
-    mask-size: 62%;
   }
   .history :global(.lastfm-history-info) {
     display: flex;
@@ -57,25 +48,11 @@ import { site } from '../site';
     flex: 1 1 auto;
     min-width: 0;
   }
-  /* Placeholder rows, one per track still in flight: the bars sit where the
-     scrobble time, title and artist land. */
+  /* Placeholder bars stand where title, artist and time land. */
   .history :global(.lastfm-history-skeleton .lastfm-history-info) {
-    gap: 0.4rem;
-  }
-  .history :global(.lastfm-history-info .card-title),
-  .history :global(.lastfm-history-info .card-desc),
-  .history :global(.lastfm-history-info .card-date) {
-    display: block;
-  }
-  .history :global(.lastfm-history-info .card-title) {
-    margin: 0;
-    font-size: 1rem;
-  }
-  .history :global(.lastfm-history-info .card-desc) {
-    margin: 0.15rem 0 0;
-    color: var(--ctp-subtext0);
+    gap: var(--space-1);
   }
   .history :global(.lastfm-history-info .card-date) {
-    margin: 0 0 0.2rem;
+    margin: var(--space-1) 0 0;
   }
 </style>

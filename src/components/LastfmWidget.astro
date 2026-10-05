@@ -24,24 +24,20 @@ const { id: lfmId = 'lastfm', count = 1, tile = false, historyId } = Astro.props
 <style is:global>
   /* ---- skeletons ----
      Every Last.fm surface waits on the same two round trips (the API call,
-     then the cover image), so they all shimmer the same way: a surface0 block
-     with a sheen sweeping across it. */
+     then the cover image), so they all show the same flat loading cue: a
+     surface0 block whose opacity pulses. No sweep, no gradient. */
   .skeleton {
-    position: relative;
-    overflow: hidden;
     background-color: var(--ctp-surface0);
   }
-  .skeleton::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background-image: linear-gradient(100deg, transparent 25%, var(--skeleton-sheen) 50%, transparent 75%);
-    transform: translateX(-100%);
-    animation: skeleton-sweep 1.6s ease-in-out infinite;
+  /* The art skeleton is faded out by opacity once the cover lands, so it
+     only pulses while its stack is loading and the pulse can't hold it up. */
+  .skeleton:not(.art-skeleton),
+  .art-stack.is-loading .art-skeleton {
+    animation: skeleton-pulse 1.2s ease-in-out infinite;
   }
-  @keyframes skeleton-sweep {
-    to {
-      transform: translateX(100%);
+  @keyframes skeleton-pulse {
+    50% {
+      opacity: 0.5;
     }
   }
   /* One line of not-yet-arrived text. Sized in em off whatever it stands in
@@ -50,21 +46,21 @@ const { id: lfmId = 'lastfm', count = 1, tile = false, historyId } = Astro.props
   .skeleton-bar {
     display: inline-block;
     width: 100%;
-    height: 0.8em;
+    height: 0.8em; /* off-grid: em, follows the text line it stands in for */
     vertical-align: middle;
     background-color: var(--ctp-surface1);
   }
   @media (prefers-reduced-motion: reduce) {
-    /* The sheen parks off to the left, so dropping the animation leaves a
-       plain surface block rather than a frozen highlight. */
-    .skeleton::after {
+    /* A static block is still a clear "not here yet" cue. */
+    .skeleton:not(.art-skeleton),
+    .art-stack.is-loading .art-skeleton {
       animation: none;
     }
   }
 
   /* ---- album art ----
      Covers arrive at their own pace and change under the 30s poll, so each
-     one is a stack: a shimmer on top while a cover is in flight, the Last.fm
+     one is a stack: a loading block on top while a cover is in flight, the Last.fm
      mark underneath for tracks with no art, and one <img> layer per cover so
      a new one can crossfade over whatever is showing. */
   .art-stack {
@@ -145,20 +141,27 @@ const { id: lfmId = 'lastfm', count = 1, tile = false, historyId } = Astro.props
   /* ---- widget on the music page: label, square cover, title, artist/album ---- */
   /* The home tile positions its own widget (see .lastfm-widget-tile there). */
   .lastfm-widget:not(.lastfm-widget-tile) {
-    margin: 0.75rem 0 1.5rem;
+    margin: var(--space-2) 0 var(--space-6);
   }
   .lastfm-widget :global(.lastfm-status) {
-    margin: 0 0 0.25rem;
-    font-size: 0.8125rem;
+    margin: 0 0 var(--space-1);
+    font-size: var(--type-caption);
+    font-weight: var(--type-caption-weight);
+    line-height: var(--type-caption-leading);
     text-transform: lowercase;
     color: var(--ctp-subtext0);
   }
+  /* Section-heading style, lowercase because it is chrome. */
   .lastfm-widget :global(.lastfm-label) {
-    margin: 0 0 0.75rem;
+    margin: 0 0 var(--space-2);
+    font-size: var(--type-subheader);
+    font-weight: var(--type-subheader-weight);
+    line-height: var(--type-subheader-leading);
+    text-transform: lowercase;
   }
   .lastfm-widget :global(.lastfm-cover-link) {
     display: block;
-    margin: 0 0 1.25rem;
+    margin: 0 0 var(--space-4);
   }
   .lastfm-widget :global(.lastfm-cover) {
     width: 100%;
@@ -166,19 +169,22 @@ const { id: lfmId = 'lastfm', count = 1, tile = false, historyId } = Astro.props
     color: var(--ctp-overlay0);
   }
   .lastfm-widget :global(.lastfm-track-title) {
-    margin: 0 0 0.25rem;
-    font-size: 1.5rem;
-    font-weight: 700;
+    margin: 0 0 var(--space-1);
+    font-size: var(--type-item);
+    font-weight: var(--type-item-weight);
+    line-height: var(--type-item-leading);
   }
   .lastfm-widget :global(.lastfm-track-artist) {
     margin: 0;
-    font-size: 1.125rem;
-    font-weight: 700;
+    font-size: var(--type-body);
+    font-weight: var(--type-body-weight);
+    line-height: var(--type-body-leading);
   }
   .lastfm-widget :global(.lastfm-track-album) {
-    margin: 0.2rem 0 0;
-    font-size: 1.0625rem;
-    font-weight: 400;
+    margin: 0;
+    font-size: var(--type-caption);
+    font-weight: var(--type-caption-weight);
+    line-height: var(--type-caption-leading);
     color: var(--ctp-subtext0);
   }
 </style>

@@ -17,9 +17,9 @@
 
 /* ---- blockquote ---- */
 .prose blockquote {
-  margin: 1rem 0;
-  padding: 0.25rem 0 0.25rem 1rem;
-  border-left: 3px solid var(--ctp-pink);
+  margin: var(--space-4) 0;
+  padding: 0 0 0 var(--space-3);
+  border-left: var(--space-1) solid var(--ctp-pink);
   color: var(--ctp-subtext0);
   max-width: 62ch;
 }
@@ -27,9 +27,9 @@
 /* ---- inline code ---- */
 .prose code {
   font-family: var(--font-mono);
-  font-size: 0.9em;
+  font-size: 0.9em; /* off-ramp: mono runs optically larger than the body face */
   background: var(--ctp-mantle);
-  padding: 0.1em 0.3em;
+  padding: 0 var(--space-1);
 }
 
 /* ---- code blocks ----
@@ -37,13 +37,12 @@
    to the <pre>; left on the inner <code>, every line would get its own box.
    The <pre> also scrolls long lines instead of widening the page. */
 .prose pre {
-  margin: 1.5rem 0;
-  padding: 1rem 1.125rem;
+  margin: var(--space-6) 0;
+  padding: var(--space-3) var(--space-4);
   background: var(--ctp-mantle);
-  border-left: 3px solid var(--ctp-surface1);
   font-family: var(--font-mono);
-  font-size: 0.8125rem;
-  line-height: 1.55;
+  font-size: calc(var(--type-body) * 0.9); /* off-ramp: same as inline code; caption size is too small to read code */
+  line-height: var(--type-body-leading);
   overflow-x: auto;
 }
 .prose pre code {
@@ -80,16 +79,17 @@
    heading, and each item ends in an a.data-footnote-backref arrow. */
 .prose sup a[data-footnote-ref] {
   text-decoration: none;
-  padding: 0 0.1em;
+  padding: 0 var(--space-1);
 }
 .prose section.footnotes {
-  margin-top: 3rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--ctp-surface1);
-  font-size: 0.9375rem;
+  margin-top: var(--space-8);
+  padding-top: var(--space-4);
+  border-top: 2px solid var(--ctp-surface1);
+  font-size: var(--type-caption);
+  line-height: var(--type-caption-leading);
 }
 .prose section.footnotes ol {
-  padding-left: 1.5rem;
+  padding-left: var(--space-6);
 }
 /* keeps the back arrow on the same line as the last paragraph */
 .prose section.footnotes li > p:last-child {
@@ -97,7 +97,7 @@
 }
 .prose a.data-footnote-backref {
   text-decoration: none;
-  margin-left: 0.25rem;
+  margin-left: var(--space-1);
 }
 
 /* ---- tables ----
@@ -109,20 +109,20 @@
   display: block;
   overflow-x: auto;
   border-collapse: collapse;
-  margin: 1.5rem 0;
-  font-size: 0.9375rem;
-  line-height: 1.5;
+  margin: var(--space-6) 0;
+  font-size: var(--type-body);
+  line-height: var(--type-body-leading);
 }
 .prose th,
 .prose td {
-  padding: 0.5rem 0.875rem;
+  padding: var(--space-2) var(--space-3);
   border-bottom: 1px solid var(--ctp-surface0);
   text-align: left;
   vertical-align: top;
 }
 .prose thead th {
   border-bottom: 2px solid var(--ctp-overlay0);
-  font-weight: 600;
+  font-weight: var(--type-title-weight);
   white-space: nowrap;
 }
 .prose tbody tr:last-child td {
@@ -134,7 +134,7 @@
   max-width: 100%;
   height: auto;
   display: block;
-  margin: 1.5rem 0;
+  margin: var(--space-6) 0;
 }
 
 /* ---- image helpers ----
@@ -155,15 +155,15 @@
 
 .prose .img-pair {
   display: flex;
-  gap: 1rem;
+  gap: var(--space-2); /* hard-edged items sit 10px apart */
   flex-wrap: wrap;
-  margin: 1.5rem 0;
+  margin: var(--space-6) 0;
   /* a wrapper written as a paragraph would otherwise keep the prose measure
      and stop short of its column */
   max-width: none;
 }
 .prose .img-pair img {
-  flex: 1 1 220px; /* two across when there is room, stacked on a phone */
+  flex: 1 1 220px; /* off-grid: minimum width before the pair stacks */ /* two across when there is room, stacked on a phone */
   min-width: 0;
   margin: 0;
 }
@@ -171,8 +171,8 @@
 .prose .img-center-sm {
   /* min(), not a bare 480px: on the image itself a bare width would let it
      grow past a phone screen */
-  max-width: min(480px, 100%);
-  margin: 1.5rem auto;
+  max-width: min(480px, 100%); /* off-grid: measured image width */
+  margin: var(--space-6) auto;
 }
 .prose img.img-center-sm {
   display: block;
@@ -185,15 +185,15 @@
 @media (min-width: 768px) {
   .prose .img-float-left,
   .prose .img-float-right {
-    max-width: min(320px, 100%);
+    max-width: min(320px, 100%); /* off-grid: measured image width */
   }
   .prose .img-float-left {
     float: left;
-    margin: 0.25rem 1.5rem 1rem 0;
+    margin: var(--space-1) var(--space-4) var(--space-2) 0;
   }
   .prose .img-float-right {
     float: right;
-    margin: 0.25rem 0 1rem 1.5rem;
+    margin: var(--space-1) 0 var(--space-2) var(--space-4);
   }
   .prose .img-float-left img,
   .prose .img-float-right img {
@@ -206,18 +206,19 @@
 }
 
 /* ---- fediverse post embed ----
+   A quote of external content, so it is a blockquote: a left rule, no fill.
    Hand-written in one post:
    <blockquote class="fedi-embed"><p class="fedi-embed-label">…</p><a>…</a></blockquote> */
 .prose .fedi-embed {
-  margin: 1.5rem 0;
-  padding: 1rem 1.25rem;
-  background: var(--ctp-mantle);
-  border-left: 3px solid var(--ctp-lavender);
+  margin: var(--space-6) 0;
+  padding: 0 0 0 var(--space-3);
+  border-left: var(--space-1) solid var(--ctp-lavender);
 }
 .prose .fedi-embed-label {
-  margin: 0 0 0.25rem;
-  font-size: 0.8125rem;
-  text-transform: lowercase;
+  margin: 0 0 var(--space-1);
+  font-size: var(--type-caption);
+  line-height: var(--type-caption-leading);
+  text-transform: lowercase; /* chrome label, not author prose */
   color: var(--ctp-subtext0);
 }
 .prose .fedi-embed a {

@@ -1,0 +1,55 @@
+---
+// The Windows 8.1 app back button, from WinJS 3.0.0 (Apache-2.0, Microsoft
+// Open Technologies): the 41px circle with a 2px border from .win-backbutton
+// in ui-dark.css, and the arrow glyph U+E0D5 from WinJS fonts/Symbols.ttf.
+// See THIRD_PARTY_NOTICES.md.
+interface Props {
+  href: string;
+  /** Visible text after the button, also its accessible name. */
+  label: string;
+}
+const { href, label } = Astro.props;
+---
+<a class="back" {href}>
+  <svg class="button" viewBox="0 0 41 41" width="41" height="41" aria-hidden="true">
+    <circle class="ring" cx="20.5" cy="20.5" r="19.5" />
+    <path class="arrow" d="M17.8 11.13H24.14L17.46 18.13H31.96V22.87H17.46L24.14 29.87H17.8L9.04 20.53V20.47Z" />
+  </svg>
+  <span>{label}</span>
+</a>
+
+<style>
+  .back {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: var(--touch-target);
+    color: var(--ctp-text);
+    text-decoration: none;
+  }
+  .back:hover {
+    text-decoration: none;
+  }
+  .button {
+    flex: 0 0 auto;
+  }
+  .ring {
+    fill: transparent;
+    stroke: currentColor;
+    stroke-width: 2;
+  }
+  .arrow {
+    fill: currentColor;
+  }
+  /* WinJS states: hover tints the inside 13%, press fills the circle and
+     inverts the arrow. */
+  .back:hover .ring {
+    fill: color-mix(in srgb, currentColor 13%, transparent);
+  }
+  .back:active .ring {
+    fill: currentColor;
+  }
+  .back:active .arrow {
+    fill: var(--ctp-base);
+  }
+</style>
