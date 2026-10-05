@@ -1,10 +1,9 @@
 ---
 import Base from '../../layouts/Base.astro';
-import CardGrid from '../../components/CardGrid.astro';
-import PostCard from '../../components/PostCard.astro';
+import AgendaRow from '../../components/AgendaRow.astro';
 import { getPosts } from '../../lib/collections';
 
-// Group by year, newest first, like the groups on the Windows 8 Start screen.
+// An agenda: one row per post, the year shown once where it changes.
 const posts = await getPosts();
 const years = [...new Set(posts.map((p) => p.data.date.getUTCFullYear()))];
 const groups = years.map((year) => ({
@@ -16,19 +15,36 @@ const groups = years.map((year) => ({
   {groups.map(({ year, posts }) => (
     <section aria-labelledby={`year-${year}`}>
       <h2 id={`year-${year}`}>{year}</h2>
-      <CardGrid>
-        {posts.map((post) => <PostCard {post} />)}
-      </CardGrid>
+      <ul class="agenda">
+        {posts.map((post) => <AgendaRow {post} />)}
+      </ul>
     </section>
   ))}
 </Base>
 
 <style>
-  /* Groups sit 80px apart, the Windows 8 gap between groups. */
-  h2 {
-    margin: var(--space-16) 0 var(--space-4);
+  section {
+    max-width: calc(36 * var(--space-4)); /* 720px: the row, date block included */
   }
-  section:first-child h2 {
-    margin-top: 0;
+  /* A thin rule between years only; the first group has none. */
+  section + section {
+    margin-top: var(--space-8);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--ctp-surface1);
+  }
+  h2 {
+    margin: 0 0 var(--space-4);
+    font-size: var(--type-caption);
+    font-weight: var(--type-title-weight);
+    line-height: var(--type-caption-leading);
+    letter-spacing: 0.06em;
+    color: var(--ctp-subtext0);
+  }
+  .agenda {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    margin: 0;
+    padding: 0;
   }
 </style>
