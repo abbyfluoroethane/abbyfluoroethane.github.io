@@ -1,6 +1,5 @@
 ---
-// Projects as a panorama, like the blog: the newest featured project with a
-// write-up is the hero; the rest sit in an "active" and an "archive" column
+// Projects as a panorama, like the blog: an "active" and an "archive" column
 // under a giant faded label, like the Zune panorama's section titles.
 import type { CollectionEntry } from 'astro:content';
 import Base from '../../layouts/Base.astro';
@@ -9,11 +8,9 @@ import { getProjects } from '../../lib/collections';
 type Project = CollectionEntry<'projects'>;
 
 const projects = await getProjects();
-const hero = projects.find((p) => p.data.featured && p.data.article) ?? projects[0];
-const rest = projects.filter((p) => p !== hero);
 const columns = [
-  { id: 'active', projects: rest.filter((p) => p.data.status === 'active') },
-  { id: 'archive', projects: rest.filter((p) => p.data.status === 'archive') },
+  { id: 'active', projects: projects.filter((p) => p.data.status === 'active') },
+  { id: 'archive', projects: projects.filter((p) => p.data.status === 'archive') },
 ].filter((c) => c.projects.length > 0);
 
 const href = (p: Project) => (p.data.article ? `/projects/${p.id}/` : undefined);
@@ -21,21 +18,6 @@ const years = (p: Project) =>
   p.data.status === 'active' ? `${p.data.date.getUTCFullYear()} – present` : `${p.data.date.getUTCFullYear()}`;
 ---
 <Base title="projects">
-  <article class="hero">
-    <h2>
-      {href(hero) ? <a href={href(hero)}>{hero.data.title}</a> : hero.data.title}
-    </h2>
-    <p class="caption">
-      <span class={`status-pill status-${hero.data.status}`}>{hero.data.status}</span>
-      <span> {years(hero)}</span>
-    </p>
-    <p class="summary">{hero.data.description}</p>
-    <p class="links">
-      {href(hero) && <a href={href(hero)}>read more →</a>}
-      {hero.data.external_url && <a href={hero.data.external_url}>{hero.data.url_text ?? 'external link'} →</a>}
-    </p>
-  </article>
-
   <div class="columns">
     {columns.map(({ id, projects }) => (
       <section aria-labelledby={id}>
@@ -60,23 +42,9 @@ const years = (p: Project) =>
 </Base>
 
 <style>
-  .hero {
-    margin-top: var(--space-8);
-    margin-bottom: var(--space-16);
-  }
-  .hero h2 {
-    max-width: 14em;
-    margin: 0 0 var(--space-4);
-    font-size: var(--type-display);
-    font-weight: 300;
-    line-height: 1.05;
-    letter-spacing: -0.03em;
-  }
-  h2 a,
   h3 a {
     color: var(--ctp-text);
   }
-  h2 a:hover,
   h3 a:hover {
     color: var(--ctp-pink);
     text-decoration: none;
@@ -91,25 +59,7 @@ const years = (p: Project) =>
     line-height: var(--type-caption-leading);
     color: var(--ctp-subtext0);
   }
-  .hero .caption {
-    column-gap: var(--space-2);
-    margin-bottom: var(--space-3);
-  }
-  .summary {
-    max-width: 38em;
-    margin: 0;
-    font-size: var(--type-item);
-    line-height: var(--type-item-leading);
-    color: var(--ctp-subtext1);
-  }
-  /* Links: a full touch target each, at caption or body size. */
-  .links {
-    display: flex;
-    flex-wrap: wrap;
-    column-gap: var(--space-6);
-    margin: var(--space-2) 0 0;
-  }
-  .links a,
+  /* Links: a full touch target each. */
   .caption a {
     display: inline-flex;
     align-items: center;
