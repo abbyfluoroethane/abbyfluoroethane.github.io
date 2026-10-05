@@ -1,5 +1,8 @@
 ---
 import Base from '../layouts/Base.astro';
+import Button from '../components/Button.astro';
+import PageColumns from '../components/PageColumns.astro';
+import CardGrid from '../components/CardGrid.astro';
 import { site } from '../site';
 import { getGuestbook } from '../lib/collections';
 
@@ -16,8 +19,8 @@ const safeUrl = (w?: string) => {
 };
 ---
 <Base title="guestbook">
-<div class="post-layout">
-  <aside class="post-meta">
+<PageColumns prose={false}>
+  <Fragment slot="aside">
     <h2>sign the guestbook</h2>
     <p id="guestbook-form-status" class="guestbook-form-status"></p>
     <form id="guestbook-form" class="guestbook-form" action={site.guestbookEndpoint} method="POST">
@@ -29,12 +32,11 @@ const safeUrl = (w?: string) => {
       <label>website (optional)<input type="url" name="website" maxlength="200" /></label>
       <label>message <textarea name="message" required maxlength="1000" rows="3"></textarea></label>
       <div class="cf-turnstile" data-sitekey={site.guestbookTurnstileSitekey} data-theme="auto"></div>
-      <button type="submit" class="btn">sign the guestbook</button>
+      <Button type="submit">sign the guestbook</Button>
     </form>
-  </aside>
-  <article class="post-content">
+  </Fragment>
     <h2>entries</h2>
-    <div class="card-grid" id="guestbook-entries">
+    <CardGrid>
       {entries.map((entry) => {
         const url = safeUrl(entry.website);
         return (
@@ -47,9 +49,8 @@ const safeUrl = (w?: string) => {
       </div>
         );
       })}
-    </div>
-  </article>
-</div>
+    </CardGrid>
+</PageColumns>
 
 <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
@@ -57,3 +58,62 @@ const safeUrl = (w?: string) => {
   import '../scripts/guestbook';
 </script>
 </Base>
+
+<style>
+  .guestbook-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-width: 480px;
+    margin: 1.5rem 0 2rem;
+  }
+  .guestbook-form label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    font-size: 0.9375rem;
+  }
+  .guestbook-form input,
+  .guestbook-form textarea {
+    font-family: inherit;
+    font-size: 1rem;
+    padding: 0.5rem 0.6rem;
+    border: 1px solid var(--ctp-surface1);
+    background: var(--ctp-base);
+    color: var(--ctp-text);
+  }
+  .guestbook-form :global(.btn) {
+    align-self: flex-start;
+  }
+  /* guestbook.ts fills this in and adds is-success or is-error. */
+  .guestbook-form-status {
+    min-height: 1.2em;
+    font-size: 0.875rem;
+    color: var(--ctp-subtext0);
+  }
+  .guestbook-form-status.is-success {
+    color: var(--ctp-green);
+  }
+  .guestbook-form-status.is-error {
+    color: var(--ctp-red);
+  }
+  /* Bots fill every field; people never see this one. Off-screen rather than
+     display: none, which some bots skip. */
+  .guestbook-honeypot {
+    position: absolute;
+    left: -9999px;
+  }
+  .guestbook-entry-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.35rem;
+  }
+  .guestbook-entry-date {
+    color: var(--ctp-subtext0);
+    font-size: 0.8125rem;
+  }
+  .guestbook-entry p {
+    margin: 0;
+  }
+</style>

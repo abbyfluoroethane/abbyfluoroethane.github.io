@@ -1,0 +1,94 @@
+---
+// Text area of a live tile. Sits over the tile colour, above the label.
+// Its children come from the page (slot) or from src/scripts/lastfm.ts, so
+// they are styled with :global under this scoped parent.
+interface Props {
+  /** Title is clamped to two lines (static caption tiles). */
+  caption?: boolean;
+  /** Items inside fade in turn; src/scripts/home.ts drives it. */
+  cycle?: boolean;
+}
+const { caption = false, cycle = false } = Astro.props;
+---
+<div class:list={['tile-live', { caption, 'tile-cycle': cycle }]}><slot /></div>
+
+<style>
+  .tile-live {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.625rem;
+    right: 0.625rem;
+    bottom: 1.75rem; /* room for the tile label */
+    z-index: 999; /* above the album art and its scrim */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    overflow: hidden;
+  }
+  .tile-live :global(.lastfm-widget-tile) {
+    margin: 0;
+  }
+  .tile-live :global(.tile-live-label) {
+    margin: 0 0 0.2rem;
+    font-size: 0.75rem;
+    text-transform: lowercase;
+    opacity: 0.75;
+  }
+  .tile-live :global(.tile-live-title) {
+    margin: 0;
+    font-size: 1.0625rem;
+    font-weight: 600;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .tile-live.caption :global(.tile-live-title) {
+    -webkit-line-clamp: 2;
+    margin-bottom: 0.2rem;
+  }
+  .tile-live :global(.tile-live-artist),
+  .tile-live :global(.tile-live-album) {
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.3;
+    opacity: 0.85;
+  }
+  .tile-live :global(.tile-live-album) {
+    opacity: 0.65;
+  }
+  .tile-live :global(.tile-live-years) {
+    margin: 0 0 0.3rem;
+    font-size: 0.8125rem;
+    opacity: 0.75;
+  }
+  .tile-live :global(.tile-live-desc) {
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.3;
+    opacity: 0.85;
+    display: -webkit-box;
+    /* Set by Tile: bigger tiles have room for more lines. */
+    -webkit-line-clamp: var(--tile-desc-lines, 3);
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .tile-live :global(.tile-cycle-item) {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 1.5rem; /* below the label line */
+    opacity: 0;
+    transition: opacity 0.6s ease;
+  }
+  .tile-live :global(.tile-cycle-item.is-active) {
+    opacity: 1;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .tile-live :global(.tile-cycle-item) {
+      transition: none;
+    }
+  }
+</style>

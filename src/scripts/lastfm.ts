@@ -25,7 +25,7 @@ interface CaptionEls {
   coverLink?: HTMLAnchorElement;
 }
 
-// matches .art-layer's opacity transition in site.css — the outgoing cover
+// matches .art-layer's opacity transition in LastfmWidget.astro — the outgoing cover
 // is only detached once the incoming one has finished fading over it
 const ART_FADE = 600;
 // a cover request that never settles (dead cdn, offline mid-load) would
@@ -33,7 +33,7 @@ const ART_FADE = 600;
 const ART_TIMEOUT = 8000;
 // the caption changes over at the midpoint of the cover's crossfade, where
 // the two are blended evenly and neither owns the tile. .lastfm-swap in
-// site.css dips it out over 200ms, deliberately shorter than this: the
+// LastfmWidget.astro dips it out over 200ms, deliberately shorter than this: the
 // caption has to be gone *before* the incoming cover is the one you can
 // see, not at the same moment.
 const TEXT_SWAP = ART_FADE / 2;

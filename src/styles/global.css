@@ -1,0 +1,284 @@
+/* Global layer: fonts, Catppuccin tokens, reset, and base typography.
+   Everything else lives in component <style> blocks. Markdown output, which
+   no component owns, is styled in prose.css.
+
+   Breakpoints (CSS has no variables in media queries, so use only these):
+     768px   phone → desktop shell
+     1000px  post columns side by side
+     1200px  home intro beside the tiles, wider post columns
+     1520px  six-column tile field */
+
+@font-face {
+  font-family: "Selawik";
+  font-weight: 300;
+  font-display: swap;
+  src: url("../assets/fonts/selawkl.woff2") format("woff2"),
+       url("../assets/fonts/selawkl.woff") format("woff");
+}
+@font-face {
+  font-family: "Selawik";
+  font-weight: 400;
+  font-display: swap;
+  src: url("../assets/fonts/selawk.woff2") format("woff2"),
+       url("../assets/fonts/selawk.woff") format("woff");
+}
+@font-face {
+  font-family: "Selawik";
+  font-weight: 600;
+  font-display: swap;
+  src: url("../assets/fonts/selawksb.woff2") format("woff2"),
+       url("../assets/fonts/selawksb.woff") format("woff");
+}
+@font-face {
+  font-family: "Selawik";
+  font-weight: 700;
+  font-display: swap;
+  src: url("../assets/fonts/selawkb.woff2") format("woff2"),
+       url("../assets/fonts/selawkb.woff") format("woff");
+}
+
+/* ---- tokens: Catppuccin Latte (light) ---- */
+:root {
+  --ctp-base: #eff1f5;
+  --ctp-mantle: #e6e9ef;
+  --ctp-crust: #dce0e8;
+  --ctp-surface0: #ccd0da;
+  --ctp-surface1: #bcc0cc;
+  --ctp-overlay0: #9ca0b0;
+  --ctp-overlay1: #8c8fa1;
+  --ctp-subtext0: #6c6f85;
+  --ctp-text: #4c4f69;
+  --ctp-rosewater: #dc8a78;
+  --ctp-flamingo: #dd7878;
+  --ctp-pink: #ea76cb;
+  --ctp-mauve: #8839ef;
+  --ctp-red: #d20f39;
+  --ctp-maroon: #e64553;
+  --ctp-peach: #fe640b;
+  --ctp-yellow: #df8e1d;
+  --ctp-green: #40a02b;
+  --ctp-teal: #179299;
+  --ctp-sky: #04a5e5;
+  --ctp-sapphire: #209fb5;
+  --ctp-blue: #1e66f5;
+  --ctp-lavender: #7287fd;
+  --ctp-on-accent: #eff1f5;
+  /* The highlight that sweeps across a skeleton: a lift off surface0, so it
+     brightens in Latte and stays faint in Mocha. */
+  --skeleton-sheen: rgba(255, 255, 255, 0.6);
+
+  --font-sans: "Segoe UI", "Selawik", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "Cascadia Code", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  /* The WinJS deceleration curve: fast start, long glide to rest. */
+  --ease-metro: cubic-bezier(0.1, 0.9, 0.2, 1);
+}
+
+/* ---- tokens: Catppuccin Mocha (dark) ----
+   Only the neutrals change. The accents stay Latte in both themes, so the
+   light text on a colored tile always has contrast. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ctp-base: #1e1e2e;
+    --ctp-mantle: #181825;
+    --ctp-crust: #11111b;
+    --ctp-surface0: #313244;
+    --ctp-surface1: #45475a;
+    --ctp-overlay0: #6c7086;
+    --ctp-overlay1: #7f849c;
+    --ctp-subtext0: #a6adc8;
+    --ctp-text: #cdd6f4;
+    --skeleton-sheen: rgba(255, 255, 255, 0.07);
+  }
+}
+
+/* ---- reset (the parts of Metro UI 3's reset the site relied on) ---- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+img {
+  max-width: 100%;
+  height: auto;
+  vertical-align: middle;
+  border: 0;
+}
+sub,
+sup {
+  position: relative;
+  font-size: 75%;
+  line-height: 0;
+  vertical-align: baseline;
+}
+sup { top: -0.5em; }
+sub { bottom: -0.25em; }
+button,
+input,
+select,
+textarea {
+  margin: 0;
+  font-family: inherit;
+  font-size: 100%;
+  line-height: normal; /* not the body's tight 1.1: it sets the textarea height */
+  vertical-align: middle;
+}
+textarea {
+  overflow: auto;
+  vertical-align: top;
+}
+button,
+label {
+  cursor: pointer;
+}
+table {
+  border-collapse: collapse;
+}
+
+/* ---- base typography (Metro UI 3 sizes) ---- */
+html {
+  background: var(--ctp-base);
+}
+body {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  line-height: 1.1;
+  background-color: var(--ctp-base);
+  color: var(--ctp-text);
+}
+h1, h2, h3, h4, h5, h6 {
+  margin: 0.625rem 0;
+  line-height: 1.1;
+}
+h1 { font-size: 2.25rem; font-weight: 400; }
+h2 { font-size: 1.875rem; font-weight: 500; }
+h3 { font-size: 1.5rem; font-weight: 500; }
+h4 { font-size: 1.125rem; font-weight: 500; }
+h5 { font-size: 0.875rem; font-weight: 500; }
+h6 { font-size: 0.75rem; font-weight: 500; }
+
+ol,
+ul {
+  margin-left: 0.3125rem;
+}
+li,
+dt,
+dd {
+  line-height: 1.25rem;
+}
+li ol,
+li ul {
+  padding-left: 1.5625rem;
+}
+dt { font-weight: 700; }
+dd { margin-left: 0.9375rem; }
+
+blockquote {
+  margin: 0.625rem 0;
+  padding: 0 0 0 0.625rem;
+  border-left: 0.25rem solid var(--ctp-overlay0);
+}
+abbr {
+  border-bottom: 1px dotted var(--ctp-overlay0);
+  text-decoration: none;
+  cursor: help;
+}
+hr {
+  height: 2px;
+  border: 0;
+  background-color: var(--ctp-surface1);
+}
+
+a {
+  color: var(--ctp-pink);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+::selection {
+  background: var(--ctp-pink);
+  color: var(--ctp-on-accent);
+}
+:focus-visible {
+  outline: 2px solid var(--ctp-pink);
+  outline-offset: 2px;
+}
+
+/* ---- page typography ----
+   The light, lowercase Metro headings and the paragraph rhythm for all page
+   content. :where() keeps the specificity at zero, so any component class
+   overrides these without a fight. */
+:where(main) {
+  overflow-wrap: break-word; /* a bare URL must not push the page sideways */
+}
+:where(main) h1 {
+  margin: 0 0 1rem;
+  font-size: clamp(2.25rem, 6vw, 3rem);
+  font-weight: 300;
+  letter-spacing: -0.02em;
+}
+:where(main) h2 {
+  margin: 2rem 0 0.5rem;
+  font-size: clamp(1.75rem, 5vw, 2.25rem);
+  font-weight: 300;
+  text-transform: lowercase;
+}
+:where(main) h3 {
+  margin: 1.5rem 0 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+:where(main) h4 {
+  margin: 1.5rem 0 0.4rem;
+  font-size: 1.0625rem;
+  font-weight: 600;
+}
+:where(main) h5 {
+  margin: 1.25rem 0 0.35rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+:where(main) h6 {
+  margin: 1.25rem 0 0.35rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ctp-subtext0);
+}
+:where(main) :is(p, li) {
+  max-width: 62ch;
+  line-height: 1.6;
+}
+
+/* ---- the Windows 8 page-enter animation ---- */
+@keyframes metro-enter {
+  from {
+    opacity: 0;
+    transform: translateX(200px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---- utilities ---- */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

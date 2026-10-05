@@ -1,9 +1,11 @@
 ---
-import '../styles/site.css';
+import '../styles/global.css';
+import '../styles/prose.css';
+import '../styles/cards.css';
+import SiteHeader from '../components/SiteHeader.astro';
 import selawkLight from '../assets/fonts/selawkl.woff2?url';
 import selawkRegular from '../assets/fonts/selawk.woff2?url';
 import { site } from '../site';
-import { getNav } from '../lib/collections';
 import { formatXmlDate } from '../lib/format';
 
 export interface Props {
@@ -37,11 +39,6 @@ const abs = (p: string) => new URL(p, Astro.site).href;
 const fullTitle = title ? `${title} · ${site.title}` : site.title;
 const ogTitle = title ?? site.title;
 const ogImage = abs(image ?? '/assets/favicon/konata-512.png');
-const isHome = path === '/';
-// The blog and projects nav links stay current on their child pages.
-const isCurrent = (url: string) =>
-  path === url || (['/blog/', '/projects/'].includes(url) && path.startsWith(url));
-const nav = (await getNav()).filter((s) => s.navbar);
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -74,29 +71,12 @@ const nav = (await getNav()).filter((s) => s.navbar);
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">
   <link rel="preload" href={selawkLight} as="font" type="font/woff2" crossorigin>
   <link rel="preload" href={selawkRegular} as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/metro/3.0.18/css/metro.min.css" integrity="sha384-e62zLAmzTmk6W8y6LlKtvIKFJTbNGrra4U/Uk4lJp7BlEzTn3H5L25O0PH4LPpcQ" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/metro/3.0.18/css/metro-icons.min.css" integrity="sha512-FkUlwUt7GJVrK3IUMpBf8e8ab73d3XwjvN1bjaRta6XTyzCNjEdpR4sK4WA9pB6gU2nClwnmPwZxhQGcYZOKEg==" crossorigin="anonymous">
   {mathjax && <script is:inline defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js" integrity="sha384-M5jmNxKC9EVnuqeMwRHvFuYUE8Hhp0TgBruj/GZRkYtiMrCRgH7yvv5KY+Owi7TW" crossorigin="anonymous"></script>}
 </head>
 <body>
   {bare ? <slot /> : (
     <div class="page-shell">
-      <header class="site-header">
-        {title ? (
-          <>
-            <p class="site-app-name"><a href="/">{site.title}</a></p>
-            <p class="site-title">{appName ?? title}</p>
-          </>
-        ) : (
-          <p class="site-title">{site.title}</p>
-        )}
-        {!isHome && (
-          <nav class="site-nav">
-            <a href="/">home</a>
-            {nav.map((s) => <a href={s.url} class:list={{ current: isCurrent(s.url) }}>{s.name}</a>)}
-          </nav>
-        )}
-      </header>
+      <SiteHeader {title} {appName} />
       <main>
         <slot />
       </main>
@@ -104,3 +84,27 @@ const nav = (await getNav()).filter((s) => s.navbar);
   )}
 </body>
 </html>
+
+<style>
+  /* Phone: Windows Phone tight edges. Desktop: the Windows 8 Start screen,
+     left-anchored with a big left margin. */
+  .page-shell {
+    padding: 1.5rem 0.625rem 2rem;
+  }
+  @media (min-width: 768px) {
+    .page-shell {
+      padding: 3.5rem 4rem 3rem 7.5rem;
+    }
+  }
+
+  /* Page content slides in after the header. The home tile grid runs its
+     own per-row stagger, so it opts out. */
+  main > :global(*:not(.tile-grid)) {
+    animation: metro-enter 0.7s var(--ease-metro) 120ms backwards;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    main > :global(*) {
+      animation: none;
+    }
+  }
+</style>

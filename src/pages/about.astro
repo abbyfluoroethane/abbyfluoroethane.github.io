@@ -1,9 +1,10 @@
 ---
 import Base from '../layouts/Base.astro';
+import PageColumns from '../components/PageColumns.astro';
 ---
 <Base title="about">
-  <div class="post-layout post-layout--aside-last">
-    <aside class="post-meta">
+  <PageColumns asideLast>
+    <Fragment slot="aside">
       <h2>important links</h2>
       <ul>
         <li><a href="https://foid.space/about">foid.space</a></li>
@@ -22,8 +23,7 @@ import Base from '../layouts/Base.astro';
         <li><strong>Fedi:</strong> @abbyfluoroethane@tech.lgbt</li>
         <li><strong>Instagram:</strong> @abbyfluoroethane</li>
       </ul>
-    </aside>
-    <article class="post-content">
+    </Fragment>
       <h2 id="haiii-im-abby-3">Haiii, I'm Abby :3</h2>
       <p>Welcome to my website. I build things that go to space, break things that stay on Earth, and occasionally muse about my thoughts on this site.</p>
       <h3 id="what-i-do-for-fun">What I do for fun</h3>
@@ -34,6 +34,5 @@ import Base from '../layouts/Base.astro';
       <p>Before Blue Origin, I was Head of Design at the Tahlequah Daily Press. I led production for two daily papers and more than ten yearly magazines.</p>
       <h2 id="about-this-site">About this site</h2>
       <p>This site is built with Astro and styled after Windows 8's Metro design language. It's open source, <a href="/blog/an-argument-for-doing-whatever-the-fuck-i-want/">do whatever the fuck you want with it!</a></p>
-    </article>
-  </div>
+  </PageColumns>
 </Base>

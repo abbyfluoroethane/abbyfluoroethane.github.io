@@ -2,6 +2,10 @@
 import Base from '../layouts/Base.astro';
 import LastfmWidget from '../components/LastfmWidget.astro';
 import { getGuestbook, getNav, getPosts, getProjects } from '../lib/collections';
+import Tile from '../components/tiles/Tile.astro';
+import TileGrid from '../components/tiles/TileGrid.astro';
+import TileLive from '../components/tiles/TileLive.astro';
+import type { IconName } from '../components/Icon.astro';
 import { excerpt, truncateWords } from '../lib/format';
 
 const nav = await getNav();
@@ -17,8 +21,7 @@ const featuredProjects = (await getProjects())
 
 const recentEntries = (await getGuestbook()).slice(0, 3);
 
-const liveTiles = ['blog', 'music', 'projects', 'guestbook'];
-const sizeClass = { square: 'tile', wide: 'tile-wide', large: 'tile-large' };
+const iconOf = (icon: string) => icon.replace(/^mif-/, '') as IconName;
 ---
 
 <Base>
@@ -28,53 +31,81 @@ const sizeClass = { square: 'tile', wide: 'tile-wide', large: 'tile-large' };
       <p>welcome to my little corner of the internet. i build things that go to space, break things that stay on earth, and occasionally muse about my thoughts.</p>
     </div>
 
-    <div class="home-tiles">
-      <div class="tile-grid">
-        {nav.map((s) => (
-          <a class:list={[sizeClass[s.size], `bg-ctp-${s.color}`, { 'tile-live-tile': liveTiles.includes(s.name) }]} href={s.url}>
-            {s.name === 'blog' ? (
-              <div class="tile-live tile-live-caption">
-                <p class="tile-live-label">latest post</p>
-                {latestPost && (
-                  <>
-                    <p class="tile-live-title">{latestPost.data.title}</p>
-                    <p class="tile-live-desc">{latestPostDesc}</p>
-                  </>
-                )}
-              </div>
-            ) : s.name === 'music' ? (
-              <div class="tile-live"><LastfmWidget id="lastfm-tile" count={1} tile={true} /></div>
-            ) : s.name === 'projects' ? (
-              <div class="tile-live tile-live-caption tile-cycle">
-                <p class="tile-live-label">featured project</p>
-                {featuredProjects.map((p, i) => (
-                  <div class={`tile-cycle-item${i === 0 ? ' is-active' : ''}`}>
-                    <p class="tile-live-title">{p.data.title}</p>
-                    <p class="tile-live-years">{p.data.date.getUTCFullYear()} – present</p>
-                    <p class="tile-live-desc">{p.data.description}</p>
-                  </div>
-                ))}
-              </div>
-            ) : s.name === 'guestbook' ? (
-              <div class="tile-live tile-live-caption tile-cycle">
-                <p class="tile-live-label">recent guestbook</p>
-                {recentEntries.map((e, i) => (
-                  <div class={`tile-cycle-item${i === 0 ? ' is-active' : ''}`}>
-                    <p class="tile-live-title">{e.name}</p>
-                    <p class="tile-live-desc">{e.message}</p>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div class="tile-content iconic"><span class={`icon ${s.icon}`}></span></div>
-            )}
-            <span class="tile-label">{s.name}</span>
-          </a>
-        ))}
-      </div>
-      <script>
-        import '../scripts/home';
-      </script>
-    </div>
+    <TileGrid>
+      {nav.map((s) => {
+        const tile = { size: s.size, color: s.color, href: s.url, label: s.name };
+        if (s.name === 'blog') return (
+          <Tile {...tile} live>
+            <TileLive caption>
+              <p class="tile-live-label">latest post</p>
+              {latestPost && (
+                <>
+                  <p class="tile-live-title">{latestPost.data.title}</p>
+                  <p class="tile-live-desc">{latestPostDesc}</p>
+                </>
+              )}
+            </TileLive>
+          </Tile>
+        );
+        if (s.name === 'music') return (
+          <Tile {...tile} live>
+            <TileLive><LastfmWidget id="lastfm-tile" count={1} tile={true} /></TileLive>
+          </Tile>
+        );
+        if (s.name === 'projects') return (
+          <Tile {...tile} live>
+            <TileLive caption cycle>
+              <p class="tile-live-label">featured project</p>
+              {featuredProjects.map((p, i) => (
+                <div class={`tile-cycle-item${i === 0 ? ' is-active' : ''}`}>
+                  <p class="tile-live-title">{p.data.title}</p>
+                  <p class="tile-live-years">{p.data.date.getUTCFullYear()} – present</p>
+                  <p class="tile-live-desc">{p.data.description}</p>
+                </div>
+              ))}
+            </TileLive>
+          </Tile>
+        );
+        if (s.name === 'guestbook') return (
+          <Tile {...tile} live>
+            <TileLive caption cycle>
+              <p class="tile-live-label">recent guestbook</p>
+              {recentEntries.map((e, i) => (
+                <div class={`tile-cycle-item${i === 0 ? ' is-active' : ''}`}>
+                  <p class="tile-live-title">{e.name}</p>
+                  <p class="tile-live-desc">{e.message}</p>
+                </div>
+              ))}
+            </TileLive>
+          </Tile>
+        );
+        return <Tile {...tile} icon={iconOf(s.icon)} />;
+      })}
+    </TileGrid>
   </div>
 </Base>
+
+<style>
+  .home-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    margin-top: 1.5rem;
+  }
+  /* 1200 and not 768: the intro column is floored at 320px, and 120 + 320 +
+     56 + 640 + 64 is 1200. Narrower than that there is no room for both, so
+     they stack. The tile track is max-content, so the field always gets its
+     whole 4 or 6 columns and the intro takes the rest up to 420px. */
+  @media (min-width: 1200px) {
+    .home-layout {
+      grid-template-columns: minmax(320px, 420px) max-content;
+      gap: 3.5rem; /* side by side, so not the stacked row gap */
+      align-items: start;
+    }
+  }
+  .home-heading {
+    margin: 0 0 1rem;
+    font-size: clamp(2.25rem, 6vw, 3rem);
+    font-weight: 300;
+  }
+</style>

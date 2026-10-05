@@ -17,3 +17,70 @@ import Base from '../layouts/Base.astro';
     </div>
   </div>
 </Base>
+
+<style>
+  /* A real bluescreen is a fixed blue, not a themed surface, so this is the
+     one page that ignores the --ctp light/dark tokens on purpose. #1a73c9 is
+     white-text safe (4.84:1, clears AA) and still reads as the right blue.
+     The page is `bare`: no header, like the real thing. */
+  .bsod {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    overflow-y: auto;
+    /* Top-anchored at a fixed offset, not centered, so the message sits at
+       the same spot whatever its length. Offsets were measured off a real
+       1920x1080 sad-face screenshot: top edge ~17% of height (13vh here,
+       plus the face's own line box), left edge ~10.6% of width. */
+    padding: 13vh 1.5rem 3rem 0.625rem;
+    background: #1a73c9;
+    color: #fff;
+  }
+  @media (min-width: 768px) {
+    .bsod {
+      padding: 13vh 4rem 3rem 12.5rem;
+    }
+  }
+  .bsod-inner {
+    max-width: 720px;
+  }
+  /* Sizes measured off the same screenshot (":(" ink ~179px tall, body text
+     ~40px at line-height 1.5). Segoe UI is only on Windows, so this paints in
+     Selawik, whose "(" is shorter for its em-box; the size is inflated to
+     match the rendered ink height rather than the nominal font-size. */
+  .bsod-face {
+    margin: 0 0 1.5rem;
+    font-size: clamp(6.5rem, 11vw, 13.3125rem);
+    font-weight: 300;
+    line-height: 1;
+  }
+  .bsod-text {
+    margin: 0 0 2rem;
+    max-width: 42ch;
+    font-size: clamp(1.75rem, 2.1vw, 2.5rem);
+    font-weight: 300;
+    line-height: 1.5;
+  }
+  .bsod-detail {
+    font-size: 1.125rem;
+    font-weight: 300;
+    line-height: 1.6;
+  }
+  .bsod-detail-line {
+    margin: 0 0 0.5rem;
+  }
+  .bsod-code {
+    margin: 0 0 1.25rem;
+    font-family: "Cascadia Code", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    letter-spacing: 0.02em;
+  }
+  .bsod-detail a,
+  .bsod-detail a:visited {
+    color: #fff;
+    text-decoration: underline;
+  }
+  .bsod-detail a:hover {
+    color: #fff;
+    opacity: 0.85;
+  }
+</style>

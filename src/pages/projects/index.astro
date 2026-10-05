@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import CardGrid from '../../components/CardGrid.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
 import { getProjects } from '../../lib/collections';
 
@@ -13,9 +14,9 @@ const sections = [
   {sections.map((section) => (
     <>
       <h2 id={section.id}>{section.id}</h2>
-      <div class="card-grid">
+      <CardGrid>
         {section.projects.map((project) => <ProjectCard {project} />)}
-      </div>
+      </CardGrid>
     </>
   ))}
 </Base>

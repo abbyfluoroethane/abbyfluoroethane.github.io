@@ -1,0 +1,87 @@
+/* Card primitive: a flat panel in a vertical list, plus the status pill.
+
+   Global on purpose. These classes are shared by Astro components (blog and
+   project cards, the project layout) and by DOM built at runtime (the Last.fm
+   history in src/scripts/lastfm.ts, guestbook entries). Scoped Astro styles
+   cannot reach runtime elements, so the primitive lives here and components
+   only add what is specific to them. */
+
+.card-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin: 1rem 0 2rem;
+}
+
+.card {
+  padding: 1.25rem 1.5rem;
+  background: var(--ctp-mantle);
+}
+
+.card-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.card-title {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.card-title a {
+  color: var(--ctp-text);
+  text-decoration: none;
+}
+
+.card-title a:hover {
+  color: var(--ctp-pink);
+}
+
+.card-date {
+  margin: 0 0 0.25rem;
+  color: var(--ctp-subtext0);
+  font-size: 0.8125rem;
+  text-transform: lowercase;
+}
+
+.card-desc {
+  margin: 0.5rem 0;
+  max-width: 62ch;
+}
+
+.card-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.875rem;
+}
+
+/* Here the date is an inline flex sibling of the links, so the bottom margin
+   it has above a post title would throw off the vertical centering. */
+.card-meta > .card-date {
+  margin: 0;
+}
+
+.card-link {
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.status-pill {
+  display: inline-block;
+  padding: 0.15rem 0.6rem;
+  background: var(--ctp-surface0);
+  font-size: 0.75rem;
+  text-transform: lowercase;
+}
+
+.status-pill.status-active {
+  background: var(--ctp-green);
+  color: var(--ctp-on-accent);
+}
+
+.status-pill.status-archive {
+  background: var(--ctp-surface1);
+}
