@@ -1,0 +1,54 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import DateBlock from './DateBlock.astro';
+import { excerpt, readingMinutes, truncateSentences } from '../lib/format';
+
+interface Props {
+  post: CollectionEntry<'posts'>;
+}
+const { post } = Astro.props;
+const href = `/blog/${post.id}/`;
+const description = post.data.summary ?? truncateSentences(excerpt(post.body), 40);
+const minutes = readingMinutes(post.body);
+---
+<!-- The title link is stretched over the row (cards.css), so the row is the target. -->
+<li class="card agenda-row">
+  <DateBlock date={post.data.date} />
+  <div class="body">
+    <h3 class="card-title"><a {href}>{post.data.title}</a></h3>
+    <p class="card-desc">{description}</p>
+    <p class="read">{minutes} min read</p>
+  </div>
+</li>
+
+<style>
+  .agenda-row {
+    display: grid;
+    grid-template-columns: var(--space-12) minmax(0, 1fr);
+    column-gap: var(--space-3);
+    list-style: none;
+    max-width: none;
+  }
+  .body {
+    min-width: 0;
+  }
+  /* The title and the day number share a top line. */
+  .card-title {
+    margin-top: calc((var(--type-title-lg) * var(--type-header-leading) - var(--type-item) * var(--type-item-leading)) / 2);
+  }
+  .read {
+    margin: var(--space-1) 0 0;
+    font-size: var(--type-caption);
+    line-height: var(--type-caption-leading);
+    color: var(--ctp-subtext0);
+  }
+  @media (min-width: 768px) {
+    .agenda-row {
+      grid-template-columns: var(--space-16) minmax(0, 1fr);
+      column-gap: var(--space-4);
+    }
+    .card-title {
+      margin-top: calc((var(--type-header) * var(--type-header-leading) - var(--type-item) * var(--type-item-leading)) / 2);
+    }
+  }
+</style>
