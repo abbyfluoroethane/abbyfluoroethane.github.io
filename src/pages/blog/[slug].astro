@@ -10,13 +10,14 @@ export const getStaticPaths = (async () => {
 }) satisfies GetStaticPaths;
 
 const { post } = Astro.props;
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
 ---
 <PostLayout
   title={post.data.title}
   date={post.data.date}
   description={post.data.summary}
   minutes={readingMinutes(post.body)}
+  headings={headings}
 >
   <Content />
 </PostLayout>

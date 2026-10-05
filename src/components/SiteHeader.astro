@@ -13,8 +13,10 @@ export interface Props {
   appName?: string;
   /** Detail pages: the page to go back to. */
   back?: { href: string; label: string };
+  /** Render the label as a paragraph when the page has its own h1. */
+  plainTitle?: boolean;
 }
-const { title, appName, back } = Astro.props;
+const { title, appName, back, plainTitle = false } = Astro.props;
 const path = Astro.url.pathname;
 const isHome = path === '/';
 // The blog and projects links stay current on their child pages.
@@ -28,7 +30,7 @@ const nav = (await getNav()).filter((s) => s.navbar);
       <p class="app-name"><a href="/">{site.title}</a></p>
       <div class:list={['title-row', { detail: back }]}>
         {back && <BackButton class="title-back" href={back.href} label={back.label} iconOnly />}
-        <h1 class="title">{appName ?? title}</h1>
+        {plainTitle ? <p class="title">{appName ?? title}</p> : <h1 class="title">{appName ?? title}</h1>}
       </div>
     </>
   ) : (
