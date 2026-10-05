@@ -72,37 +72,8 @@ const sizeClass = { square: 'tile', wide: 'tile-wide', large: 'tile-large' };
           </a>
         ))}
       </div>
-      <script is:inline>
-      (function () {
-        var cycles = [].slice.call(document.querySelectorAll(".tile-cycle"));
-        cycles.forEach(function (cycle) {
-          var items = cycle.querySelectorAll(".tile-cycle-item");
-          if (items.length < 2) return;
-          var i = 0;
-          setInterval(function () {
-            items[i].classList.remove("is-active");
-            i = (i + 1) % items.length;
-            items[i].classList.add("is-active");
-          }, 15000);
-        });
-      })();
-      </script>
-      <script is:inline>
-      (function () {
-        // stagger the entrance animation by visual row, not DOM order — grid-
-        // auto-flow: dense means a tile's position in the markup often isn't
-        // its position on screen, so a flat per-item delay wouldn't line rows
-        // up together.
-        var tiles = [].slice.call(document.querySelectorAll(".tile-grid > a"));
-        var tops = tiles.map(function (t) { return t.offsetTop; });
-        var rows = tops
-          .filter(function (top, i) { return tops.indexOf(top) === i; })
-          .sort(function (a, b) { return a - b; });
-        tiles.forEach(function (t) {
-          var row = rows.indexOf(t.offsetTop);
-          t.style.animationDelay = (180 + row * 70) + "ms";
-        });
-      })();
+      <script>
+        import '../scripts/home';
       </script>
     </div>
   </div>

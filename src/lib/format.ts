@@ -14,7 +14,8 @@ export const formatLongDate = (date: Date) =>
 export const formatXmlDate = (date: Date) =>
   date.toISOString().replace(/\.\d+Z$/, '+00:00');
 
-/** Plain text of the first paragraph of a markdown body. */
+/** Plain text of the first paragraph of a markdown body, with the same
+ * ellipsis the rendered post shows. */
 export function excerpt(body = ''): string {
   const first = body.trim().split(/\n\s*\n/)[0] ?? '';
   return first
@@ -24,7 +25,8 @@ export function excerpt(body = ''): string {
     .replace(/<[^>]*>/g, '')
     .replace(/(\*\*|__)(.+?)\1/gs, '$2')
     .replace(/(\*|_)(.+?)\1/gs, '$2')
-    .replace(/`([^`]*)`/g, '$1');
+    .replace(/`([^`]*)`/g, '$1')
+    .replace(/\.\.\./g, '…');
 }
 
 /** Keep the first `n` words. Add `suffix` only when words were cut. */

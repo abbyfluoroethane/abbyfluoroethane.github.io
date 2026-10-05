@@ -14,6 +14,6 @@ Biblically Inaccurate Angel was a 3D printed Level 1 high-power capable rocket s
 
 The project was completed in January 2023 after two successful flights on 9 July 2022.
 
-<p><img src="/assets/images/projects/biblically-inaccurate-angel-hero.jpg" alt="Biblically Inaccurate Angel Flight 1 hero" width="2048" height="1152" decoding="async"></p>
+![Biblically Inaccurate Angel Flight 1 hero](../../assets/images/projects/biblically-inaccurate-angel-hero.jpg)
 
 #### Acknowledgements: [Lavie Ohana](https://lavieohana.com), chute supplier and technical advisor.

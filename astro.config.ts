@@ -1,7 +1,6 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
-import { unified } from '@astrojs/markdown-remark';
-import { kramdownRemarkPlugins, kramdownRehypePlugins } from './src/lib/remark/index.mjs';
+import { satteri } from '@astrojs/markdown-satteri';
 
 export default defineConfig({
   site: 'https://bigaouette.com',
@@ -17,11 +16,15 @@ export default defineConfig({
     }),
   ],
   markdown: {
-    processor: unified({
-      smartypants: false,
-      remarkPlugins: kramdownRemarkPlugins,
-      rehypePlugins: kramdownRehypePlugins,
-    }),
-    syntaxHighlight: false,
+    // Sätteri is Astro's default processor; it is named here only to keep
+    // quotes straight (the site never used curly ones). Dashes and ellipses
+    // still convert.
+    processor: satteri({ features: { smartPunctuation: { quotes: false } } }),
+    // Shiki emits both themes as CSS variables (--shiki-light / --shiki-dark);
+    // site.css picks one with prefers-color-scheme.
+    shikiConfig: {
+      themes: { light: 'catppuccin-latte', dark: 'catppuccin-mocha' },
+      defaultColor: false,
+    },
   },
 });

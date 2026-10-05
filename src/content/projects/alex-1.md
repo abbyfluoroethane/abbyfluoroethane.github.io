@@ -7,4 +7,4 @@ description: "in-development IPA-nitrous rocket engine pushing 2000N thrust."
 date: 2025-07-08
 ---
 
-![ALEx-1](/assets/images/thrusty-boi.png)
+![ALEx-1](../../assets/images/thrusty-boi.png)
