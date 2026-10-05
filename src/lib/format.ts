@@ -34,3 +34,17 @@ export function truncateWords(text: string, n: number, suffix = '...'): string {
   const words = text.split(/\s+/).filter(Boolean);
   return words.length > n ? words.slice(0, n).join(' ') + suffix : words.join(' ');
 }
+
+/** At most `n` words, ending on a full sentence when one fits. A cut in the
+ * middle of a sentence ends in an ellipsis. */
+export function truncateSentences(text: string, n: number): string {
+  const words = text.split(/\s+/).filter(Boolean);
+  if (words.length <= n) return words.join(' ');
+  const head = words.slice(0, n).join(' ');
+  const end = Math.max(head.lastIndexOf('. '), head.lastIndexOf('? '), head.lastIndexOf('! '));
+  return end > 0 ? head.slice(0, end + 1) : head.replace(/[,;:]$/, '') + '…';
+}
+
+/** Reading time in whole minutes, at 230 words a minute. */
+export const readingMinutes = (body = '') =>
+  Math.max(1, Math.round(body.split(/\s+/).filter(Boolean).length / 230));

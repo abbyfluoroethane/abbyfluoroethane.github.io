@@ -1,7 +1,7 @@
 ---
+// A blog post as a Windows 8 detail page: the header is the post title with
+// the back button before it, then one reading column.
 import Base from './Base.astro';
-import BackButton from '../components/BackButton.astro';
-import PageColumns from '../components/PageColumns.astro';
 import { formatLongDate } from '../lib/format';
 import { inlineMarkdown } from '../lib/inlineMarkdown';
 
@@ -14,20 +14,60 @@ export interface Props {
   attribution?: string;
   description?: string;
   mathjax?: boolean;
-  /** Header label. Defaults to "blog". */
-  appName?: string;
+  /** Reading time in minutes, shown in the meta line. */
+  minutes?: number;
+  /** Where the back button goes. Defaults to the blog. */
+  back?: { href: string; label: string };
 }
-const { title, date, subtitle, attribution, description, mathjax, appName = 'blog' } = Astro.props;
+const {
+  title,
+  date,
+  subtitle,
+  attribution,
+  description,
+  mathjax,
+  minutes,
+  back = { href: '/blog/', label: 'back to blog' },
+} = Astro.props;
 ---
-<Base {title} {description} {mathjax} {appName} ogType="article" publishedTime={date}>
-  <PageColumns>
-    <Fragment slot="aside">
-      <p class="post-date">{formatLongDate(date)}</p>
-      <h1 class="post-title">{title}</h1>
-      {subtitle && <h2 class="post-subtitle" set:html={inlineMarkdown(subtitle)} />}
-      {attribution && <h4 class="post-attribution" set:html={inlineMarkdown(attribution)} />}
-      <p class="back-link"><BackButton href="/blog/" label="back to blog" /></p>
-    </Fragment>
-    <slot />
-  </PageColumns>
+<Base {title} {description} {mathjax} {back} ogType="article" publishedTime={date}>
+  <article class="post">
+    <p class="meta">
+      <time datetime={date.toISOString()}>{formatLongDate(date)}</time>
+      {minutes && <span> · {minutes} min read</span>}
+    </p>
+    {subtitle && <p class="standfirst" set:html={inlineMarkdown(subtitle)} />}
+    {attribution && <p class="attribution" set:html={inlineMarkdown(attribution)} />}
+    <div class="prose"><slot /></div>
+  </article>
 </Base>
+
+<style>
+  /* One reading column. The paragraphs carry the 62ch measure; the column
+     cap keeps images and code blocks from running far past the text. */
+  .post {
+    display: flow-root; /* contain floated images */
+    max-width: calc(36 * var(--space-4)); /* 720px: about 62ch of reading text plus room for wide figures */
+  }
+  .meta {
+    margin: 0 0 var(--space-6);
+    font-size: var(--type-caption);
+    line-height: var(--type-caption-leading);
+    text-transform: lowercase;
+    color: var(--ctp-subtext0);
+  }
+  .standfirst {
+    margin: 0 0 var(--space-4);
+    font-size: var(--type-item);
+    font-weight: var(--type-item-weight);
+    line-height: var(--type-item-leading);
+    color: var(--ctp-subtext1);
+  }
+  .attribution {
+    margin: 0 0 var(--space-6);
+    font-size: var(--type-caption);
+    font-weight: var(--type-title-weight);
+    line-height: var(--type-caption-leading);
+    color: var(--ctp-overlay1);
+  }
+</style>

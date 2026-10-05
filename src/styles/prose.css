@@ -3,6 +3,13 @@
    scoped under .prose, which layouts put on any element that holds it.
    Headings and paragraph rhythm come from the page typography in global.css. */
 
+/* Long-form text reads at the reading size. Paragraphs keep the 62ch
+   measure from global.css, so lines stay near 60-70 characters. */
+.prose {
+  font-size: var(--type-reading);
+  line-height: var(--type-reading-leading);
+}
+
 /* A float belongs to the section it was written in. Every heading and rule
    starts a new one, so none may ride up alongside a float. */
 .prose h1,

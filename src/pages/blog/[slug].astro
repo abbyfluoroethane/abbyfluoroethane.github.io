@@ -2,6 +2,7 @@
 import type { GetStaticPaths } from 'astro';
 import { getCollection, render } from 'astro:content';
 import PostLayout from '../../layouts/PostLayout.astro';
+import { readingMinutes } from '../../lib/format';
 
 export const getStaticPaths = (async () => {
   const posts = await getCollection('posts');
@@ -11,6 +12,11 @@ export const getStaticPaths = (async () => {
 const { post } = Astro.props;
 const { Content } = await render(post);
 ---
-<PostLayout title={post.data.title} date={post.data.date} description={post.data.summary}>
+<PostLayout
+  title={post.data.title}
+  date={post.data.date}
+  description={post.data.summary}
+  minutes={readingMinutes(post.body)}
+>
   <Content />
 </PostLayout>

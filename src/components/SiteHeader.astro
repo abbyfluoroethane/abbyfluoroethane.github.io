@@ -1,15 +1,20 @@
 ---
 // The Zune / Windows Phone header: a small app name over a big page title,
 // then the nav. The home page shows only the big name and no nav.
+// On a detail page (a blog post) the header is the item itself: the Windows 8
+// back button, then the item title in its own case.
 import { site } from '../site';
 import { getNav } from '../lib/collections';
+import BackButton from './BackButton.astro';
 
-interface Props {
+export interface Props {
   title?: string;
   /** Big label. Defaults to the title. */
   appName?: string;
+  /** Detail pages: the page to go back to. */
+  back?: { href: string; label: string };
 }
-const { title, appName } = Astro.props;
+const { title, appName, back } = Astro.props;
 const path = Astro.url.pathname;
 const isHome = path === '/';
 // The blog and projects links stay current on their child pages.
@@ -21,7 +26,10 @@ const nav = (await getNav()).filter((s) => s.navbar);
   {title ? (
     <>
       <p class="app-name"><a href="/">{site.title}</a></p>
-      <p class="title">{appName ?? title}</p>
+      <div class:list={['title-row', { detail: back }]}>
+        {back && <BackButton class="title-back" href={back.href} label={back.label} iconOnly />}
+        <h1 class="title">{appName ?? title}</h1>
+      </div>
     </>
   ) : (
     <p class="title">{site.title}</p>
@@ -74,6 +82,34 @@ const nav = (await getNav()).filter((s) => s.navbar);
     line-height: var(--type-header-leading);
     letter-spacing: -0.03em;
     text-transform: lowercase;
+  }
+  /* A detail page title is content: keep the author's case, and cap the
+     width so a long title wraps into a block instead of a 1400px line. */
+  .detail .title {
+    max-width: 20em;
+    text-transform: none;
+  }
+  /* Phone: a long post title at header size runs to six lines, so detail
+     titles step down to the content-title size. */
+  @media (max-width: 767px) {
+    .detail .title {
+      font-size: var(--type-title-lg);
+      line-height: var(--type-title-lg-leading);
+    }
+    .title-row :global(.title-back) {
+      margin-top: calc((var(--type-title-lg) * var(--type-title-lg-leading) - 41px) / 2); /* off-grid: 41px is the WinJS button */
+    }
+  }
+  /* Phone: the back button sits on the first line, left of the title. */
+  .title-row.detail {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+  }
+  .title-row :global(.title-back) {
+    flex: 0 0 auto;
+    /* Center the 41px button on the first line of the title. */
+    margin-top: calc((var(--type-header) * var(--type-header-leading) - 41px) / 2); /* off-grid: 41px is the WinJS button */
   }
 
   /* Phone: a Windows Phone pivot, one line that scrolls instead of wrapping.
@@ -149,6 +185,18 @@ const nav = (await getNav()).filter((s) => s.navbar);
       margin-right: 0;
       padding-right: 0;
       overflow: visible;
+    }
+    /* Windows 8 silhouette: the back button sits in the left margin, its
+       left edge 40px from the window edge, so the title keeps the 120px
+       line. */
+    .title-row.detail {
+      position: relative;
+      display: block;
+    }
+    .title-row :global(.title-back) {
+      position: absolute;
+      left: calc(var(--space-8) - var(--page-margin));
+      top: 0;
     }
   }
 
