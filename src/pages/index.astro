@@ -15,8 +15,10 @@ const latestPostDesc = latestPost
   : '';
 
 // Oldest featured project first, so the cycle starts with the longest-running one.
+// Only active projects are featured: an archived project leaves the cycle even
+// if its front matter still says featured.
 const featuredProjects = (await getProjects())
-  .filter((p) => p.data.featured)
+  .filter((p) => p.data.featured && p.data.status === 'active')
   .reverse();
 
 const recentEntries = (await getGuestbook()).slice(0, 3);
