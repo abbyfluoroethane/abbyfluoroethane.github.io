@@ -1,5 +1,6 @@
 ---
 import Base from './Base.astro';
+import PageColumns from '../components/PageColumns.astro';
 import { formatLongDate } from '../lib/format';
 import { inlineMarkdown } from '../lib/inlineMarkdown';
 
@@ -18,16 +19,14 @@ export interface Props {
 const { title, date, subtitle, attribution, description, mathjax, appName = 'blog' } = Astro.props;
 ---
 <Base {title} {description} {mathjax} {appName} ogType="article" publishedTime={date}>
-  <div class="post-layout">
-    <aside class="post-meta">
+  <PageColumns>
+    <Fragment slot="aside">
       <p class="post-date">{formatLongDate(date)}</p>
       <h1 class="post-title">{title}</h1>
       {subtitle && <h2 class="post-subtitle" set:html={inlineMarkdown(subtitle)} />}
       {attribution && <h4 class="post-attribution" set:html={inlineMarkdown(attribution)} />}
       <p class="back-link"><a href="/blog/">← back to blog</a></p>
-    </aside>
-    <article class="post-content">
-      <slot />
-    </article>
-  </div>
+    </Fragment>
+    <slot />
+  </PageColumns>
 </Base>

@@ -1,0 +1,27 @@
+---
+// The pink Metro block button. Renders a link when given an href, otherwise
+// a <button>.
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = HTMLAttributes<'a'> & HTMLAttributes<'button'>;
+const { href, class: className, ...rest } = Astro.props;
+const Tag = href ? 'a' : 'button';
+---
+<Tag class:list={['btn', className]} href={href} {...rest}><slot /></Tag>
+
+<style>
+  .btn {
+    display: inline-block;
+    padding: 0.6rem 1.25rem;
+    border: 0;
+    background: var(--ctp-pink);
+    color: var(--ctp-on-accent);
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .btn:hover {
+    opacity: 0.85;
+    text-decoration: none;
+  }
+</style>

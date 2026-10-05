@@ -2,6 +2,7 @@
 // Layout for src/pages/resume.md. Markdown pages pass their front matter
 // as `frontmatter`.
 import Base from './Base.astro';
+import PageColumns from '../components/PageColumns.astro';
 
 export interface Props {
   frontmatter: {
@@ -14,13 +15,12 @@ export interface Props {
 const { title, full_name, tagline, description } = Astro.props.frontmatter;
 ---
 <Base {title} {description}>
-  <div class="post-layout">
-    <aside class="post-meta">
+  <PageColumns>
+    <Fragment slot="aside">
       <h2 class="post-title">{full_name}</h2>
-      <h2 class="resume-tagline">{tagline}</h2>
-    </aside>
-    <article class="post-content">
-      <slot />
-    </article>
-  </div>
+      <h2 class="post-tagline">{tagline}</h2>
+    </Fragment>
+    <slot />
+  </PageColumns>
 </Base>
+

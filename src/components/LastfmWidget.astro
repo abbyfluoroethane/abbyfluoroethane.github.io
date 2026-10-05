@@ -14,3 +14,171 @@ const { id: lfmId = 'lastfm', count = 1, tile = false, historyId } = Astro.props
 <script>
   import '../scripts/lastfm';
 </script>
+
+<!--
+  Shared by every Last.fm surface (music page aside and cards, home tile).
+  The art stack of the tile is inserted on the tile itself and the history
+  cards sit outside the widget root, and all of it is built at runtime, so
+  these rules have to be global rather than nested under the widget.
+-->
+<style is:global>
+  /* ---- skeletons ----
+     Every Last.fm surface waits on the same two round trips (the API call,
+     then the cover image), so they all shimmer the same way: a surface0 block
+     with a sheen sweeping across it. */
+  .skeleton {
+    position: relative;
+    overflow: hidden;
+    background-color: var(--ctp-surface0);
+  }
+  .skeleton::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(100deg, transparent 25%, var(--skeleton-sheen) 50%, transparent 75%);
+    transform: translateX(-100%);
+    animation: skeleton-sweep 1.6s ease-in-out infinite;
+  }
+  @keyframes skeleton-sweep {
+    to {
+      transform: translateX(100%);
+    }
+  }
+  /* One line of not-yet-arrived text. Sized in em off whatever it stands in
+     for, so the same bar suits a tile caption and a page heading. A step
+     darker than a plain skeleton because it sits on top of one. */
+  .skeleton-bar {
+    display: inline-block;
+    width: 100%;
+    height: 0.8em;
+    vertical-align: middle;
+    background-color: var(--ctp-surface1);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    /* The sheen parks off to the left, so dropping the animation leaves a
+       plain surface block rather than a frozen highlight. */
+    .skeleton::after {
+      animation: none;
+    }
+  }
+
+  /* ---- album art ----
+     Covers arrive at their own pace and change under the 30s poll, so each
+     one is a stack: a shimmer on top while a cover is in flight, the Last.fm
+     mark underneath for tracks with no art, and one <img> layer per cover so
+     a new one can crossfade over whatever is showing. */
+  .art-stack {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    background-color: var(--ctp-surface0);
+    --art-fallback-opacity: 0.45;
+  }
+  .art-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    object-fit: cover;
+    opacity: 0;
+    /* ART_FADE in lastfm.ts matches this duration */
+    transition: opacity 0.6s ease;
+  }
+  .art-layer.is-loaded {
+    opacity: 1;
+  }
+  .art-fallback {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+  }
+  /* The mark is a mask, not an <img>, so one file can be tinted per surface.
+     Browsers without mask support get nothing, hence the colour lives here. */
+  @supports (mask-image: none) or (-webkit-mask-image: none) {
+    .art-fallback {
+      -webkit-mask: url("../assets/images/lastfm.svg") center / 42% no-repeat;
+      mask: url("../assets/images/lastfm.svg") center / 42% no-repeat;
+      background-color: currentColor;
+    }
+  }
+  .art-stack.is-artless .art-fallback {
+    opacity: var(--art-fallback-opacity);
+  }
+  .art-skeleton {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    opacity: 0;
+    transition: opacity 0.45s ease;
+    pointer-events: none;
+  }
+  .art-stack.is-loading .art-skeleton {
+    opacity: 1;
+  }
+
+  /* ---- caption / cover handover ----
+     The caption and cover belong to the same track, so they turn over as one:
+     the caption dips out across the first half of the cover's crossfade and
+     returns over the second, so it is never readable against another
+     track's art. TEXT_SWAP in lastfm.ts sets the timing. */
+  .lastfm-swap {
+    transition: opacity 0.2s ease;
+  }
+  .lastfm-swap.is-swapping {
+    opacity: 0;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    /* No dip: the caption just changes on the beat the cover does, rather
+       than blinking out and back with the transition removed. */
+    .lastfm-swap.is-swapping {
+      opacity: 1;
+    }
+  }
+</style>
+
+<style>
+  /* ---- widget on the music page: label, square cover, title, artist/album ---- */
+  /* The home tile positions its own widget (see .lastfm-widget-tile there). */
+  .lastfm-widget:not(.lastfm-widget-tile) {
+    margin: 0.75rem 0 1.5rem;
+  }
+  .lastfm-widget :global(.lastfm-status) {
+    margin: 0 0 0.25rem;
+    font-size: 0.8125rem;
+    text-transform: lowercase;
+    color: var(--ctp-subtext0);
+  }
+  .lastfm-widget :global(.lastfm-label) {
+    margin: 0 0 0.75rem;
+  }
+  .lastfm-widget :global(.lastfm-cover-link) {
+    display: block;
+    margin: 0 0 1.25rem;
+  }
+  .lastfm-widget :global(.lastfm-cover) {
+    width: 100%;
+    aspect-ratio: 1;
+    color: var(--ctp-overlay0);
+  }
+  .lastfm-widget :global(.lastfm-track-title) {
+    margin: 0 0 0.25rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+  .lastfm-widget :global(.lastfm-track-artist) {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 700;
+  }
+  .lastfm-widget :global(.lastfm-track-album) {
+    margin: 0.2rem 0 0;
+    font-size: 1.0625rem;
+    font-weight: 400;
+    color: var(--ctp-subtext0);
+  }
+</style>

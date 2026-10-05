@@ -1,6 +1,9 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import Base from './Base.astro';
+import Button from '../components/Button.astro';
+import PageColumns from '../components/PageColumns.astro';
+// Pulls in the shared .status-pill rules until the pill becomes a component.
 
 export interface Props {
   project: CollectionEntry<'projects'>['data'];
@@ -8,18 +11,17 @@ export interface Props {
 const { title, status, date, description, external_url, url_text } = Astro.props.project;
 ---
 <Base {title} {description} appName="projects" ogType="article">
-  <div class="post-layout">
-    <aside class="post-meta">
+  <PageColumns>
+    <Fragment slot="aside">
       <p class="post-date">
         <span class={`status-pill status-${status}`}>{status}</span>
         · {date.getUTCFullYear()}
       </p>
       <h1 class="post-title">{title}</h1>
-      {external_url && <p><a class="btn" href={external_url}>{url_text ?? 'external link'}</a></p>}
+      {external_url && <p><Button href={external_url}>{url_text ?? 'external link'}</Button></p>}
       <p class="back-link"><a href="/projects/">← back to projects</a></p>
-    </aside>
-    <article class="post-content">
-      <slot />
-    </article>
-  </div>
+    </Fragment>
+    <slot />
+  </PageColumns>
 </Base>
+

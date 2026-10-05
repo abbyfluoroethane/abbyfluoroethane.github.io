@@ -1,0 +1,129 @@
+---
+import Icon, { type IconName } from '../Icon.astro';
+
+interface Props {
+  size?: 'square' | 'wide' | 'large';
+  /** A Catppuccin accent name, or the neutrals `surface` and `white`. */
+  color?: string;
+  href: string;
+  label: string;
+  /** Centered glyph. Ignored when the tile has slot content. */
+  icon?: IconName;
+  /** Slot content is live: src/scripts/lastfm.ts looks for `.tile-live-tile`. */
+  live?: boolean;
+}
+const { size = 'square', color = 'pink', href, label, icon, live = false } = Astro.props;
+
+// `orange` is the nav data's name for peach. The accents keep light text in
+// both themes. `white` is near-black in mocha, near-white in latte.
+const accent = color === 'orange' ? 'peach' : color;
+const colors: Record<string, [string, string]> = {
+  surface: ['var(--ctp-surface0)', 'var(--ctp-text)'],
+  white: ['var(--ctp-crust)', 'var(--ctp-text)'],
+};
+const [bg, fg] = colors[accent] ?? [`var(--ctp-${accent})`, 'var(--ctp-on-accent)'];
+const hasSlot = Astro.slots.has('default');
+---
+<a
+  class:list={['tile', { 'tile-live-tile': live }]}
+  data-size={size}
+  href={href}
+  style={`--tile-bg: ${bg}; --tile-fg: ${fg}`}
+>
+  {hasSlot ? <slot /> : icon && <span class="tile-icon"><Icon name={icon} /></span>}
+  <span class="tile-label">{label}</span>
+</a>
+
+<style>
+  .tile {
+    position: relative;
+    display: block;
+    background-color: var(--tile-bg, var(--ctp-surface0));
+    color: var(--tile-fg, var(--ctp-text));
+    text-decoration: none;
+    cursor: pointer;
+    user-select: none;
+    --tile-desc-lines: 3;
+    transition: transform 0.1s ease;
+    animation: metro-enter 0.7s var(--ease-metro) backwards; /* delay set by home.ts */
+  }
+  .tile[data-size='wide'] {
+    grid-column: span 2;
+  }
+  .tile[data-size='large'] {
+    grid-column: span 2;
+    grid-row: span 2;
+    --tile-desc-lines: 5;
+  }
+  .tile:hover {
+    outline: 3px solid var(--ctp-overlay1);
+    text-decoration: none;
+  }
+  .tile:active {
+    transform: scale(0.97);
+    outline: 0;
+  }
+  /* Wide tiles on a phone are short, so only one line of description fits. */
+  @media (max-width: 767px) {
+    .tile[data-size='wide'] {
+      --tile-desc-lines: 1;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .tile {
+      animation: none;
+      transition: none;
+    }
+  }
+
+  .tile-label {
+    position: absolute;
+    bottom: 0;
+    left: 0.625rem;
+    padding: 0.425rem 0.25rem;
+    z-index: 999;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: lowercase;
+  }
+  .tile-icon {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-size: 40px; /* Icon is 1em square */
+  }
+
+  /* The music tile's album art, inserted by src/scripts/lastfm.ts: a layer
+     stack over the tile colour and under the text. The colour stays beneath
+     so a cover has something to fade in from, and a track with no art still
+     shows a tile. */
+  .tile-live-tile :global(.tile-art) {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-color: transparent;
+    color: var(--ctp-on-accent);
+    --art-fallback-opacity: 0.32;
+  }
+  /* Scrim under the text, fading in with the art. Without art the flat
+     accent colour already has enough contrast. */
+  .tile-live-tile :global(.tile-art)::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(to bottom, rgba(17, 17, 27, 0.85), rgba(17, 17, 27, 0.15) 65%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.6s ease;
+    pointer-events: none;
+  }
+  .tile-live-tile :global(.tile-art.has-art)::after {
+    opacity: 1;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .tile-live-tile :global(.tile-art)::after {
+      transition: none;
+    }
+  }
+</style>

@@ -1,12 +1,13 @@
 ---
 import Base from '../../layouts/Base.astro';
+import CardGrid from '../../components/CardGrid.astro';
 import PostCard from '../../components/PostCard.astro';
 import { getPosts } from '../../lib/collections';
 
 const posts = await getPosts();
 ---
 <Base title="blog">
-  <div class="card-grid">
+  <CardGrid>
     {posts.map((post) => <PostCard {post} />)}
-  </div>
+  </CardGrid>
 </Base>

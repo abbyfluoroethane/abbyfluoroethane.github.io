@@ -9,5 +9,5 @@ export interface Props {
 const { title, description } = Astro.props.frontmatter;
 ---
 <Base {title} {description}>
-  <slot />
+  <div class="prose"><slot /></div>
 </Base>
