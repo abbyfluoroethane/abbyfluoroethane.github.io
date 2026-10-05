@@ -15,6 +15,8 @@ export interface Props {
   image?: string;
   /** Header label. Defaults to the title. */
   appName?: string;
+  /** Render the header label as a paragraph, for a page whose own h1 is the content title. */
+  plainTitle?: boolean;
   /** Detail pages: the back button target shown before the header title. */
   back?: { href: string; label: string };
   /** Skip the header and nav, for a page that owns the whole viewport (404). */
@@ -30,6 +32,7 @@ const {
   description = site.description,
   image,
   appName,
+  plainTitle = false,
   back,
   bare = false,
   mathjax = false,
@@ -79,7 +82,7 @@ const ogImage = abs(image ?? '/assets/favicon/konata-512.png');
 <body>
   {bare ? <slot /> : (
     <div class="page-shell">
-      <SiteHeader {title} {appName} {back} />
+      <SiteHeader {title} {appName} {back} {plainTitle} />
       <main>
         <slot />
       </main>

@@ -1,0 +1,42 @@
+---
+// The agenda date: the day number large over the month as a caption. The year
+// is not part of it; a list shows the year once per group, a post shows it
+// beside the block.
+interface Props {
+  date: Date;
+}
+const { date } = Astro.props;
+const day = date.getUTCDate();
+const month = date.toLocaleDateString('en-US', { month: 'long', timeZone: 'UTC' });
+---
+<time class="date-block" datetime={date.toISOString()}>
+  <span class="day">{day}</span>
+  <span class="month">{month}</span>
+</time>
+
+<style>
+  .date-block {
+    display: block;
+    color: var(--ctp-text);
+  }
+  .day {
+    display: block;
+    font-size: var(--type-title-lg);
+    font-weight: var(--type-title-lg-weight);
+    line-height: var(--type-header-leading);
+    letter-spacing: -0.03em;
+  }
+  .month {
+    display: block;
+    font-size: var(--type-caption);
+    line-height: var(--type-caption-leading);
+    text-transform: lowercase;
+    color: var(--ctp-subtext0);
+  }
+  @media (min-width: 768px) {
+    .day {
+      font-size: var(--type-header);
+      font-weight: var(--type-header-weight);
+    }
+  }
+</style>
