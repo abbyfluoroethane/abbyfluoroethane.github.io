@@ -1,50 +1,130 @@
 ---
+// The blog as a panorama: the newest post is the hero, set bigger than the
+// page header; older posts sit in one column per year under a giant faded
+// year numeral, like the Zune panorama's section titles.
 import Base from '../../layouts/Base.astro';
-import AgendaRow from '../../components/AgendaRow.astro';
 import { getPosts } from '../../lib/collections';
+import { excerpt, formatLongDate, readingMinutes, truncateSentences } from '../../lib/format';
 
-// An agenda: one row per post, the year shown once where it changes.
-const posts = await getPosts();
-const years = [...new Set(posts.map((p) => p.data.date.getUTCFullYear()))];
+const [latest, ...older] = await getPosts();
+const years = [...new Set(older.map((p) => p.data.date.getUTCFullYear()))];
 const groups = years.map((year) => ({
   year,
-  posts: posts.filter((p) => p.data.date.getUTCFullYear() === year),
+  posts: older.filter((p) => p.data.date.getUTCFullYear() === year),
 }));
+const summary = latest.data.summary ?? truncateSentences(excerpt(latest.body), 40);
 ---
 <Base title="blog">
-  {groups.map(({ year, posts }) => (
-    <section aria-labelledby={`year-${year}`}>
-      <h2 id={`year-${year}`}>{year}</h2>
-      <ul class="agenda">
-        {posts.map((post) => <AgendaRow {post} />)}
-      </ul>
-    </section>
-  ))}
+  <article class="hero">
+    <h2><a href={`/blog/${latest.id}/`}>{latest.data.title}</a></h2>
+    <p class="caption">
+      <time datetime={latest.data.date.toISOString()}>{formatLongDate(latest.data.date)}</time>
+      · {readingMinutes(latest.body)} min read
+    </p>
+    <p class="summary">{summary}</p>
+  </article>
+
+  <div class="years">
+    {groups.map(({ year, posts }) => (
+      <section aria-labelledby={`year-${year}`}>
+        <h2 id={`year-${year}`} class="year">{year}</h2>
+        <ul>
+          {posts.map((post) => (
+            <li>
+              <a href={`/blog/${post.id}/`}>{post.data.title}</a>
+              <time class="caption" datetime={post.data.date.toISOString()}>{formatLongDate(post.data.date)}</time>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))}
+  </div>
 </Base>
 
 <style>
-  section {
-    max-width: calc(36 * var(--space-4)); /* 720px: the row, date block included */
-  }
-  /* A thin rule between years only; the first group has none. */
-  section + section {
+  .hero {
     margin-top: var(--space-8);
-    padding-top: var(--space-4);
-    border-top: 1px solid var(--ctp-surface1);
+    margin-bottom: var(--space-16);
   }
-  h2 {
+  .hero h2 {
+    max-width: 14em;
     margin: 0 0 var(--space-4);
+    font-size: var(--type-display);
+    font-weight: 300;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+  }
+  .hero h2 a {
+    color: var(--ctp-text);
+  }
+  .hero h2 a:hover {
+    color: var(--ctp-pink);
+    text-decoration: none;
+  }
+  .caption {
+    margin: 0;
     font-size: var(--type-caption);
-    font-weight: var(--type-title-weight);
+    font-weight: var(--type-caption-weight);
     line-height: var(--type-caption-leading);
-    letter-spacing: 0.06em;
     color: var(--ctp-subtext0);
   }
-  .agenda {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-6);
+  .hero .caption {
+    margin-bottom: var(--space-3);
+  }
+  .summary {
+    max-width: 38em;
+    margin: 0;
+    font-size: var(--type-item);
+    line-height: var(--type-item-leading);
+    color: var(--ctp-subtext1);
+  }
+
+  /* Phone: columns stack. Desktop: one column per year, side by side. */
+  .years {
+    display: grid;
+    gap: var(--space-12) var(--space-16);
+  }
+  @media (min-width: 768px) {
+    .years {
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    }
+  }
+  .year {
+    /* A decoration size outside the ramp: the numeral is a landmark. */
+    margin: 0 0 var(--space-4);
+    overflow: hidden;
+    font-size: clamp(5rem, 11vw, 9rem); /* 80-144px */
+    font-weight: 300;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: var(--ctp-surface1);
+  }
+  @media (prefers-color-scheme: dark) {
+    .year {
+      color: var(--ctp-surface0);
+    }
+  }
+  ul {
     margin: 0;
     padding: 0;
+    list-style: none;
+  }
+  li {
+    max-width: none;
+    margin-bottom: var(--space-6);
+  }
+  li a {
+    display: block;
+    font-size: var(--type-item);
+    line-height: var(--type-item-leading);
+    color: var(--ctp-text);
+  }
+  li a:hover {
+    color: var(--ctp-pink);
+    text-decoration: none;
+  }
+  li .caption {
+    display: block;
+    margin-top: 2px;
   }
 </style>

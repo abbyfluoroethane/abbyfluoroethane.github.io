@@ -77,6 +77,10 @@
      step between header and subheader for a content title. Use only these
      steps. Size, weight and line height go together. */
   --type-header: clamp(2.625rem, 7vw, 3.5rem); /* 42-56px: page header */
+  /* Display: the one step above the header. Only the blog's newest post uses
+     it, as the hero of the panorama (the Zune / Windows Phone idea of a title
+     big enough to be a landmark). Light weight, like the header. */
+  --type-display: clamp(2.625rem, 9vw, 6rem); /* 42-96px */
   --type-header-weight: 300;
   --type-header-leading: 1.05;
   --type-title-lg: clamp(1.875rem, 4.5vw, 2.25rem); /* 30-36px: content title */
