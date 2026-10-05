@@ -2,21 +2,19 @@
 layout: ../../layouts/MarkdownPostLayout.astro
 app_name: extras
 title: markdown
-subtitle: Every construct kramdown can emit, in the layout a *post* renders in.
+subtitle: Every construct the markdown pipeline can emit, in the layout a *post* renders in.
 attribution: "Style stress test — see [the source](https://github.com/abbyfluoroethane/abbyfluoroethane.github.io/blob/metro-rebuild/extras/markdown.md)"
 date: 2026-08-19
 description: every markdown construct this site can emit, on one page, to find the gaps in the stylesheet.
 mathjax: true
 ---
 
-Every construct kramdown can emit, in the same layout a blog post renders in,
-so a gap in `site.css` has somewhere to show itself. Anything that looks wrong
-here is a finding, not a bug in the page. A handful of things below are
-labelled as known non-features — kramdown not supporting a syntax is a
-different problem from the stylesheet not covering it.
-
-* placeholder for the generated list
-{:toc}
+Every construct Astro's markdown pipeline (Sätteri, with GitHub-flavoured
+extensions) can emit, in the same layout a blog post renders in, so a gap in
+`site.css` has somewhere to show itself. Anything that looks wrong here is a
+finding, not a bug in the page. Syntax the pipeline does not support, such as
+definition lists, abbreviations and attribute lists, is written as raw HTML
+below.
 
 ## headings
 
@@ -58,9 +56,9 @@ print</small>, <q>a quotation</q>, <cite>a citation</cite>, <ins>inserted</ins>
 and <del>deleted</del>, <var>x</var>, <samp>program output</samp>, and a
 <time datetime="2026-08-19">timestamp</time>.
 
-Typography from kramdown: an em dash --- like that, an en dash 1--10, an
+Typography from smart punctuation: an em dash --- like that, an en dash 1--10, an
 ellipsis ... and "double quotes" with 'single quotes' inside. This site sets
-`smart_quotes` to leave quotes straight, so they should stay straight while
+`smartPunctuation.quotes` to false in `astro.config.ts`, which leaves quotes straight, so they should stay straight while
 the dashes and ellipsis still convert.
 
 A hard line break made with two trailing spaces:  
@@ -193,16 +191,17 @@ A loose list, where each item becomes its own paragraph:
 
 ### definition list
 
-kramdown
-: A markdown engine with several extensions GFM does not have. This
-  definition is deliberately long so the wrapping of a `dd` is visible.
+Markdown has no definition list syntax, so this is raw HTML.
 
-rouge
-: The syntax highlighter GitHub Pages configures by default.
-
-term with two definitions
-: the first definition
-: the second definition
+<dl>
+  <dt>Sätteri</dt>
+  <dd>Astro's default markdown processor, written in Rust. This definition is deliberately long so the wrapping of a <code>dd</code> is visible.</dd>
+  <dt>Shiki</dt>
+  <dd>The syntax highlighter, run with the Catppuccin themes.</dd>
+  <dt>term with two definitions</dt>
+  <dd>the first definition</dd>
+  <dd>the second definition</dd>
+</dl>
 
 ## code
 
@@ -210,7 +209,7 @@ Inline `code`, inline code containing a backtick `` ` ``, and inline code with
 a long token like `NSApplicationDidFinishLaunchingNotification` that may need
 to break.
 
-A fenced block with a language, which rouge highlights:
+A fenced block with a language, which Shiki highlights:
 
 ```js
 // javascript
@@ -248,8 +247,8 @@ class Track:
 
 ```bash
 # shell
-bundle exec jekyll serve --watch --port 4000 \
-  | grep --line-buffered -E 'Regenerating|error'
+npx astro dev --port 4000 2>&1 \
+  | grep --line-buffered -E 'error|warn'
 ```
 
 ```json
@@ -265,13 +264,30 @@ bundle exec jekyll serve --watch --port 4000 \
 + var TEXT_SWAP = ART_FADE / 2;
 ```
 
-```liquid
-{% for entry in site.data.guestbook reversed %}
-  <p>{{ entry.name | escape }}</p>
-{% endfor %}
+```html
+<ul>
+  <li class="entry">hello &amp; welcome</li>
+</ul>
 ```
 
-A fenced block with no language given:
+```ts
+// typescript
+interface Track { name: string; artist: string }
+export const caption = (t: Track): string => `${t.name} — ${t.artist}`;
+```
+
+```yaml
+# yaml
+title: markdown
+mathjax: true
+tags: [a, b]
+```
+
+A fenced block with an unknown language, and then one with none:
+
+```nonsense
+unknown language, treated as plain text
+```
 
 ```
 plain text in a fence, no highlighting requested
@@ -340,13 +356,13 @@ ___
 
 An image on its own:
 
-![Boeing 737 on approach to SFO](/assets/images/sfo-landing.jpg)
+![Boeing 737 on approach to SFO](../../assets/images/sfo-landing.jpg)
 
 An image with a title, wrapped in a link:
 
-[![MacBook Neo](/assets/images/macbook-neo.jpg "the title attribute")](https://example.com)
+[![MacBook Neo](../../assets/images/macbook-neo.jpg "the title attribute")](https://example.com)
 
-An image written inline in a sentence — ![the last.fm mark](/assets/images/lastfm.svg) — which lands on its own line
+An image written inline in a sentence — ![the last.fm mark](../../assets/images/lastfm.svg) — which lands on its own line
 anyway, because `main img` is `display: block` for the benefit of posts. The
 mark is also an SVG carrying only a `viewBox`, so it has no intrinsic size to
 fall back on and takes the full width it is offered. Both are the styling
@@ -359,49 +375,60 @@ An image whose source does not resolve, so only the alt text is left:
 
 ### the image helpers
 
-`.img-pair`, `.img-float-left`, `.img-float-right` and `.img-center-sm` all
-take a kramdown IAL, so a post writes them in markdown and never drops into
-raw HTML. Attributes ride along in the same braces:
+`.img-pair`, `.img-float-left`, `.img-float-right` and `.img-center-sm` work on
+a wrapping `<div>` with markdown images inside (blank lines around each, so
+they are still processed) or on a raw `<img>` carrying the class.
 
-```
-![alt](/a.jpg){: .img-float-right loading="lazy"}
+A pair, in a wrapper div:
 
-![one](/a.jpg) ![two](/b.jpg)
-{: .img-pair}
-```
+<div class="img-pair">
 
-A pair, written as one paragraph with a block IAL under it:
+![MacBook 2010](../../assets/images/macbook-unibody.jpg)
 
-![MacBook 2010](/assets/images/macbook-unibody.jpg){: loading="lazy" decoding="async"}
-![MacBook Neo](/assets/images/macbook-neo.jpg){: loading="lazy" decoding="async"}
-{: .img-pair}
+![MacBook Neo](../../assets/images/macbook-neo.jpg)
 
-A right float, with a span IAL on the image itself:
+</div>
 
-![Boeing 737 on approach to SFO](/assets/images/sfo-landing.jpg){: .img-float-right loading="lazy" decoding="async"}
+A right float:
+
+<div class="img-float-right">
+
+![Boeing 737 on approach to SFO](../../assets/images/sfo-landing.jpg)
+
+</div>
 
 Text set beside a right-floated image. This paragraph needs to run long enough
 to actually wrap around the float, otherwise the helper has nothing to prove.
 The float clears at the next heading, and the text should not crowd the
 image's edge.
 
-A left float, and a short paragraph after it — deliberately too short to reach
+A left float, and a short paragraph after it, deliberately too short to reach
 the bottom of the image, which is the case that used to leave the float
 hanging into whatever came next:
 
-![MacBook 2010](/assets/images/macbook-unibody.jpg){: .img-float-left loading="lazy" decoding="async"}
+<div class="img-float-left">
+
+![MacBook 2010](../../assets/images/macbook-unibody.jpg)
+
+</div>
 
 One short line.
 
 ### centred and constrained
 
-![Boeing 737 on approach to SFO](/assets/images/sfo-landing.jpg){: .img-center-sm loading="lazy" decoding="async"}
+<div class="img-center-sm">
+
+![Boeing 737 on approach to SFO](../../assets/images/sfo-landing.jpg)
+
+</div>
 
 ## raw html blocks
 
 <figure>
-  <img src="/assets/images/macbook-neo.jpg" alt="MacBook Neo" loading="lazy" decoding="async">
-  <figcaption>A figure with a caption, which markdown has no syntax for.</figcaption>
+
+![MacBook Neo](../../assets/images/macbook-neo.jpg)
+
+<figcaption>A figure with a caption, which markdown has no syntax for.</figcaption>
 </figure>
 
 <details>
@@ -411,8 +438,10 @@ One short line.
 
 <dl>
   <dt>a hand-written definition term</dt>
-  <dd>and its definition, written as HTML rather than kramdown syntax</dd>
+  <dd>and its definition, written as HTML</dd>
 </dl>
+
+<p>An <abbr title="HyperText Markup Language">HTML</abbr> abbreviation, since markdown has no syntax for them.</p>
 
 <pre>
 a raw pre block
@@ -421,31 +450,29 @@ a raw pre block
 
 ## footnotes
 
-Footnotes are a kramdown extension.[^first] They collect at the end of the
-article, in a `div.footnotes` with its own ordered list and return arrows.[^second]
+Footnotes are a GFM extension.[^first] They collect at the end of the
+article, in a `section.footnotes` with its own ordered list and return arrows.[^second]
 
 [^first]: The first footnote, with a [link](https://example.com) inside it.
-[^second]:
-    The second footnote, written across two paragraphs.
+[^second]: The second footnote, written across two paragraphs.
 
     This is the second paragraph of it.
 
 ## math
 
-GitHub Pages forces `math_engine` to MathJax and the setting cannot be turned
-off from `_config.yml`, so kramdown always emits `\(` … `\)` and `\[` … `\]`
-delimiters. This page sets `mathjax: true` in its front matter, which is what
-loads MathJax — see `_layouts/default.html`. Both of the following should
-render as typeset equations. On a page without that flag they stay as source,
-which `site.css` marks up as such rather than leaving loose in the prose.
+Markdown has no math syntax. This page sets `mathjax: true` in its front
+matter, which loads MathJax, and the equations are written with `\\(` and
+`\\[` delimiters because markdown turns those into the single-backslash
+`\(` and `\[` that MathJax looks for. Both of the following should render as
+typeset equations.
 
-Inline: $$e^{i\pi} + 1 = 0$$
+Inline: \\(e^{i\pi} + 1 = 0\\)
 
 Display:
 
-$$
-\int_{0}^{\infty} e^{-x^2}\,dx = \frac{\sqrt{\pi}}{2}
-$$
+\\[
+\int_{0}^{\infty} e^{-x^2}\\,dx = \frac{\sqrt{\pi}}{2}
+\\]
 
 ## edge cases
 
@@ -479,12 +506,5 @@ a paragraph in between
 
 1. one again
 2. two again
-
-A bullet with nothing after it — **known non-feature**, kramdown treats a bare
-`-` as a paragraph rather than an empty list item, so only the second line
-below becomes a list:
-
--
-- a normal item
 
 Emoji and non-latin text: 🎧 🛰️ ✅ — こんにちは — Здравствуйте — مرحبا.

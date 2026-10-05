@@ -68,23 +68,6 @@
 
   --mono: "Cascadia Code", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 
-  /* syntax colours for code blocks. the accents above deliberately stay
-     latte in both themes, which reads fine as a tile background but not as
-     text on a dark block — so code carries its own tokens, and these do
-     swap with the theme. */
-  --code-comment: #8c8fa1;
-  --code-keyword: #8839ef;
-  --code-string: #40a02b;
-  --code-number: #fe640b;
-  --code-function: #1e66f5;
-  --code-class: #df8e1d;
-  --code-constant: #fe640b;
-  --code-tag: #1e66f5;
-  --code-attr: #df8e1d;
-  --code-operator: #179299;
-  --code-punct: #6c6f85;
-  --code-added: #40a02b;
-  --code-removed: #d20f39;
 }
 
 /* ---- catppuccin mocha (dark) ----
@@ -103,19 +86,6 @@
     --ctp-text: #cdd6f4;
     --skeleton-sheen: rgba(255, 255, 255, 0.07);
 
-    --code-comment: #7f849c;
-    --code-keyword: #cba6f7;
-    --code-string: #a6e3a1;
-    --code-number: #fab387;
-    --code-function: #89b4fa;
-    --code-class: #f9e2af;
-    --code-constant: #fab387;
-    --code-tag: #89b4fa;
-    --code-attr: #f9e2af;
-    --code-operator: #94e2d5;
-    --code-punct: #a6adc8;
-    --code-added: #a6e3a1;
-    --code-removed: #f38ba8;
   }
 }
 
@@ -808,74 +778,70 @@ main pre code {
   background: none;
   font-size: inherit;
 }
-/* rouge nests the block in two wrapper divs of its own; neither may add a
-   second box around the one the <pre> already has. the div. qualifier is
-   load-bearing: rouge puts class="highlight" on the <pre> as well, and a
-   bare .highlight would outrank `main pre` and strip the box it just set. */
-main div.highlighter-rouge,
-main div.highlight {
-  margin: 0;
-  padding: 0;
-  background: none;
+/* ---- syntax highlighting (shiki) ----
+   astro's markdown pipeline runs shiki with catppuccin-latte and
+   catppuccin-mocha and no default colour, so every token span carries both
+   as custom properties (--shiki-light / --shiki-dark) and the stylesheet
+   picks one. the <pre> box above supplies the background, so shiki's own
+   theme background is never used. */
+main pre.astro-code,
+main pre.astro-code span {
+  color: var(--shiki-light);
+  font-style: var(--shiki-light-font-style);
+  font-weight: var(--shiki-light-font-weight);
+  text-decoration: var(--shiki-light-text-decoration);
+}
+@media (prefers-color-scheme: dark) {
+  main pre.astro-code,
+  main pre.astro-code span {
+    color: var(--shiki-dark);
+    font-style: var(--shiki-dark-font-style);
+    font-weight: var(--shiki-dark-font-weight);
+    text-decoration: var(--shiki-dark-text-decoration);
+  }
 }
 
-/* ---- syntax highlighting (rouge) ---- */
-main .highlight :is(.c, .ch, .cd, .cm, .cp, .cpf, .c1, .cs) {
-  color: var(--code-comment);
-  font-style: italic;
+/* ---- footnotes (GFM) ----
+   references are <sup><a data-footnote-ref>, the list lives in
+   <section data-footnotes class="footnotes"> under a screen-reader-only
+   heading, and each item ends in a <a class="data-footnote-backref"> arrow. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
-main .highlight :is(.k, .kc, .kd, .kn, .kp, .kr, .kv) {
-  color: var(--code-keyword);
+main sup a[data-footnote-ref] {
+  text-decoration: none;
+  padding: 0 0.1em;
 }
-main .highlight :is(.s, .sa, .sb, .sc, .dl, .sd, .s2, .se, .sh, .si, .sx, .sr, .s1, .ss) {
-  color: var(--code-string);
+main section.footnotes {
+  margin-top: 3rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--ctp-surface1);
+  font-size: 0.9375rem;
 }
-main .highlight :is(.m, .mb, .mf, .mh, .mi, .mo, .il) {
-  color: var(--code-number);
+main section.footnotes ol {
+  padding-left: 1.5rem;
 }
-main .highlight :is(.nf, .fm) {
-  color: var(--code-function);
+main section.footnotes li > p:last-child {
+  display: inline;
 }
-main .highlight :is(.nc, .nn, .ne, .kt) {
-  color: var(--code-class);
-}
-main .highlight :is(.no, .nb, .bp) {
-  color: var(--code-constant);
-}
-main .highlight .nt {
-  color: var(--code-tag);
-}
-main .highlight .na {
-  color: var(--code-attr);
-}
-main .highlight :is(.o, .ow) {
-  color: var(--code-operator);
-}
-main .highlight .p {
-  color: var(--code-punct);
-}
-main .highlight .gi {
-  color: var(--code-added);
-}
-main .highlight :is(.gd, .err) {
-  color: var(--code-removed);
-}
-main .highlight :is(.gh, .gu) {
-  color: var(--code-comment);
-  font-weight: 600;
-}
-main .highlight .gs {
-  font-weight: 600;
-}
-main .highlight .ge {
-  font-style: italic;
+main a.data-footnote-backref {
+  text-decoration: none;
+  margin-left: 0.25rem;
 }
 
 /* ---- tables ----
    display: block is what lets a table too wide for the column scroll inside
    itself; left as a table box it has no scroll container of its own and
-   pushes the whole page sideways instead. kramdown writes column alignment
-   as an inline style on each cell, so it still wins over the default here. */
+   pushes the whole page sideways instead. GFM writes column alignment as an
+   inline style on each cell, so it still wins over the default here. */
 main table {
   display: block;
   overflow-x: auto;
@@ -900,20 +866,6 @@ main tbody tr:last-child td {
   border-bottom: 0;
 }
 
-/* kramdown hands maths back as source unless MathJax is on the page (see
-   _layouts/default.html) — dress it as source so an opted-out page reads as
-   a deliberate choice rather than a rendering failure */
-main .math {
-  font-family: var(--mono);
-  font-size: 0.9em;
-}
-main div.math {
-  margin: 1.5rem 0;
-  padding: 1rem 1.125rem;
-  background: var(--ctp-mantle);
-  border-left: 3px solid var(--ctp-surface1);
-  overflow-x: auto;
-}
 main img {
   max-width: 100%;
   height: auto;
@@ -922,16 +874,19 @@ main img {
 }
 /* ---- image helpers ----
    each of these matches either a wrapping element or the image itself, so a
-   post can hang the class off a kramdown IAL and stay in markdown instead of
-   dropping into raw HTML:
+   post can hang the class off a raw <img>, or wrap images in a <div>:
 
-     ![alt](/a.jpg){: .img-float-right}
-     ![alt](/a.jpg){: .img-center-sm}
+     <img class="img-float-right" src="/a.jpg" alt="">
+     <div class="img-pair">  (markdown images inside, blank lines around)
 
-     ![one](/a.jpg) ![two](/b.jpg)
-     {: .img-pair}
-
-   the <div class="img-float-right"> form earlier posts use still works. */
+   a markdown image inside a wrapper lands in its own <p>, so those are
+   flattened (display: contents) and the img is what gets laid out. */
+.img-pair > p,
+.img-center-sm > p,
+.img-float-left > p,
+.img-float-right > p {
+  display: contents;
+}
 .img-pair {
   display: flex;
   gap: 1rem;
@@ -953,6 +908,9 @@ main img {
   max-width: min(480px, 100%);
   margin: 1.5rem auto;
 }
+img.img-center-sm {
+  display: block;
+}
 .img-center-sm img {
   margin: 0;
 }
@@ -972,6 +930,10 @@ main img {
   .img-float-left img,
   .img-float-right img {
     margin: 0;
+  }
+  img.img-float-left,
+  img.img-float-right {
+    width: auto;
   }
 }
 
