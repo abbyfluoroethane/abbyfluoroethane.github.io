@@ -60,7 +60,7 @@ const iconOf = (icon: string) => icon.replace(/^mif-/, '') as IconName;
               {featuredProjects.map((p, i) => (
                 <div class={`tile-cycle-item${i === 0 ? ' is-active' : ''}`}>
                   <p class="tile-live-title">{p.data.title}</p>
-                  <p class="tile-live-years">{p.data.date.getUTCFullYear()} – present</p>
+                  <p class="tile-live-years">{p.data.date.getUTCFullYear()}{p.data.status === 'active' && ' – present'}</p>
                   <p class="tile-live-desc">{p.data.description}</p>
                 </div>
               ))}
