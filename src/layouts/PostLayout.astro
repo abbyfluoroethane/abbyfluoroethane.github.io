@@ -1,0 +1,34 @@
+---
+import Base from './Base.astro';
+import { inlineMarkdown } from '../lib/inlineMarkdown';
+
+export interface Props {
+  title: string;
+  date: Date;
+  subtitle?: string;
+  attribution?: string;
+  description?: string;
+  image?: string;
+  mathjax?: boolean;
+  appName?: string;
+  currentPath: string;
+  // false for pages that use this layout but are not blog posts (extras)
+  inBlog?: boolean;
+}
+const { title, date, subtitle, attribution, description, image, mathjax, appName, currentPath, inBlog = true } = Astro.props;
+const dateStr = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
+---
+<Base {title} {description} {image} {mathjax} {appName} {currentPath} ogType="article" publishedTime={date} currentSection={inBlog ? 'blog' : undefined}>
+  <div class="post-layout">
+    <aside class="post-meta">
+      <p class="post-date">{dateStr}</p>
+      <h1 class="post-title">{title}</h1>
+      {subtitle && <h2 class="post-subtitle" set:html={inlineMarkdown(subtitle)} />}
+      {attribution && <h4 class="post-attribution" set:html={inlineMarkdown(attribution)} />}
+      <p class="back-link"><a href="/blog/">← back to blog</a></p>
+    </aside>
+    <article class="post-content">
+      <slot />
+    </article>
+  </div>
+</Base>

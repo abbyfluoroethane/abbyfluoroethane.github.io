@@ -1,0 +1,32 @@
+---
+interface Props {
+  project: {
+    id: string;
+    data: {
+      title: string;
+      status: string;
+      description: string;
+      date?: Date;
+      external_url?: string;
+      url_text?: string;
+      article?: boolean;
+    };
+  };
+}
+const { project } = Astro.props;
+const p = project.data;
+---
+<div class="card project-card">
+  <div class="card-head">
+    <h3 class="card-title">{p.title}</h3>
+    <span class={`status-pill status-${p.status}`}>{p.status}</span>
+  </div>
+  <p class="card-desc">{p.description}</p>
+  <div class="card-meta">
+    {p.date && <span class="card-date">{p.date.getUTCFullYear()}</span>}
+    {p.external_url && p.external_url !== '' && (
+      <a class="card-link" href={p.external_url}>{p.url_text || 'external link'} →</a>
+    )}
+    {p.article && <a class="card-link" href={`/projects/${project.id}/`}>read more →</a>}
+  </div>
+</div>

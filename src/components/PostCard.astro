@@ -1,0 +1,40 @@
+---
+interface Props {
+  post: {
+    id: string;
+    data: { title: string; date: Date; summary?: string; description?: string };
+    body?: string;
+  };
+}
+const { post } = Astro.props;
+
+const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const d = post.data.date;
+const dateStr = `${months[d.getUTCMonth()]} ${d.getUTCDate()}, ${d.getUTCFullYear()}`;
+
+// Jekyll: post.excerpt (first paragraph) | strip_html | truncatewords: 40
+function excerpt(body = ''): string {
+  const first = body.replace(/^\s+/, '').split(/\n\s*\n/)[0] ?? '';
+  return first
+    .replace(/^#{1,6}\s+/, '')
+    .replace(/!\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/<[^>]*>/g, '')
+    .replace(/(\*\*|__)(.+?)\1/gs, '$2')
+    .replace(/(\*|_)(.+?)\1/gs, '$2')
+    .replace(/`([^`]*)`/g, '$1')
+    .replace(/\.\.\./g, '…');
+}
+function truncateWords(s: string, n = 40): string {
+  const words = s.split(/\s+/).filter(Boolean);
+  return words.length > n ? words.slice(0, n).join(' ') + '...' : s;
+}
+const desc = truncateWords(post.data.summary ?? post.data.description ?? excerpt(post.body));
+const href = `/blog/${post.id}/`;
+---
+<div class="card post-card">
+  <p class="card-date">{dateStr}</p>
+  <h3 class="card-title"><a href={href}>{post.data.title}</a></h3>
+  <p class="card-desc">{desc}</p>
+  <a class="card-link" href={href}>read →</a>
+</div>

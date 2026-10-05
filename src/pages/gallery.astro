@@ -1,0 +1,25 @@
+---
+import Base from '../layouts/Base.astro';
+import gallery from '../data/gallery.yml';
+
+// When the alt text equals the visible caption the image is decorative for
+// screen readers; announcing both repeats the sentence. The first row is
+// above the fold so it loads eagerly. .gallery-item's aspect-ratio reserves
+// space, so no width/height is needed.
+const items = (gallery as { filename: string; alt?: string; caption?: string }[]).map((img, i) => ({
+  src: `/assets/images/gallery/${img.filename}`,
+  alt: img.caption && img.alt === img.caption ? '' : (img.alt ?? ''),
+  caption: img.caption,
+  loading: i < 4 ? 'eager' : 'lazy',
+}));
+---
+<Base title="gallery" currentPath="/gallery/">
+  <div class="gallery-grid">
+    {items.map((img) => (
+      <a class="gallery-item" href={img.src} target="_blank" rel="noopener">
+        <img src={img.src} alt={img.alt} loading={img.loading as 'eager' | 'lazy'} decoding="async" />
+        {img.caption && <span class="gallery-caption">{img.caption}</span>}
+      </a>
+    ))}
+  </div>
+</Base>
