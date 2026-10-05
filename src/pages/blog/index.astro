@@ -12,6 +12,11 @@ const groups = years.map((year) => ({
   year,
   posts: older.filter((p) => p.data.date.getUTCFullYear() === year),
 }));
+// Three year columns fit the panorama. Older years roll into one plain list
+// below, so the columns never wrap or shrink as the blog grows.
+const COLUMN_YEARS = 3;
+const columns = groups.slice(0, COLUMN_YEARS);
+const archive = groups.slice(COLUMN_YEARS).flatMap((g) => g.posts);
 const summary = latest.data.summary ?? truncateSentences(excerpt(latest.body), 40);
 ---
 <Base title="blog">
@@ -25,7 +30,7 @@ const summary = latest.data.summary ?? truncateSentences(excerpt(latest.body), 4
   </article>
 
   <div class="years">
-    {groups.map(({ year, posts }) => (
+    {columns.map(({ year, posts }) => (
       <section aria-labelledby={`year-${year}`}>
         <h2 id={`year-${year}`} class="year">{year}</h2>
         <ul>
@@ -39,6 +44,20 @@ const summary = latest.data.summary ?? truncateSentences(excerpt(latest.body), 4
       </section>
     ))}
   </div>
+
+  {archive.length > 0 && (
+    <section class="archive" aria-labelledby="archive">
+      <h2 id="archive">archive</h2>
+      <ul>
+        {archive.map((post) => (
+          <li>
+            <a href={`/blog/${post.id}/`}>{post.data.title}</a>
+            <time class="caption" datetime={post.data.date.toISOString()}>{formatLongDate(post.data.date)}</time>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
 </Base>
 
 <style>
@@ -79,21 +98,28 @@ const summary = latest.data.summary ?? truncateSentences(excerpt(latest.body), 4
     color: var(--ctp-subtext1);
   }
 
-  /* Phone: columns stack. Desktop: one column per year, side by side. */
+  /* Phone and tablet: columns stack. Desktop: the (at most three) year
+     columns side by side. */
   .years {
     display: grid;
     gap: var(--space-12) var(--space-16);
   }
-  @media (min-width: 768px) {
+  @media (min-width: 1000px) {
     .years {
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
   }
+  .years section {
+    container-type: inline-size; /* the numeral sizes to its column */
+  }
   .year {
-    /* A decoration size outside the ramp: the numeral is a landmark. */
+    /* A decoration size outside the ramp: the numeral is a landmark. It
+       never wraps, and it shrinks to fit a narrow column: four digits of
+       Selawik Light are about 1.95em wide, so 45cqi leaves a small margin. */
     margin: 0 0 var(--space-4);
     overflow: hidden;
-    font-size: clamp(5rem, 11vw, 9rem); /* 80-144px */
+    white-space: nowrap;
+    font-size: min(clamp(5rem, 11vw, 9rem), 45cqi); /* 80-144px */
     font-weight: 300;
     line-height: 1;
     letter-spacing: -0.04em;
@@ -125,6 +151,14 @@ const summary = latest.data.summary ?? truncateSentences(excerpt(latest.body), 4
   }
   li .caption {
     display: block;
-    margin-top: 2px;
+    margin-top: var(--space-1);
+  }
+
+  /* The archive: a plain list, the 80px group gap above it. */
+  .archive {
+    margin-top: var(--space-16);
+  }
+  .archive h2 {
+    margin: 0 0 var(--space-4);
   }
 </style>
