@@ -13,8 +13,7 @@
 //
 // Slotted markup belongs to the page that renders it, so the aside's
 // typography classes are reached with :global() under .post-meta.
-// Pages may use: .post-date, .post-title, .post-subtitle, .post-attribution,
-// .post-tagline, .back-link.
+// Pages may use: .post-date, .post-title, .post-tagline.
 export interface Props {
   asideLast?: boolean;
   prose?: boolean;
@@ -58,13 +57,6 @@ const { asideLast = false, prose = true } = Astro.props;
     margin: var(--space-8) 0 var(--space-2);
   }
 
-  /* Back: the Windows 8 back button, a circled arrow, then the label. The
-     whole row is the 40px target; the label keeps the link accessible. */
-  .post-meta :global(.back-link) {
-    order: -1; /* stacked: above the title */
-    margin: 0 0 var(--space-4);
-    max-width: none;
-  }
   /* Stacked: about page reads the bio first, links and contact last. */
   .post-layout--aside-last .post-meta {
     order: 2;
@@ -91,10 +83,6 @@ const { asideLast = false, prose = true } = Astro.props;
     .post-layout--aside-last .post-meta,
     .post-layout--aside-last .post-content {
       order: 0;
-    }
-    .post-meta :global(.back-link) {
-      order: 0;
-      margin: var(--space-6) 0 0;
     }
   }
 
@@ -128,24 +116,6 @@ const { asideLast = false, prose = true } = Astro.props;
     font-size: var(--type-item);
     font-weight: var(--type-item-weight);
     line-height: var(--type-item-leading);
-    color: var(--ctp-subtext0);
-  }
-  /* Standfirst: the item step, so it stays clearly below the 36px title. A
-     second Light step would sit too close to the title in a 320px column. It
-     is an <h2>, so it overrides the section-heading style. */
-  .post-meta :global(.post-subtitle) {
-    margin: var(--space-3) 0 0;
-    font-size: var(--type-item);
-    font-weight: var(--type-item-weight);
-    line-height: var(--type-item-leading);
-    color: var(--ctp-subtext0);
-  }
-  /* Credit line: the title style at caption size. */
-  .post-meta :global(.post-attribution) {
-    margin: var(--space-3) 0 0;
-    font-size: var(--type-caption);
-    font-weight: var(--type-title-weight);
-    line-height: var(--type-caption-leading);
     color: var(--ctp-subtext0);
   }
 </style>
