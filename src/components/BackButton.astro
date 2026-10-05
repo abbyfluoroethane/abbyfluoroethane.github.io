@@ -3,6 +3,8 @@
 // Open Technologies): the 41px circle with a 2px border from .win-backbutton
 // in ui-dark.css, and the arrow glyph U+E0D5 from WinJS fonts/Symbols.ttf.
 // See THIRD_PARTY_NOTICES.md.
+// On a colored surface, set --back-color (ring, arrow, label) and
+// --back-pressed (the arrow color when the ring fills on press) on a parent.
 interface Props {
   href: string;
   /** Visible text after the button, also its accessible name. */
@@ -24,7 +26,7 @@ const { href, label } = Astro.props;
     align-items: center;
     gap: var(--space-2);
     min-height: var(--touch-target);
-    color: var(--ctp-text);
+    color: var(--back-color, var(--ctp-text));
     text-decoration: none;
   }
   .back:hover {
@@ -50,6 +52,6 @@ const { href, label } = Astro.props;
     fill: currentColor;
   }
   .back:active .arrow {
-    fill: var(--ctp-base);
+    fill: var(--back-pressed, var(--ctp-base));
   }
 </style>

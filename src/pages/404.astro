@@ -1,18 +1,19 @@
 ---
 import Base from '../layouts/Base.astro';
+import BackButton from '../components/BackButton.astro';
 ---
 <Base title="404" bare>
   <div class="bsod" role="alert" aria-live="polite">
     <div class="bsod-inner">
       <p class="bsod-face" aria-hidden="true">:(</p>
       <p class="bsod-text">
-        This page doesn't exist. <br>
+        This page doesn't exist.
         You may have entered the URL wrong, or the link has gone stale.
       </p>
       <div class="bsod-detail">
         <p class="bsod-detail-line">If you'd like to know more, you can search online later for this error:</p>
         <p class="bsod-code">0x00000194 PAGE_NOT_FOUND</p>
-        <p class="bsod-detail-line"><a href="/">go home</a></p>
+        <p class="bsod-detail-line"><BackButton href="/" label="go home" /></p>
       </div>
     </div>
   </div>
@@ -35,6 +36,9 @@ import Base from '../layouts/Base.astro';
     padding: 13vh var(--space-4) var(--space-8) var(--space-2); /* off-grid: 13vh is measured off the real screen */
     background: #1a73c9;
     color: #fff;
+    /* The back button: white on the blue, blue arrow when pressed. */
+    --back-color: #fff;
+    --back-pressed: #1a73c9;
   }
   @media (min-width: 768px) {
     .bsod {
@@ -76,17 +80,5 @@ import Base from '../layouts/Base.astro';
     margin: 0 0 var(--space-4);
     font-family: var(--font-mono);
     letter-spacing: 0.02em;
-  }
-  /* The link is the only way out, so it gets a 40px target. */
-  .bsod-detail a,
-  .bsod-detail a:visited {
-    display: inline-block;
-    min-height: var(--touch-target);
-    color: #fff;
-    text-decoration: underline;
-  }
-  .bsod-detail a:hover {
-    color: #fff;
-    opacity: 0.85;
   }
 </style>
