@@ -1,0 +1,19 @@
+---
+import Base from '../layouts/Base.astro';
+import LastfmWidget from '../components/LastfmWidget.astro';
+import { site } from '../site';
+---
+<Base title="music" description="a live look at what i've been listening to, pulled from last.fm." currentPath="/music/">
+<div class="post-layout">
+  <aside class="post-meta">
+    <p class="post-date">live from <a href={`https://www.last.fm/user/${site.lastfm.username}`}>last.fm</a></p>
+    <LastfmWidget id="lastfm-now" count={11} historyId="lastfm-history" />
+  </aside>
+  <article class="post-content">
+    <h2>history</h2>
+    <div class="card-grid" id="lastfm-history">
+      <p class="lastfm-status">loading…</p>
+    </div>
+  </article>
+</div>
+</Base>

@@ -1,0 +1,19 @@
+---
+// Wrapper for .md pages that render in the post layout (extras/markdown).
+import PostLayout from '../PostLayout.astro';
+const { frontmatter } = Astro.props;
+---
+<PostLayout
+  title={frontmatter.title}
+  date={new Date(frontmatter.date)}
+  subtitle={frontmatter.subtitle}
+  attribution={frontmatter.attribution}
+  description={frontmatter.description}
+  image={frontmatter.image}
+  mathjax={frontmatter.mathjax}
+  appName={frontmatter.app_name}
+  currentPath={Astro.url.pathname}
+  inBlog={false}
+>
+  <slot />
+</PostLayout>

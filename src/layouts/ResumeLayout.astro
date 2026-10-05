@@ -1,0 +1,23 @@
+---
+import Base from './Base.astro';
+
+export interface Props {
+  title: string;
+  full_name: string;
+  tagline: string;
+  description?: string;
+  currentPath: string;
+}
+const { title, full_name, tagline, description, currentPath } = Astro.props;
+---
+<Base {title} {description} {currentPath}>
+  <div class="post-layout">
+    <aside class="post-meta">
+      <h2 class="post-title">{full_name}</h2>
+      <h2 class="resume-tagline">{tagline}</h2>
+    </aside>
+    <article class="post-content">
+      <slot />
+    </article>
+  </div>
+</Base>
