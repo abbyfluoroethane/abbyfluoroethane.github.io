@@ -78,12 +78,12 @@ const hasSlot = Astro.slots.has('default');
 
   .tile-label {
     position: absolute;
-    bottom: 0;
-    left: 0.625rem;
-    padding: 0.425rem 0.25rem;
-    z-index: 999;
-    font-size: 0.8125rem;
-    font-weight: 600;
+    left: var(--space-2);
+    bottom: var(--space-1);
+    z-index: 2; /* above the album art (0) and its scrim (inside the art) */
+    font-size: var(--type-body);
+    font-weight: var(--type-body-weight); /* Windows 8 tile names are regular */
+    line-height: var(--type-body-leading);
     text-transform: lowercase;
   }
   .tile-icon {
@@ -106,14 +106,15 @@ const hasSlot = Astro.slots.has('default');
     color: var(--ctp-on-accent);
     --art-fallback-opacity: 0.32;
   }
-  /* Scrim under the text, fading in with the art. Without art the flat
-     accent colour already has enough contrast. */
+  /* Flat dark veil over the whole cover so the text stays readable, fading
+     in with the art. Without art the flat accent colour already has enough
+     contrast. */
   .tile-live-tile :global(.tile-art)::after {
     content: '';
     position: absolute;
     inset: 0;
     z-index: 1;
-    background: linear-gradient(to bottom, rgba(17, 17, 27, 0.85), rgba(17, 17, 27, 0.15) 65%, transparent 100%);
+    background-color: rgba(17, 17, 27, 0.45); /* mocha crust; dark in both schemes */
     opacity: 0;
     transition: opacity 0.6s ease;
     pointer-events: none;

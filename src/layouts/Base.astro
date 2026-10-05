@@ -86,14 +86,14 @@ const ogImage = abs(image ?? '/assets/favicon/konata-512.png');
 </html>
 
 <style>
-  /* Phone: Windows Phone tight edges. Desktop: the Windows 8 Start screen,
-     left-anchored with a big left margin. */
+  /* Phone: Windows Phone tight edges, 10px each side. Desktop: the Windows 8
+     silhouette, left margin 120px; the header sets its own top offset. */
   .page-shell {
-    padding: 1.5rem 0.625rem 2rem;
+    padding: var(--space-2) var(--space-2) var(--space-12);
   }
   @media (min-width: 768px) {
     .page-shell {
-      padding: 3.5rem 4rem 3rem 7.5rem;
+      padding: 0 var(--space-16) var(--space-16) var(--page-margin);
     }
   }
 

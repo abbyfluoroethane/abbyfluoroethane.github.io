@@ -47,6 +47,7 @@
   --ctp-overlay0: #9ca0b0;
   --ctp-overlay1: #8c8fa1;
   --ctp-subtext0: #6c6f85;
+  --ctp-subtext1: #5c5f77;
   --ctp-text: #4c4f69;
   --ctp-rosewater: #dc8a78;
   --ctp-flamingo: #dd7878;
@@ -63,14 +64,55 @@
   --ctp-blue: #1e66f5;
   --ctp-lavender: #7287fd;
   --ctp-on-accent: #eff1f5;
-  /* The highlight that sweeps across a skeleton: a lift off surface0, so it
-     brightens in Latte and stays faint in Mocha. */
-  --skeleton-sheen: rgba(255, 255, 255, 0.6);
 
   --font-sans: "Segoe UI", "Selawik", "Helvetica Neue", Arial, sans-serif;
   --font-mono: "Cascadia Code", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   /* The WinJS deceleration curve: fast start, long glide to rest. */
   --ease-metro: cubic-bezier(0.1, 0.9, 0.2, 1);
+  /* How far content travels when a page enters (Metro: 40-100px). */
+  --enter-offset: 80px;
+
+  /* ---- type ramp ----
+     The Windows 8 ramp: header, subheader, title, body, caption, plus one
+     step between header and subheader for a content title. Use only these
+     steps. Size, weight and line height go together. */
+  --type-header: clamp(2.625rem, 7vw, 3.5rem); /* 42-56px: page header */
+  --type-header-weight: 300;
+  --type-header-leading: 1.05;
+  --type-title-lg: clamp(1.875rem, 4.5vw, 2.25rem); /* 30-36px: content title */
+  --type-title-lg-weight: 300;
+  --type-title-lg-leading: 1.15;
+  --type-subheader: 1.625rem; /* 26px: section heading, nav */
+  --type-subheader-weight: 300;
+  --type-subheader-leading: 1.2;
+  --type-item: 1.25rem; /* 20px: item title in a list, h3 */
+  --type-item-weight: 400;
+  --type-item-leading: 1.3;
+  --type-body: 0.9375rem; /* 15px (11pt) */
+  --type-body-weight: 400;
+  --type-body-leading: 1.6;
+  --type-title-weight: 600; /* the "title" style: body size, semibold */
+  --type-caption: 0.75rem; /* 12px (9pt): dates, labels */
+  --type-caption-weight: 400;
+  --type-caption-leading: 1.4;
+
+  /* ---- spacing grid ----
+     Windows 8 lays everything out on a 20px unit with a 5px sub-unit. Use
+     only these steps. */
+  --space-1: 5px;
+  --space-2: 10px; /* gutter between hard-edged items (tiles, images) */
+  --space-3: 15px;
+  --space-4: 20px; /* one unit */
+  --space-6: 30px;
+  --space-8: 40px;
+  --space-12: 60px;
+  --space-16: 80px; /* gap between groups */
+  /* The Windows 8 page silhouette, on desktop. */
+  --page-margin: 120px; /* left edge of header and content */
+  --header-baseline: 100px; /* page header baseline from the top */
+  --content-top: 140px; /* content region from the top */
+  /* Smallest touch target: 34px (9mm) is the Metro minimum; 40px is 2 units. */
+  --touch-target: 40px;
 }
 
 /* ---- tokens: Catppuccin Mocha (dark) ----
@@ -86,8 +128,8 @@
     --ctp-overlay0: #6c7086;
     --ctp-overlay1: #7f849c;
     --ctp-subtext0: #a6adc8;
+    --ctp-subtext1: #bac2de;
     --ctp-text: #cdd6f4;
-    --skeleton-sheen: rgba(255, 255, 255, 0.07);
   }
 }
 
@@ -140,48 +182,80 @@ table {
   border-collapse: collapse;
 }
 
-/* ---- base typography (Metro UI 3 sizes) ---- */
+/* ---- base typography: the type ramp applied to elements ----
+   Components override these with a class when they need another step. */
 html {
   background: var(--ctp-base);
 }
 body {
   font-family: var(--font-sans);
-  font-size: 0.875rem;
-  line-height: 1.1;
+  font-size: var(--type-body);
+  font-weight: var(--type-body-weight);
+  line-height: var(--type-body-leading);
   background-color: var(--ctp-base);
   color: var(--ctp-text);
+  overflow-wrap: break-word; /* a bare URL must not push the page sideways */
 }
 h1, h2, h3, h4, h5, h6 {
-  margin: 0.625rem 0;
-  line-height: 1.1;
+  margin: var(--space-6) 0 var(--space-2);
 }
-h1 { font-size: 2.25rem; font-weight: 400; }
-h2 { font-size: 1.875rem; font-weight: 500; }
-h3 { font-size: 1.5rem; font-weight: 500; }
-h4 { font-size: 1.125rem; font-weight: 500; }
-h5 { font-size: 0.875rem; font-weight: 500; }
-h6 { font-size: 0.75rem; font-weight: 500; }
+h1 {
+  margin-top: 0;
+  font-size: var(--type-title-lg);
+  font-weight: var(--type-title-lg-weight);
+  line-height: var(--type-title-lg-leading);
+}
+h2 {
+  font-size: var(--type-subheader);
+  font-weight: var(--type-subheader-weight);
+  line-height: var(--type-subheader-leading);
+}
+h3 {
+  font-size: var(--type-item);
+  font-weight: var(--type-item-weight);
+  line-height: var(--type-item-leading);
+}
+/* h4-h6 use the "title" style: body size, semibold. h6 is a caption label. */
+h4,
+h5 {
+  margin: var(--space-4) 0 var(--space-1);
+  font-size: var(--type-body);
+  font-weight: var(--type-title-weight);
+  line-height: var(--type-body-leading);
+}
+h6 {
+  margin: var(--space-4) 0 var(--space-1);
+  font-size: var(--type-caption);
+  font-weight: var(--type-title-weight);
+  line-height: var(--type-caption-leading);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ctp-subtext0);
+}
+p,
+li {
+  max-width: 62ch;
+}
+p {
+  margin: 0 0 var(--space-3);
+}
 
 ol,
 ul {
-  margin-left: 0.3125rem;
-}
-li,
-dt,
-dd {
-  line-height: 1.25rem;
+  margin: 0 0 var(--space-3);
+  padding-left: var(--space-6);
 }
 li ol,
 li ul {
-  padding-left: 1.5625rem;
+  margin-bottom: 0;
 }
-dt { font-weight: 700; }
-dd { margin-left: 0.9375rem; }
+dt { font-weight: var(--type-title-weight); }
+dd { margin: 0 0 var(--space-2) var(--space-4); }
 
 blockquote {
-  margin: 0.625rem 0;
-  padding: 0 0 0 0.625rem;
-  border-left: 0.25rem solid var(--ctp-overlay0);
+  margin: var(--space-4) 0;
+  padding: 0 0 0 var(--space-3);
+  border-left: var(--space-1) solid var(--ctp-overlay0);
 }
 abbr {
   border-bottom: 1px dotted var(--ctp-overlay0);
@@ -190,6 +264,7 @@ abbr {
 }
 hr {
   height: 2px;
+  margin: var(--space-8) 0;
   border: 0;
   background-color: var(--ctp-surface1);
 }
@@ -211,58 +286,11 @@ a:hover {
   outline-offset: 2px;
 }
 
-/* ---- page typography ----
-   The light, lowercase Metro headings and the paragraph rhythm for all page
-   content. :where() keeps the specificity at zero, so any component class
-   overrides these without a fight. */
-:where(main) {
-  overflow-wrap: break-word; /* a bare URL must not push the page sideways */
-}
-:where(main) h1 {
-  margin: 0 0 1rem;
-  font-size: clamp(2.25rem, 6vw, 3rem);
-  font-weight: 300;
-  letter-spacing: -0.02em;
-}
-:where(main) h2 {
-  margin: 2rem 0 0.5rem;
-  font-size: clamp(1.75rem, 5vw, 2.25rem);
-  font-weight: 300;
-  text-transform: lowercase;
-}
-:where(main) h3 {
-  margin: 1.5rem 0 0.5rem;
-  font-size: 1.25rem;
-  font-weight: 600;
-}
-:where(main) h4 {
-  margin: 1.5rem 0 0.4rem;
-  font-size: 1.0625rem;
-  font-weight: 600;
-}
-:where(main) h5 {
-  margin: 1.25rem 0 0.35rem;
-  font-size: 0.9375rem;
-  font-weight: 600;
-}
-:where(main) h6 {
-  margin: 1.25rem 0 0.35rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--ctp-subtext0);
-}
-:where(main) :is(p, li) {
-  max-width: 62ch;
-  line-height: 1.6;
-}
-
 /* ---- the Windows 8 page-enter animation ---- */
 @keyframes metro-enter {
   from {
     opacity: 0;
-    transform: translateX(200px);
+    transform: translateX(var(--enter-offset));
   }
   to {
     opacity: 1;

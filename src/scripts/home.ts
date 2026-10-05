@@ -1,10 +1,13 @@
-// tile cycling: swap the active item in every .tile-cycle every 15s
+// tile cycling: slide the active item up and out for the next in every .tile-cycle every 15s
 document.querySelectorAll(".tile-cycle").forEach((cycle) => {
   const items = cycle.querySelectorAll(".tile-cycle-item");
   if (items.length < 2) return;
   let i = 0;
   setInterval(() => {
-    items[i].classList.remove("is-active");
+    const leaving = items[i];
+    leaving.classList.replace("is-active", "is-leaving");
+    // Back to the resting spot below once it is out of sight (0.55s slide).
+    setTimeout(() => leaving.classList.remove("is-leaving"), 600);
     i = (i + 1) % items.length;
     items[i].classList.add("is-active");
   }, 15000);

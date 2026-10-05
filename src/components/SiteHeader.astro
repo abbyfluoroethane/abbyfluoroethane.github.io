@@ -17,7 +17,7 @@ const isCurrent = (url: string) =>
   path === url || (['/blog/', '/projects/'].includes(url) && path.startsWith(url));
 const nav = (await getNav()).filter((s) => s.navbar);
 ---
-<header>
+<header class:list={{ home: !title }}>
   {title ? (
     <>
       <p class="app-name"><a href="/">{site.title}</a></p>
@@ -46,14 +46,20 @@ const nav = (await getNav()).filter((s) => s.navbar);
     animation-delay: 60ms;
   }
 
+  /* Phone: the app name is a link, so it gets a full touch target. */
   .app-name {
-    margin: 0 0 0.25rem;
-    font-size: 1rem;
+    margin: 0;
+    font-size: var(--type-caption);
+    font-weight: var(--type-caption-weight);
+    line-height: var(--type-caption-leading);
     letter-spacing: 0.06em;
     text-transform: lowercase;
     color: var(--ctp-subtext0);
   }
   .app-name a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--touch-target);
     color: inherit;
   }
   .app-name a:hover {
@@ -62,34 +68,43 @@ const nav = (await getNav()).filter((s) => s.navbar);
   }
 
   .title {
-    margin: 0 0 1.25rem;
-    font-size: clamp(3rem, 9vw, 5.5rem);
-    font-weight: 300;
+    margin: 0 0 var(--space-2);
+    font-size: var(--type-header);
+    font-weight: var(--type-header-weight);
+    line-height: var(--type-header-leading);
     letter-spacing: -0.03em;
-    line-height: 1.05;
     text-transform: lowercase;
   }
 
-  /* Phone: a Windows Phone pivot, one line that scrolls instead of wrapping. */
+  /* Phone: a Windows Phone pivot, one line that scrolls instead of wrapping.
+     The scroller runs to the screen edge, so items bleed off the right: the
+     Metro cue that there is more. No fade. */
   nav {
     display: flex;
     flex-wrap: nowrap;
-    gap: 1.25rem;
-    margin: 0.5rem 0 1rem;
-    padding-bottom: 0.375rem;
+    gap: var(--space-4);
+    margin: 0 calc(-1 * var(--space-2)) var(--space-4) 0;
+    padding-right: var(--space-2);
     overflow-x: auto;
     scrollbar-width: none;
-    mask-image: linear-gradient(to right, black calc(100% - 2rem), transparent 100%);
   }
   nav::-webkit-scrollbar {
     display: none;
   }
+  /* Home has no nav: leave a grid unit before the content. */
+  header.home {
+    padding-bottom: var(--space-4);
+  }
   nav a {
     flex: 0 0 auto;
-    font-size: 1.1875rem;
-    font-weight: 300;
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--touch-target);
+    font-size: var(--type-subheader);
+    font-weight: var(--type-subheader-weight);
+    line-height: var(--type-subheader-leading);
     text-transform: lowercase;
-    color: var(--ctp-overlay0);
+    color: var(--ctp-overlay1); /* inactive pivot items are dimmed */
   }
   nav a:hover {
     color: var(--ctp-pink);
@@ -99,18 +114,41 @@ const nav = (await getNav()).filter((s) => s.navbar);
     color: var(--ctp-text);
   }
 
-  /* Desktop: the full nav wraps instead of scrolling. */
+  /* Desktop silhouette. The title baseline sits --header-baseline from the
+     top. Selawik Light's baseline is 0.893em below the top of a 1.05 line
+     box (measured in the browser: 50px at 56px). So the title line starts at
+     100px - 0.893 * font-size, and the app name (one caption line plus
+     --space-1) sits above it. The nav starts on the next 20px line. */
   @media (min-width: 768px) {
+    header {
+      padding-top: calc(
+        var(--header-baseline) - 0.893 * var(--type-header)
+        - var(--type-caption) * var(--type-caption-leading) - var(--space-1)
+      );
+    }
+    .app-name {
+      margin-bottom: var(--space-1);
+    }
+    .app-name a {
+      display: inline;
+      min-height: 0;
+    }
+    /* The home page has no app name: the title takes its place. */
+    header.home {
+      padding-top: calc(var(--header-baseline) - 0.893 * var(--type-header));
+      padding-bottom: 0;
+      min-height: var(--content-top);
+      box-sizing: border-box;
+    }
+    /* The line box ends 0.157em below the baseline; pad to the 120px line. */
+    .title {
+      margin-bottom: calc(var(--space-4) - 0.157 * var(--type-header));
+    }
     nav {
       flex-wrap: wrap;
-      column-gap: 1.5rem;
-      margin-bottom: 1.5rem;
-      padding-bottom: 0;
+      margin-right: 0;
+      padding-right: 0;
       overflow: visible;
-      mask-image: none;
-    }
-    nav a {
-      font-size: clamp(1.5rem, 4.2vw, 1.9375rem);
     }
   }
 

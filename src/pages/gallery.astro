@@ -34,42 +34,49 @@ const items = await Promise.all(
     display: grid;
     /* 180px is the smallest thumbnail that still shows a photo clearly. */
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 0.75rem;
-    margin-top: 1.5rem;
+    gap: var(--space-2);
+    margin-top: var(--space-4);
   }
   .gallery-item {
     position: relative;
     display: block;
-    overflow: hidden;
     aspect-ratio: 4 / 3;
+    transition: transform 0.1s ease;
+  }
+  /* Same hover and press as the home tiles. */
+  .gallery-item:hover {
+    outline: 3px solid var(--ctp-overlay1);
+  }
+  .gallery-item:active {
+    transform: scale(0.97);
+    outline: 0;
   }
   .gallery-item img {
+    display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
     margin: 0;
-    transition: transform 0.2s ease;
   }
-  .gallery-item:hover img {
-    transform: scale(1.05);
-  }
-  /* Photo overlay: the caption stays white in both themes, so a dark
-     gradient keeps it readable on any picture. */
+  /* Flat band: the caption stays white in both themes, so a dark
+     semi-transparent fill keeps it readable on any picture. */
   .gallery-caption {
     position: absolute;
     left: 0;
     right: 0;
     bottom: 0;
-    padding: 0.4rem 0.6rem;
-    font-size: 0.75rem;
+    padding: var(--space-1) var(--space-2);
+    font-size: var(--type-caption);
+    font-weight: var(--type-caption-weight);
+    line-height: var(--type-caption-leading);
     color: #fff;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.65), transparent);
+    background: rgba(0, 0, 0, 0.6);
   }
   @media (prefers-reduced-motion: reduce) {
-    .gallery-item img {
+    .gallery-item {
       transition: none;
     }
-    .gallery-item:hover img {
+    .gallery-item:active {
       transform: none;
     }
   }

@@ -1,6 +1,7 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import Base from './Base.astro';
+import BackButton from '../components/BackButton.astro';
 import Button from '../components/Button.astro';
 import PageColumns from '../components/PageColumns.astro';
 // Pulls in the shared .status-pill rules until the pill becomes a component.
@@ -19,7 +20,7 @@ const { title, status, date, description, external_url, url_text } = Astro.props
       </p>
       <h1 class="post-title">{title}</h1>
       {external_url && <p><Button href={external_url}>{url_text ?? 'external link'}</Button></p>}
-      <p class="back-link"><a href="/projects/">← back to projects</a></p>
+      <p class="back-link"><BackButton href="/projects/" label="back to projects" /></p>
     </Fragment>
     <slot />
   </PageColumns>

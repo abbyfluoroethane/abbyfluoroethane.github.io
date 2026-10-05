@@ -30,52 +30,58 @@ import Base from '../layouts/Base.astro';
     overflow-y: auto;
     /* Top-anchored at a fixed offset, not centered, so the message sits at
        the same spot whatever its length. Offsets were measured off a real
-       1920x1080 sad-face screenshot: top edge ~17% of height (13vh here,
-       plus the face's own line box), left edge ~10.6% of width. */
-    padding: 13vh 1.5rem 3rem 0.625rem;
+       1920x1080 sad-face screenshot: top edge ~17% of height, left edge
+       ~10.6% of width. */
+    padding: 13vh var(--space-4) var(--space-8) var(--space-2); /* off-grid: 13vh is measured off the real screen */
     background: #1a73c9;
     color: #fff;
   }
   @media (min-width: 768px) {
     .bsod {
-      padding: 13vh 4rem 3rem 12.5rem;
+      padding: 13vh var(--space-16) var(--space-8) 200px; /* off-grid: 200px is the measured left edge */
     }
   }
   .bsod-inner {
-    max-width: 720px;
+    max-width: 720px; /* off-grid: measured text column */
   }
   /* Sizes measured off the same screenshot (":(" ink ~179px tall, body text
      ~40px at line-height 1.5). Segoe UI is only on Windows, so this paints in
      Selawik, whose "(" is shorter for its em-box; the size is inflated to
      match the rendered ink height rather than the nominal font-size. */
   .bsod-face {
-    margin: 0 0 1.5rem;
+    margin: 0 0 var(--space-6);
+    /* off-ramp: imitates the 179px sad face of the real Windows 8 BSOD */
     font-size: clamp(6.5rem, 11vw, 13.3125rem);
-    font-weight: 300;
-    line-height: 1;
+    font-weight: var(--type-header-weight);
+    line-height: 1; /* off-ramp: tight line box to match the measured offsets */
   }
   .bsod-text {
-    margin: 0 0 2rem;
+    margin: 0 0 var(--space-8);
     max-width: 42ch;
+    /* off-ramp: imitates the ~40px message text of the real BSOD */
     font-size: clamp(1.75rem, 2.1vw, 2.5rem);
-    font-weight: 300;
-    line-height: 1.5;
+    font-weight: var(--type-header-weight);
+    line-height: 1.5; /* off-ramp: matches the real screen */
   }
   .bsod-detail {
+    /* off-ramp: imitates the 18px detail text of the real BSOD */
     font-size: 1.125rem;
-    font-weight: 300;
-    line-height: 1.6;
+    font-weight: var(--type-header-weight);
+    line-height: 1.6; /* off-ramp: matches the real screen */
   }
   .bsod-detail-line {
-    margin: 0 0 0.5rem;
+    margin: 0 0 var(--space-2);
   }
   .bsod-code {
-    margin: 0 0 1.25rem;
-    font-family: "Cascadia Code", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    margin: 0 0 var(--space-4);
+    font-family: var(--font-mono);
     letter-spacing: 0.02em;
   }
+  /* The link is the only way out, so it gets a 40px target. */
   .bsod-detail a,
   .bsod-detail a:visited {
+    display: inline-block;
+    min-height: var(--touch-target);
     color: #fff;
     text-decoration: underline;
   }

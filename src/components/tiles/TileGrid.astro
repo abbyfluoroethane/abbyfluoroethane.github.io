@@ -12,40 +12,31 @@
      the spans. auto-fill drops to fewer columns as the viewport narrows. */
   .tile-grid {
     --tile-unit: 150px; /* Metro's square tile */
-    --tile-gap: 10px; /* Metro: 5px margin on each side of a tile */
+    --tile-gap: var(--space-2); /* the 10px gutter between hard-edged items */
     display: grid;
     grid-auto-flow: dense;
     grid-template-columns: repeat(auto-fill, var(--tile-unit));
     grid-auto-rows: var(--tile-unit);
     gap: var(--tile-gap);
-    margin-top: 1rem;
     /* Cap at 4 columns. A max-width (not repeat(4, ...)) keeps auto-fill
        free to use fewer columns on a narrow viewport. */
     max-width: calc(4 * var(--tile-unit) + 3 * var(--tile-gap));
   }
   /* Six columns, but only once the row really holds them: 120px of left
-     padding + a 320px intro + the 56px gap + the tiles + 64px of right
-     padding is 1520 exactly. */
-  @media (min-width: 1520px) {
+     padding + a 320px intro + the 80px gap + the tiles + 64px of right
+     padding is 1534 exactly. */
+  @media (min-width: 1534px) {
     .tile-grid {
       max-width: calc(6 * var(--tile-unit) + 5 * var(--tile-gap));
     }
   }
-  @media (min-width: 768px) {
-    .tile-grid {
-      margin-top: 2.5rem; /* the Windows 8 gap under the Start header */
-    }
-  }
-
   /* Phone: three columns that fill the width. The unit comes from the
-     viewport so the columns leave nothing over: the page shell's 0.625rem
+     viewport so the columns leave nothing over: the page shell's 10px
      side padding and the two gaps are the only other things in the row. */
   @media (max-width: 767px) {
     .tile-grid {
-      --tile-unit: calc((100vw - 1.25rem - 2 * var(--tile-gap)) / 3);
+      --tile-unit: calc((100vw - 2 * var(--space-2) - 2 * var(--tile-gap)) / 3);
       grid-template-columns: repeat(3, var(--tile-unit));
-      /* The intro above already adds a row gap. */
-      margin-top: 0;
     }
   }
 </style>

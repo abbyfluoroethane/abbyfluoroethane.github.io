@@ -40,12 +40,12 @@ const safeUrl = (w?: string) => {
       {entries.map((entry) => {
         const url = safeUrl(entry.website);
         return (
-      <div class="card guestbook-entry">
-        <div class="guestbook-entry-header">
-          <strong>{url ? <a href={url} rel="nofollow ugc noopener">{entry.name}</a> : entry.name}</strong>
-          <span class="guestbook-entry-date">{entry.date}</span>
+      <div class="card">
+        <div class="card-head">
+          <h3 class="card-title">{url ? <a href={url} rel="nofollow ugc noopener">{entry.name}</a> : entry.name}</h3>
+          <p class="card-date">{entry.date}</p>
         </div>
-        <p>{entry.message}</p>
+        <p class="card-desc">{entry.message}</p>
       </div>
         );
       })}
@@ -63,32 +63,44 @@ const safeUrl = (w?: string) => {
   .guestbook-form {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
-    max-width: 480px;
-    margin: 1.5rem 0 2rem;
+    gap: var(--space-4);
+    max-width: 480px; /* off-grid: comfortable form width */
+    margin: var(--space-4) 0 var(--space-8);
   }
   .guestbook-form label {
     display: flex;
     flex-direction: column;
-    gap: 0.3rem;
-    font-size: 0.9375rem;
+    gap: var(--space-1);
+    font-size: var(--type-caption);
+    font-weight: var(--type-caption-weight);
+    line-height: var(--type-caption-leading);
+    color: var(--ctp-subtext0);
   }
   .guestbook-form input,
   .guestbook-form textarea {
+    min-height: var(--touch-target);
     font-family: inherit;
-    font-size: 1rem;
-    padding: 0.5rem 0.6rem;
-    border: 1px solid var(--ctp-surface1);
+    font-size: var(--type-body);
+    font-weight: var(--type-body-weight);
+    line-height: var(--type-body-leading);
+    padding: var(--space-1) var(--space-2);
+    border: 2px solid var(--ctp-overlay0);
+    border-radius: 0;
     background: var(--ctp-base);
     color: var(--ctp-text);
+  }
+  .guestbook-form input:hover,
+  .guestbook-form textarea:hover {
+    border-color: var(--ctp-overlay1);
   }
   .guestbook-form :global(.btn) {
     align-self: flex-start;
   }
   /* guestbook.ts fills this in and adds is-success or is-error. */
   .guestbook-form-status {
-    min-height: 1.2em;
-    font-size: 0.875rem;
+    min-height: var(--space-4);
+    font-size: var(--type-body);
+    line-height: var(--type-body-leading);
     color: var(--ctp-subtext0);
   }
   .guestbook-form-status.is-success {
@@ -102,18 +114,5 @@ const safeUrl = (w?: string) => {
   .guestbook-honeypot {
     position: absolute;
     left: -9999px;
-  }
-  .guestbook-entry-header {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    margin-bottom: 0.35rem;
-  }
-  .guestbook-entry-date {
-    color: var(--ctp-subtext0);
-    font-size: 0.8125rem;
-  }
-  .guestbook-entry p {
-    margin: 0;
   }
 </style>

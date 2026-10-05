@@ -29,7 +29,7 @@ interface CaptionEls {
 // is only detached once the incoming one has finished fading over it
 const ART_FADE = 600;
 // a cover request that never settles (dead cdn, offline mid-load) would
-// otherwise leave the tile shimmering for the rest of the session
+// otherwise leave the tile loading for the rest of the session
 const ART_TIMEOUT = 8000;
 // the caption changes over at the midpoint of the cover's crossfade, where
 // the two are blended evenly and neither owns the tile. .lastfm-swap in
@@ -97,7 +97,7 @@ function scrobbleTime(t: LfmTrack): HTMLElement | null {
 }
 
 /* ---- skeletons ----
-   the widget's shape is built once, up front, with a shimmering bar parked
+   the widget's shape is built once, up front, with a loading bar parked
    in every slot. filling a slot in overwrites its bar, so text lands
    without the layout shifting under it. */
 
@@ -124,7 +124,7 @@ function setLine(node: HTMLElement | undefined, text: string | undefined): void 
 
 /* ---- album art ----
    covers arrive at their own pace and swap out from under the poll, so
-   every cover on the site is a stack rather than a bare <img>: a shimmer
+   every cover on the site is a stack rather than a bare <img>: a loading block
    on top while one is in flight, the last.fm mark underneath for tracks
    with no art, and one layer per cover so a new one can crossfade over
    whatever is already on screen. */
@@ -266,7 +266,7 @@ function initWidget(root: HTMLElement): void {
   let lastSig: string | null = null;
   let lastTracks: LfmTrack[] | null = null;
   // set once the widget has settled on a message instead of a track, so the
-  // history list doesn't shimmer on as if a response were still coming
+  // history list doesn't stay loading on as if a response were still coming
   let noticed = false;
 
   /* ---- caption / cover handover ----
@@ -426,9 +426,9 @@ function initWidget(root: HTMLElement): void {
 
     const info = el("span", "lastfm-history-info");
     const when = scrobbleTime(t);
-    if (when) info.appendChild(when);
     info.appendChild(line("span", "card-title", t.name || "unknown track"));
     info.appendChild(line("span", "card-desc", trackArtist(t)));
+    if (when) info.appendChild(when);
     card.appendChild(info);
     setArt(cover, safeUrl(artUrl(t)));
     return card;
@@ -447,9 +447,9 @@ function initWidget(root: HTMLElement): void {
       card.setAttribute("aria-hidden", "true");
       card.appendChild(el("span", "lastfm-history-cover skeleton"));
       const info = el("span", "lastfm-history-info");
-      info.appendChild(bar("30%"));
       info.appendChild(bar("70%"));
       info.appendChild(bar("45%"));
+      info.appendChild(bar("30%"));
       card.appendChild(info);
       list.appendChild(card);
     }

@@ -1,5 +1,6 @@
 ---
 import Base from './Base.astro';
+import BackButton from '../components/BackButton.astro';
 import PageColumns from '../components/PageColumns.astro';
 import { formatLongDate } from '../lib/format';
 import { inlineMarkdown } from '../lib/inlineMarkdown';
@@ -25,7 +26,7 @@ const { title, date, subtitle, attribution, description, mathjax, appName = 'blo
       <h1 class="post-title">{title}</h1>
       {subtitle && <h2 class="post-subtitle" set:html={inlineMarkdown(subtitle)} />}
       {attribution && <h4 class="post-attribution" set:html={inlineMarkdown(attribution)} />}
-      <p class="back-link"><a href="/blog/">← back to blog</a></p>
+      <p class="back-link"><BackButton href="/blog/" label="back to blog" /></p>
     </Fragment>
     <slot />
   </PageColumns>
