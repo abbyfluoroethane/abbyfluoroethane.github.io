@@ -1,0 +1,311 @@
+---
+// A detail page as an agenda entry (blog posts, projects): a rail with the
+// back button, a meta block and the contents, beside one reading column. On a
+// phone the rail becomes a row above the title and the contents a disclosure.
+// The page fills the meta block through the "meta" slot; .rail-caption styles
+// a caption line inside it.
+import Base from './Base.astro';
+import BackButton from '../components/BackButton.astro';
+import { inlineMarkdown } from '../lib/inlineMarkdown';
+
+export interface Props {
+  title: string;
+  /** The page header label above the columns (the section name). */
+  appName: string;
+  back: { href: string; label: string };
+  /** Posts: the publish date, for the article meta tag. */
+  publishedTime?: Date;
+  /** Standfirst under the title. Inline markdown. */
+  subtitle?: string;
+  /** Credit line: a byline, a photo credit, where a piece first ran. Inline markdown. */
+  attribution?: string;
+  description?: string;
+  mathjax?: boolean;
+  /** Headings from render(post). Depth 2 and 3 make the contents. */
+  headings?: { depth: number; slug: string; text: string }[];
+}
+const {
+  title,
+  appName,
+  back,
+  publishedTime,
+  subtitle,
+  attribution,
+  description,
+  mathjax,
+  headings = [],
+} = Astro.props;
+
+let contents = headings.filter(
+  (h) => h.depth >= 2 && h.depth <= 3 && h.slug !== 'footnotes' && h.slug !== 'footnote-label',
+);
+// Margin numbers go on the depth with the most headings, so a post with one
+// h2 and six h3 sections numbers the sections.
+const count = (d: number) => contents.filter((h) => h.depth === d).length;
+const numbered = count(3) > count(2) ? 3 : 2;
+// A lone h2 over numbered h3 sections is the post's tagline, not a section.
+if (numbered === 3 && count(2) === 1) contents = contents.filter((h) => h.depth === 3);
+let n = 0;
+const items = contents.map((h) => ({
+  ...h,
+  num: h.depth === numbered ? ++n : undefined,
+}));
+---
+<Base {title} {description} {mathjax} {appName} plainTitle ogType="article" {publishedTime}>
+  <div class="post-page">
+    <aside class="rail">
+      <div class="rail-top">
+        <BackButton class="rail-back" href={back.href} label={back.label} />
+        <div class="rail-date">
+          <slot name="meta" />
+        </div>
+      </div>
+      {items.length > 0 && (
+        <details class="contents" open>
+          <summary>contents</summary>
+          <ol>
+            {items.map((h) => (
+              <li class:list={{ sub: h.depth !== numbered && numbered === 2 }}>
+                <a href={`#${h.slug}`}>
+                  {h.num && <span class="num">{h.num}</span>}
+                  <span set:html={inlineMarkdown(h.text)} />
+                </a>
+              </li>
+            ))}
+          </ol>
+        </details>
+      )}
+    </aside>
+
+    <article class="post">
+      <h1>{title}</h1>
+      {subtitle && <p class="standfirst" set:html={inlineMarkdown(subtitle)} />}
+      {attribution && <p class="attribution" set:html={inlineMarkdown(attribution)} />}
+      <div class="prose" data-numbered={items.some((h) => h.num) ? numbered : undefined}><slot /></div>
+    </article>
+  </div>
+</Base>
+
+<script>
+  // Contents: open on a desktop (the rail shows it), closed on a phone. Mark
+  // the section being read. Color changes only, so no motion to reduce.
+  const details = document.querySelector<HTMLDetailsElement>('.contents');
+  if (details) {
+    const wide = matchMedia('(min-width: 1000px)');
+    const sync = () => {
+      details.open = wide.matches;
+    };
+    sync();
+    wide.addEventListener('change', sync);
+    // Phone: close the disclosure after a jump, so the text is in view.
+    details.addEventListener('click', (e) => {
+      if (!wide.matches && (e.target as HTMLElement).closest('li a')) details.open = false;
+    });
+
+    const links = [...details.querySelectorAll<HTMLAnchorElement>('li a')];
+    const targets = links
+      .map((a) => document.getElementById(decodeURIComponent(a.hash.slice(1))))
+      .filter((el): el is HTMLElement => !!el);
+    const mark = () => {
+      let current = 0;
+      targets.forEach((el, i) => {
+        if (el.getBoundingClientRect().top < innerHeight * 0.3) current = i;
+      });
+      links.forEach((a, i) => {
+        if (i === current && targets[0].getBoundingClientRect().top < innerHeight * 0.3) {
+          a.setAttribute('aria-current', 'location');
+        } else {
+          a.removeAttribute('aria-current');
+        }
+      });
+    };
+    addEventListener('scroll', mark, { passive: true });
+    mark();
+  }
+</script>
+
+<style>
+  /* Phone: one column. The rail is a row above the title. */
+  .post-page {
+    display: block;
+  }
+  .rail-top {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  /* The label stays for assistive tech; the round button is enough on a phone. */
+  .rail :global(.rail-back span) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+  .rail-date {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .rail-date :global(.rail-caption) {
+    margin: 0;
+    font-size: var(--type-caption);
+    line-height: var(--type-caption-leading);
+    color: var(--ctp-subtext0);
+  }
+  .rail-date :global(.rail-caption span) {
+    display: block;
+  }
+
+  .contents {
+    margin: var(--space-4) 0 0;
+    border-top: 1px solid var(--ctp-surface1);
+  }
+  summary {
+    display: flex;
+    align-items: center;
+    min-height: var(--touch-target);
+    font-size: var(--type-caption);
+    font-weight: var(--type-title-weight);
+    letter-spacing: 0.06em;
+    color: var(--ctp-subtext0);
+    cursor: pointer;
+  }
+  .contents ol {
+    margin: 0 0 var(--space-2);
+    padding: 0;
+    list-style: none;
+  }
+  .contents li {
+    max-width: none;
+  }
+  .contents a {
+    display: flex;
+    gap: var(--space-2);
+    padding: var(--space-1) 0;
+    min-height: var(--touch-target);
+    align-items: center;
+    font-size: var(--type-body);
+    line-height: var(--type-body-leading);
+    color: var(--ctp-subtext1);
+  }
+  .contents a:hover {
+    color: var(--ctp-pink);
+    text-decoration: none;
+  }
+  .contents a[aria-current] {
+    color: var(--ctp-text);
+    font-weight: var(--type-title-weight);
+  }
+  .contents li.sub a {
+    padding-left: var(--space-4);
+  }
+  .num {
+    flex: 0 0 auto;
+    min-width: var(--space-4);
+    font-size: var(--type-caption);
+    color: var(--ctp-overlay1);
+  }
+
+  .post {
+    display: flow-root; /* contain floated images */
+    min-width: 0;
+    margin-top: var(--space-2);
+  }
+  h1 {
+    margin: 0 0 var(--space-4);
+    max-width: 20em;
+  }
+  .standfirst {
+    margin: 0 0 var(--space-4);
+    font-size: var(--type-item);
+    font-weight: var(--type-item-weight);
+    line-height: var(--type-item-leading);
+    color: var(--ctp-subtext1);
+  }
+  .attribution {
+    margin: 0 0 var(--space-6);
+    font-size: var(--type-caption);
+    font-weight: var(--type-title-weight);
+    line-height: var(--type-caption-leading);
+    color: var(--ctp-overlay1);
+  }
+
+  /* Tablet and up: the date block grows to the list's size. */
+  @media (min-width: 768px) {
+    .post {
+      margin-top: var(--space-4);
+    }
+  }
+
+  /* Desktop: the rail is 240px on the grid and sticks while the text scrolls. */
+  @media (min-width: 1000px) {
+    .post-page {
+      display: grid;
+      grid-template-columns: calc(12 * var(--space-4)) minmax(0, calc(36 * var(--space-4)));
+      column-gap: var(--space-12);
+      align-items: start;
+    }
+    .rail {
+      position: sticky;
+      top: var(--space-4);
+      max-height: calc(100vh - var(--space-8));
+      overflow-y: auto;
+      scrollbar-width: none;
+    }
+    .rail-top {
+      display: block;
+    }
+    .rail :global(.rail-back span) {
+      position: static;
+      width: auto;
+      height: auto;
+      overflow: visible;
+      clip: auto;
+    }
+    .rail-date {
+      display: block;
+      margin-top: var(--space-6);
+    }
+    .rail-date :global(.rail-caption) {
+      margin-top: var(--space-1);
+    }
+    .rail-date :global(.rail-caption span) {
+      display: inline;
+    }
+    .post {
+      margin-top: 0;
+      /* Align the title's cap height with the back button. */
+    }
+    .contents {
+      margin-top: var(--space-6);
+    }
+    summary {
+      pointer-events: none; /* open on a desktop: a label, not a control */
+      min-height: var(--space-6);
+    }
+    /* Section numbers hang in the gap between the rail and the text. */
+    .post :global(.prose) {
+      counter-reset: section;
+    }
+    .post :global(.prose[data-numbered='2'] h2),
+    .post :global(.prose[data-numbered='3'] h3:not(#footnotes)) {
+      counter-increment: section;
+      position: relative;
+    }
+    .post :global(.prose[data-numbered='2'] h2)::before,
+    .post :global(.prose[data-numbered='3'] h3:not(#footnotes))::before {
+      content: counter(section);
+      position: absolute;
+      right: 100%;
+      margin-right: var(--space-4);
+      font-size: var(--type-caption);
+      line-height: calc(var(--type-subheader) * var(--type-subheader-leading));
+      color: var(--ctp-overlay1);
+    }
+    .post :global(.prose[data-numbered='3'] h3:not(#footnotes))::before {
+      line-height: calc(var(--type-item) * var(--type-item-leading));
+    }
+  }
+</style>

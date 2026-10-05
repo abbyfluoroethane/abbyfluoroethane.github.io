@@ -1,28 +1,56 @@
 ---
+// A project: the detail layout with the start year, status and link in the
+// rail, and the project description as the standfirst.
 import type { CollectionEntry } from 'astro:content';
-import Base from './Base.astro';
-import BackButton from '../components/BackButton.astro';
+import DetailLayout from './DetailLayout.astro';
 import Button from '../components/Button.astro';
-import PageColumns from '../components/PageColumns.astro';
-// Pulls in the shared .status-pill rules until the pill becomes a component.
 
 export interface Props {
   project: CollectionEntry<'projects'>['data'];
+  /** Headings from render(project). Depth 2 and 3 make the contents. */
+  headings?: { depth: number; slug: string; text: string }[];
 }
-const { title, status, date, description, external_url, url_text } = Astro.props.project;
+const { project, headings } = Astro.props;
+const { title, status, date, description, external_url, url_text } = project;
+const year = date.getUTCFullYear();
 ---
-<Base {title} {description} appName="projects" ogType="article">
-  <PageColumns>
-    <Fragment slot="aside">
-      <p class="post-date">
-        <span class={`status-pill status-${status}`}>{status}</span>
-        · {date.getUTCFullYear()}
-      </p>
-      <h1 class="post-title">{title}</h1>
-      {external_url && <p><Button href={external_url}>{url_text ?? 'external link'}</Button></p>}
-      <p class="back-link"><BackButton href="/projects/" label="back to projects" /></p>
-    </Fragment>
-    <slot />
-  </PageColumns>
-</Base>
+<DetailLayout
+  {title}
+  {description}
+  subtitle={description}
+  {headings}
+  appName="projects"
+  back={{ href: '/projects/', label: 'back to projects' }}
+>
+  <Fragment slot="meta">
+    <p class="year">{year}</p>
+    <p class="rail-caption">
+      <span class={`status-pill status-${status}`}>{status}</span>
+      {status === 'active' && <span> · ongoing</span>}
+    </p>
+    {external_url && (
+      <p class="link"><Button href={external_url}>{url_text ?? 'external link'}</Button></p>
+    )}
+  </Fragment>
+  <slot />
+</DetailLayout>
 
+<style>
+  /* The start year, at the size of the day number on a post. */
+  .year {
+    margin: 0;
+    font-size: var(--type-title-lg);
+    font-weight: var(--type-title-lg-weight);
+    line-height: var(--type-header-leading);
+    letter-spacing: -0.03em;
+  }
+  .link {
+    margin: var(--space-3) 0 0;
+  }
+  @media (min-width: 768px) {
+    .year {
+      font-size: var(--type-header);
+      font-weight: var(--type-header-weight);
+    }
+  }
+</style>
