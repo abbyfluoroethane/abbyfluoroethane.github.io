@@ -1,5 +1,5 @@
 ---
-layout: ../layouts/pages/ResumePage.astro
+layout: ../layouts/ResumeLayout.astro
 title: resume
 full_name: "Hi, I'm Abby."
 tagline: Rocket mechanic and quality complainer at Astra. Former Blue Origin.

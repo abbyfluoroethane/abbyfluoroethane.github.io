@@ -1,27 +1,26 @@
 ---
 import Base from './Base.astro';
+import { formatLongDate } from '../lib/format';
 import { inlineMarkdown } from '../lib/inlineMarkdown';
 
 export interface Props {
   title: string;
   date: Date;
+  /** Standfirst under the title. Inline markdown. */
   subtitle?: string;
+  /** Credit line: a byline, a photo credit, where a piece first ran. Inline markdown. */
   attribution?: string;
   description?: string;
-  image?: string;
   mathjax?: boolean;
+  /** Header label. Defaults to "blog". */
   appName?: string;
-  currentPath: string;
-  // false for pages that use this layout but are not blog posts (extras)
-  inBlog?: boolean;
 }
-const { title, date, subtitle, attribution, description, image, mathjax, appName, currentPath, inBlog = true } = Astro.props;
-const dateStr = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
+const { title, date, subtitle, attribution, description, mathjax, appName = 'blog' } = Astro.props;
 ---
-<Base {title} {description} {image} {mathjax} {appName} {currentPath} ogType="article" publishedTime={date} currentSection={inBlog ? 'blog' : undefined}>
+<Base {title} {description} {mathjax} {appName} ogType="article" publishedTime={date}>
   <div class="post-layout">
     <aside class="post-meta">
-      <p class="post-date">{dateStr}</p>
+      <p class="post-date">{formatLongDate(date)}</p>
       <h1 class="post-title">{title}</h1>
       {subtitle && <h2 class="post-subtitle" set:html={inlineMarkdown(subtitle)} />}
       {attribution && <h4 class="post-attribution" set:html={inlineMarkdown(attribution)} />}

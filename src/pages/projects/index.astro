@@ -1,25 +1,21 @@
 ---
-import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
+import { getProjects } from '../../lib/collections';
 
-const all = await getCollection('projects');
-const byDateDesc = (a: any, b: any) =>
-  (b.data.date?.valueOf() ?? 0) - (a.data.date?.valueOf() ?? 0);
-const active = all.filter((p) => p.data.status === 'active').sort(byDateDesc);
-const archived = all.filter((p) => p.data.status === 'archive').sort(byDateDesc);
+const projects = await getProjects();
+const sections = [
+  { id: 'active', projects: projects.filter((p) => p.data.status === 'active') },
+  { id: 'archive', projects: projects.filter((p) => p.data.status === 'archive') },
+];
 ---
-
-<Base title="projects" currentPath="/projects/" currentSection="projects">
-  <h2 id="active">active</h2>
-
-  <div class="card-grid">
-    {active.map((project) => <ProjectCard project={project} />)}
-  </div>
-
-  <h2 id="archive">archive</h2>
-
-  <div class="card-grid">
-    {archived.map((project) => <ProjectCard project={project} />)}
-  </div>
+<Base title="projects">
+  {sections.map((section) => (
+    <>
+      <h2 id={section.id}>{section.id}</h2>
+      <div class="card-grid">
+        {section.projects.map((project) => <ProjectCard {project} />)}
+      </div>
+    </>
+  ))}
 </Base>

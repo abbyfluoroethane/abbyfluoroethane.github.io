@@ -1,25 +1,21 @@
 ---
 import Base from '../layouts/Base.astro';
 import { site } from '../site';
-// The guestbook worker commits new entries to _data/guestbook.yml. Do not move this file.
-import guestbook from '../../_data/guestbook.yml';
+import { getGuestbook } from '../lib/collections';
 
-// the worker appends new entries to the end of guestbook.yml, so file order
-// is oldest first: walk it backwards to lead with the most recent. reversing
-// rather than sorting on date keeps same-day entries in arrival order.
-const entries = [...(guestbook as any[])].reverse();
+const entries = await getGuestbook();
 
 // entries are visitor-submitted; Astro escapes all interpolated text, and the
 // website link is restricted to absolute http(s) URLs (anything else, such as
 // javascript:, data: or protocol-relative //host, renders as plain text).
 const safeUrl = (w?: string) => {
   if (!w) return '';
-  const url = String(w).trim();
+  const url = w.trim();
   const scheme = url.split('://')[0].toLowerCase();
   return scheme === 'http' || scheme === 'https' ? url : '';
 };
 ---
-<Base title="guestbook" currentPath="/guestbook/">
+<Base title="guestbook">
 <div class="post-layout">
   <aside class="post-meta">
     <h2>sign the guestbook</h2>

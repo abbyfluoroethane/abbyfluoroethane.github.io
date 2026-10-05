@@ -1,67 +1,27 @@
 ---
-import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import LastfmWidget from '../components/LastfmWidget.astro';
-import nav from '../data/nav.yml';
-import guestbook from '../../_data/guestbook.yml';
+import { getGuestbook, getNav, getPosts, getProjects } from '../lib/collections';
+import { excerpt, truncateWords } from '../lib/format';
 
-// site.posts | first — newest post by date
-const posts = (await getCollection('posts')).sort(
-  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
-);
-const latestPost = posts[0];
-
-// Liquid: summary | default: excerpt | strip_html | truncatewords: 20, ""
-// Jekyll's excerpt is the first paragraph of the body, rendered to HTML.
-function stripHtml(s: string) {
-  return s
-    .replace(/<script[\s\S]*?<\/script>/gi, '')
-    .replace(/<style[\s\S]*?<\/style>/gi, '')
-    .replace(/<!--[\s\S]*?-->/g, '')
-    .replace(/<[^>]*>/g, '');
-}
-function excerptText(body: string) {
-  const first = (body ?? '').trim().split(/\n\s*\n/)[0] ?? '';
-  return first
-    .replace(/!\[([^\]]*)\]\([^)]*\)/g, '$1')
-    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
-    .replace(/(\*\*|__)(.*?)\1/g, '$2')
-    .replace(/(\*|_)(.*?)\1/g, '$2')
-    .replace(/`([^`]*)`/g, '$1');
-}
-function truncateWords(s: string, n: number) {
-  const words = s.split(/\s+/).filter(Boolean);
-  return words.length > n ? words.slice(0, n).join(' ') : words.join(' ');
-}
+const nav = await getNav();
+const latestPost = (await getPosts())[0];
 const latestPostDesc = latestPost
-  ? truncateWords(
-      stripHtml(latestPost.data.summary || excerptText(latestPost.body ?? '')),
-      20,
-    )
+  ? truncateWords(latestPost.data.summary ?? excerpt(latestPost.body), 20, '')
   : '';
 
-// site.projects order: Jekyll sorts collection docs by date (then path)
-const featuredProjects = (await getCollection('projects'))
-  .filter((p) => p.data.featured === true)
-  .sort(
-    (a, b) =>
-      a.data.date.valueOf() - b.data.date.valueOf() || a.id.localeCompare(b.id),
-  );
+// Oldest featured project first, so the cycle starts with the longest-running one.
+const featuredProjects = (await getProjects())
+  .filter((p) => p.data.featured)
+  .reverse();
 
-// site.data.guestbook | reverse | slice: 0, 3
-const recentEntries = [...guestbook].reverse().slice(0, 3);
+const recentEntries = (await getGuestbook()).slice(0, 3);
 
-const tileClass = (s: any) => {
-  const size = s.size ?? 'square';
-  const base = size === 'wide' ? 'tile-wide' : size === 'large' ? 'tile-large' : 'tile';
-  const live = ['blog', 'music', 'projects', 'guestbook'].includes(s.name)
-    ? ' tile-live-tile'
-    : '';
-  return `${base} bg-ctp-${s.color ?? 'pink'}${live}`;
-};
+const liveTiles = ['blog', 'music', 'projects', 'guestbook'];
+const sizeClass = { square: 'tile', wide: 'tile-wide', large: 'tile-large' };
 ---
 
-<Base currentPath={Astro.url.pathname}>
+<Base>
   <div class="home-layout">
     <div class="home-intro">
       <h1 class="home-heading">haii, i'm abby :3</h1>
@@ -70,8 +30,8 @@ const tileClass = (s: any) => {
 
     <div class="home-tiles">
       <div class="tile-grid">
-        {nav.map((s: any) => (
-          <a class={tileClass(s)} href={s.url}>
+        {nav.map((s) => (
+          <a class:list={[sizeClass[s.size], `bg-ctp-${s.color}`, { 'tile-live-tile': liveTiles.includes(s.name) }]} href={s.url}>
             {s.name === 'blog' ? (
               <div class="tile-live tile-live-caption">
                 <p class="tile-live-label">latest post</p>
@@ -98,7 +58,7 @@ const tileClass = (s: any) => {
             ) : s.name === 'guestbook' ? (
               <div class="tile-live tile-live-caption tile-cycle">
                 <p class="tile-live-label">recent guestbook</p>
-                {recentEntries.map((e: any, i: number) => (
+                {recentEntries.map((e, i) => (
                   <div class={`tile-cycle-item${i === 0 ? ' is-active' : ''}`}>
                     <p class="tile-live-title">{e.name}</p>
                     <p class="tile-live-desc">{e.message}</p>

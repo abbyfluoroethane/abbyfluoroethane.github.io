@@ -1,0 +1,29 @@
+---
+// Layout for markdown pages in src/pages that render like a blog post
+// (extras/markdown). Markdown pages pass their front matter as `frontmatter`.
+import PostLayout from './PostLayout.astro';
+
+export interface Props {
+  frontmatter: {
+    title: string;
+    date: string;
+    subtitle?: string;
+    attribution?: string;
+    description?: string;
+    mathjax?: boolean;
+    app_name?: string;
+  };
+}
+const { frontmatter: fm } = Astro.props;
+---
+<PostLayout
+  title={fm.title}
+  date={new Date(fm.date)}
+  subtitle={fm.subtitle}
+  attribution={fm.attribution}
+  description={fm.description}
+  mathjax={fm.mathjax}
+  appName={fm.app_name}
+>
+  <slot />
+</PostLayout>

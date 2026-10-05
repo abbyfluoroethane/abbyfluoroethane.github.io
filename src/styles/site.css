@@ -8,32 +8,32 @@
   font-weight: 300;
   font-style: normal;
   font-display: swap;
-  src: url("../fonts/selawkl.woff2") format("woff2"),
-       url("../fonts/selawkl.woff") format("woff");
+  src: url("../assets/fonts/selawkl.woff2") format("woff2"),
+       url("../assets/fonts/selawkl.woff") format("woff");
 }
 @font-face {
   font-family: "Selawik";
   font-weight: 400;
   font-style: normal;
   font-display: swap;
-  src: url("../fonts/selawk.woff2") format("woff2"),
-       url("../fonts/selawk.woff") format("woff");
+  src: url("../assets/fonts/selawk.woff2") format("woff2"),
+       url("../assets/fonts/selawk.woff") format("woff");
 }
 @font-face {
   font-family: "Selawik";
   font-weight: 600;
   font-style: normal;
   font-display: swap;
-  src: url("../fonts/selawksb.woff2") format("woff2"),
-       url("../fonts/selawksb.woff") format("woff");
+  src: url("../assets/fonts/selawksb.woff2") format("woff2"),
+       url("../assets/fonts/selawksb.woff") format("woff");
 }
 @font-face {
   font-family: "Selawik";
   font-weight: 700;
   font-style: normal;
   font-display: swap;
-  src: url("../fonts/selawkb.woff2") format("woff2"),
-       url("../fonts/selawkb.woff") format("woff");
+  src: url("../assets/fonts/selawkb.woff2") format("woff2"),
+       url("../assets/fonts/selawkb.woff") format("woff");
 }
 
 /* ---- catppuccin latte (light, default) ---- */
@@ -499,8 +499,8 @@ main > *:not(.tile-grid) { animation-delay: 120ms; }
    is why the colour lives in here too. */
 @supports (mask-image: none) or (-webkit-mask-image: none) {
   .art-fallback {
-    -webkit-mask: url("../images/lastfm.svg") center / 42% no-repeat;
-    mask: url("../images/lastfm.svg") center / 42% no-repeat;
+    -webkit-mask: url("../assets/images/lastfm.svg") center / 42% no-repeat;
+    mask: url("../assets/images/lastfm.svg") center / 42% no-repeat;
     background-color: currentColor;
   }
 }
