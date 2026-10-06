@@ -49,9 +49,9 @@ import BackButton from '../components/BackButton.astro';
     max-width: 720px; /* off-grid: measured text column */
   }
   /* Sizes measured off the same screenshot (":(" ink ~179px tall, body text
-     ~40px at line-height 1.5). Segoe UI is only on Windows, so this paints in
-     Selawik, whose "(" is shorter for its em-box; the size is inflated to
-     match the rendered ink height rather than the nominal font-size. */
+     ~40px at line-height 1.5). The site uses Selawik. Its "(" is shorter for
+     its em-box than the Segoe UI one, so the size here matches the ink
+     height of the real screen, not the nominal font-size. */
   .bsod-face {
     margin: 0 0 var(--space-6);
     /* off-ramp: imitates the 179px sad face of the real Windows 8 BSOD */
