@@ -1,5 +1,7 @@
-# NOTE: In the repo, Settings > Pages > Build and deployment > Source
-# must be set to "GitHub Actions" for this workflow to publish the site.
+# Builds the site with the official Astro action and deploys it to GitHub
+# Pages. Settings > Pages > Build and deployment > Source must be
+# "GitHub Actions" for this workflow to publish the site.
+# Based on https://github.com/withastro/action (README example).
 name: Deploy to GitHub Pages
 
 on:
@@ -12,6 +14,7 @@ permissions:
   pages: write
   id-token: write
 
+# One deploy at a time. A newer push waits for the running deploy to finish.
 concurrency:
   group: pages
   cancel-in-progress: false
@@ -20,10 +23,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: withastro/action@v3
-        with:
-          node-version: 22
+      - name: Check out the repository
+        uses: actions/checkout@v7
+      - name: Install, build, and upload the site
+        uses: withastro/action@v6
 
   deploy:
     needs: build
@@ -32,5 +35,6 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
