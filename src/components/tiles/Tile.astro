@@ -81,7 +81,7 @@ const hasSlot = Astro.slots.has('default');
     left: var(--space-2);
     bottom: var(--space-1);
     z-index: 2; /* above the album art (0) and its scrim (inside the art) */
-    font-size: var(--type-caption);
+    font-size: 0.8125rem; /* off-ramp: 13px, between caption and body; reads best on a tile */
     font-weight: var(--type-caption-weight); /* Windows 8 tile names are regular */
     line-height: var(--type-caption-leading);
     text-transform: lowercase;
