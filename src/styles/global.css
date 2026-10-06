@@ -65,7 +65,8 @@
   --ctp-lavender: #7287fd;
   --ctp-on-accent: #eff1f5;
 
-  --font-sans: "Segoe UI", "Selawik", "Helvetica Neue", Arial, sans-serif;
+  /* Selawik on every OS. One face keeps the measured metrics true. */
+  --font-sans: "Selawik", "Helvetica Neue", Arial, sans-serif;
   --font-mono: "Cascadia Code", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   /* The WinJS deceleration curve: fast start, long glide to rest. */
   --ease-metro: cubic-bezier(0.1, 0.9, 0.2, 1);
