@@ -16,18 +16,18 @@ const { id: lfmId = 'lastfm', count = 1, tile = false, historyId } = Astro.props
 </script>
 
 <!--
-  Shared by every Last.fm surface (music page aside and cards, home tile).
+  Shared by every Last.fm surface (music page aside and history, home tile).
   The art stack of the tile is inserted on the tile itself and the history
-  cards sit outside the widget root, and all of it is built at runtime, so
+  rows sit outside the widget root, and all of it is built at runtime, so
   these rules have to be global rather than nested under the widget.
 -->
 <style is:global>
   /* ---- skeletons ----
      Every Last.fm surface waits on the same two round trips (the API call,
      then the cover image), so they all show the same flat loading cue: a
-     surface0 block whose opacity pulses. No sweep, no gradient. */
+     raised block whose opacity pulses. No sweep, no gradient. */
   .skeleton {
-    background-color: var(--ctp-surface0);
+    background-color: var(--raised);
   }
   /* The art skeleton is faded out by opacity once the cover lands, so it
      only pulses while its stack is loading and the pulse can't hold it up. */
@@ -41,14 +41,12 @@ const { id: lfmId = 'lastfm', count = 1, tile = false, historyId } = Astro.props
     }
   }
   /* One line of not-yet-arrived text. Sized in em off whatever it stands in
-     for, so the same bar suits a tile caption and a page heading. A step
-     darker than a plain skeleton because it sits on top of one. */
+     for, so the same bar suits a tile caption and a page heading. */
   .skeleton-bar {
     display: inline-block;
     width: 100%;
     height: 0.8em; /* off-grid: em, follows the text line it stands in for */
     vertical-align: middle;
-    background-color: var(--ctp-surface1);
   }
   @media (prefers-reduced-motion: reduce) {
     /* A static block is still a clear "not here yet" cue. */
@@ -60,15 +58,17 @@ const { id: lfmId = 'lastfm', count = 1, tile = false, historyId } = Astro.props
 
   /* ---- album art ----
      Covers arrive at their own pace and change under the 30s poll, so each
-     one is a stack: a loading block on top while a cover is in flight, the Last.fm
-     mark underneath for tracks with no art, and one <img> layer per cover so
-     a new one can crossfade over whatever is showing. */
+     one is a stack: a loading block on top while a cover is in flight, an
+     overline label underneath for tracks with no art, and one <img> layer
+     per cover so a new one can crossfade over whatever is showing. Square,
+     no border, no shadow. */
   .art-stack {
     position: relative;
     display: block;
     overflow: hidden;
-    background-color: var(--ctp-surface0);
-    --art-fallback-opacity: 0.45;
+    background-color: var(--mantle);
+    --art-fallback-opacity: 1;
+    --art-fallback-text: "no cover";
   }
   .art-layer {
     position: absolute;
@@ -85,22 +85,30 @@ const { id: lfmId = 'lastfm', count = 1, tile = false, historyId } = Astro.props
   .art-layer.is-loaded {
     opacity: 1;
   }
+  /* No cover: the word, in the overline style, on the mantle fill. */
   .art-fallback {
     position: absolute;
     inset: 0;
     z-index: 1;
+    display: grid;
+    place-items: center;
     opacity: 0;
     transition: opacity 0.5s ease;
     pointer-events: none;
+    color: var(--muted);
   }
-  /* The mark is a mask, not an <img>, so one file can be tinted per surface.
-     Browsers without mask support get nothing, hence the colour lives here. */
-  @supports (mask-image: none) or (-webkit-mask-image: none) {
-    .art-fallback {
-      -webkit-mask: url("../assets/images/lastfm.svg") center / 42% no-repeat;
-      mask: url("../assets/images/lastfm.svg") center / 42% no-repeat;
-      background-color: currentColor;
-    }
+  .art-fallback::after {
+    content: var(--art-fallback-text);
+    font-family: var(--font-mono);
+    font-size: var(--overline-size);
+    font-weight: 500;
+    line-height: var(--overline-leading);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  /* The home tile has its own fill and its own caption: no label there. */
+  .tile-art .art-fallback::after {
+    content: none;
   }
   .art-stack.is-artless .art-fallback {
     opacity: var(--art-fallback-opacity);
@@ -138,53 +146,70 @@ const { id: lfmId = 'lastfm', count = 1, tile = false, historyId } = Astro.props
 </style>
 
 <style>
-  /* ---- widget on the music page: label, square cover, title, artist/album ---- */
+  /* ---- widget on the music page: state, square cover, title, artist/album ---- */
   /* The home tile positions its own widget (see .lastfm-widget-tile there). */
   .lastfm-widget:not(.lastfm-widget-tile) {
-    margin: var(--space-2) 0 var(--space-6);
+    margin: 0 0 var(--space-6);
+  }
+  /* A slot with nothing to show is hidden; .status would otherwise win. */
+  .lastfm-widget :global([hidden]) {
+    display: none !important;
   }
   .lastfm-widget :global(.lastfm-status) {
     margin: 0 0 var(--space-1);
-    font-size: var(--type-caption);
-    font-weight: var(--type-caption-weight);
-    line-height: var(--type-caption-leading);
-    text-transform: lowercase;
-    color: var(--ctp-subtext0);
+    font-size: var(--small-size);
+    line-height: var(--small-leading);
+    color: var(--muted);
   }
-  /* Section-heading style, lowercase because it is chrome. */
+  /* The state line: .status.ok "now playing", or an overline "last played". */
   .lastfm-widget :global(.lastfm-label) {
-    margin: 0 0 var(--space-2);
-    font-size: var(--type-subheader);
-    font-weight: var(--type-subheader-weight);
-    line-height: var(--type-subheader-leading);
-    text-transform: lowercase;
+    margin: 0 0 var(--space-3);
+  }
+  .lastfm-widget :global(.lastfm-label.overline) {
+    color: var(--muted);
   }
   .lastfm-widget :global(.lastfm-cover-link) {
     display: block;
     margin: 0 0 var(--space-4);
+    text-decoration: none;
+  }
+  .lastfm-widget :global(.lastfm-cover-link:hover) {
+    background-color: transparent;
   }
   .lastfm-widget :global(.lastfm-cover) {
     width: 100%;
+    max-width: calc(8 * var(--tile-unit)); /* 512px: no taller than the page */
     aspect-ratio: 1;
-    color: var(--ctp-overlay0);
   }
   .lastfm-widget :global(.lastfm-track-title) {
     margin: 0 0 var(--space-1);
-    font-size: var(--type-item);
-    font-weight: var(--type-item-weight);
-    line-height: var(--type-item-leading);
+    font-size: var(--subheading-size);
+    font-weight: 600;
+    line-height: var(--subheading-leading);
+    letter-spacing: 0;
   }
   .lastfm-widget :global(.lastfm-track-artist) {
     margin: 0;
-    font-size: var(--type-body);
-    font-weight: var(--type-body-weight);
-    line-height: var(--type-body-leading);
+    font-size: var(--body-size);
+    font-weight: 400;
+    line-height: var(--body-leading);
+    color: var(--muted);
   }
   .lastfm-widget :global(.lastfm-track-album) {
     margin: 0;
-    font-size: var(--type-caption);
-    font-weight: var(--type-caption-weight);
-    line-height: var(--type-caption-leading);
-    color: var(--ctp-subtext0);
+    font-size: var(--small-size);
+    font-weight: 400;
+    line-height: var(--small-leading);
+    color: var(--muted);
+  }
+  .lastfm-widget :global(.lastfm-when) {
+    margin: var(--space-2) 0 0;
+    color: var(--muted);
+  }
+  .lastfm-widget :global(.lastfm-more) {
+    display: inline-block;
+    margin-top: var(--space-3);
+    font-size: var(--small-size);
+    line-height: var(--small-leading);
   }
 </style>

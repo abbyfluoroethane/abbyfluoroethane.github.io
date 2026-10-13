@@ -1,8 +1,8 @@
 ---
-// The Zune / Windows Phone header: a small app name over a big page title,
-// then the nav. The home page shows only the big name and no nav.
-// On a detail page (a blog post) the header is the item itself: the Windows 8
-// back button, then the item title in its own case.
+// The Metro header: an overline over a big lowercase title, then the nav as
+// a row of overline links. Hub pages use the hero (it may run off the right
+// edge); detail pages (`back` set) use the title style and wrap. The home
+// page shows the site name as the hero and no nav.
 import { site } from '../site';
 import { getNav } from '../lib/collections';
 import BackButton from './BackButton.astro';
@@ -23,21 +23,22 @@ const isHome = path === '/';
 const isCurrent = (url: string) =>
   path === url || (['/blog/', '/projects/'].includes(url) && path.startsWith(url));
 const nav = (await getNav()).filter((s) => s.navbar);
+const Tag = plainTitle ? 'p' : 'h1';
 ---
-<header class:list={{ home: !title }}>
+<header class:list={{ home: !title, detail: !!back }}>
   {title ? (
     <>
-      <p class="app-name"><a href="/">{site.title}</a></p>
-      <div class:list={['title-row', { detail: back }]}>
-        {back && <BackButton class="title-back" href={back.href} label={back.label} iconOnly />}
-        {plainTitle ? <p class="title">{appName ?? title}</p> : <h1 class="title">{appName ?? title}</h1>}
-      </div>
+      <p class="overline-row overline">
+        <a href="/">{site.title}</a>
+        {back && <BackButton class="header-back" href={back.href} label={back.label} />}
+      </p>
+      <Tag class:list={['page-title', back ? 'title' : 'hero']}>{appName ?? title}</Tag>
     </>
   ) : (
-    <p class="title">{site.title}</p>
+    <p class="page-title hero">{site.title}</p>
   )}
   {!isHome && (
-    <nav>
+    <nav aria-label="Site">
       <a href="/">home</a>
       {nav.map((s) => (
         <a href={s.url} aria-current={isCurrent(s.url) ? 'page' : undefined}>{s.name}</a>
@@ -47,8 +48,8 @@ const nav = (await getNav()).filter((s) => s.navbar);
 </header>
 
 <style>
-  .app-name,
-  .title,
+  .overline-row,
+  .page-title,
   nav {
     animation: metro-enter 0.7s var(--ease-metro) backwards;
   }
@@ -56,131 +57,138 @@ const nav = (await getNav()).filter((s) => s.navbar);
     animation-delay: 60ms;
   }
 
-  /* Phone: the app name is a link, so it gets a full touch target. */
-  .app-name {
+  /* The overline row: site name link, and on a detail page the back link. */
+  .overline-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
     margin: 0;
-    font-size: var(--type-caption);
-    font-weight: var(--type-caption-weight);
-    line-height: var(--type-caption-leading);
-    letter-spacing: 0.06em;
-    text-transform: lowercase;
-    color: var(--ctp-subtext0);
   }
-  .app-name a {
+  .overline-row a {
     display: inline-flex;
     align-items: center;
     min-height: var(--touch-target);
-    color: inherit;
+    color: var(--muted);
+    text-decoration: none;
   }
-  .app-name a:hover {
-    color: var(--ctp-pink);
+  .overline-row a:hover {
+    color: var(--text);
     text-decoration: none;
   }
 
+  .page-title {
+    margin: 0;
+  }
+  /* A hub hero runs off the right edge; the shell clips it. */
+  .hero {
+    white-space: nowrap;
+  }
+  /* A detail title wraps. */
   .title {
-    margin: 0 0 var(--space-2);
-    font-size: var(--type-header);
-    font-weight: var(--type-header-weight);
-    line-height: var(--type-header-leading);
-    letter-spacing: -0.03em;
-    text-transform: lowercase;
-  }
-  /* A detail page title is content: keep the author's case, and cap the
-     width so a long title wraps into a block instead of a 1400px line. */
-  .detail .title {
     max-width: 20em;
-    text-transform: none;
-  }
-  /* Phone: a long post title at header size runs to six lines, so detail
-     titles step down to the content-title size. */
-  @media (max-width: 767px) {
-    .detail .title {
-      font-size: var(--type-title-lg);
-      line-height: var(--type-title-lg-leading);
-    }
-    .title-row :global(.title-back) {
-      margin-top: calc((var(--type-title-lg) * var(--type-title-lg-leading) - 41px) / 2); /* off-grid: 41px is the WinJS button */
-    }
-  }
-  /* Phone: the back button sits on the first line, left of the title. */
-  .title-row.detail {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--space-2);
-  }
-  .title-row :global(.title-back) {
-    flex: 0 0 auto;
-    /* Center the 41px button on the first line of the title. */
-    margin-top: calc((var(--type-header) * var(--type-header-leading) - 41px) / 2); /* off-grid: 41px is the WinJS button */
   }
 
-  /* Phone: a Windows Phone pivot, one line that scrolls instead of wrapping.
-     The scroller runs to the screen edge, so items bleed off the right: the
-     Metro cue that there is more. No fade. */
+  /* Nav: type as navigation. Overline links in one row. Phones: one line that
+     scrolls, with items bleeding off the right edge (the Metro cue). */
   nav {
     display: flex;
     flex-wrap: nowrap;
-    gap: var(--space-4);
-    margin: 0 calc(-1 * var(--space-2)) var(--space-4) 0;
-    padding-right: var(--space-2);
+    margin: var(--space-2) calc(-1 * var(--space-8)) var(--space-6) calc(-1 * var(--space-2));
+    padding-right: var(--space-8);
     overflow-x: auto;
     scrollbar-width: none;
   }
   nav::-webkit-scrollbar {
     display: none;
   }
-  /* Home has no nav: leave a grid unit before the content. */
-  header.home {
-    padding-bottom: var(--space-4);
-  }
   nav a {
+    position: relative;
     flex: 0 0 auto;
     display: inline-flex;
     align-items: center;
     min-height: var(--touch-target);
-    font-size: var(--type-subheader);
-    font-weight: var(--type-subheader-weight);
-    line-height: var(--type-subheader-leading);
-    text-transform: lowercase;
-    color: var(--ctp-overlay1); /* inactive pivot items are dimmed */
+    padding: 0 var(--space-2);
+    font-family: var(--font-mono);
+    font-size: var(--overline-size);
+    font-weight: 500;
+    line-height: var(--overline-leading);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--muted);
   }
   nav a:hover {
-    color: var(--ctp-pink);
+    background-color: var(--hover);
+    color: var(--text);
     text-decoration: none;
   }
   nav a[aria-current='page'] {
-    color: var(--ctp-text);
+    color: var(--text);
+  }
+  nav a[aria-current='page']::after {
+    content: '';
+    position: absolute;
+    left: var(--space-2);
+    right: var(--space-2);
+    bottom: var(--space-1);
+    height: 2px;
+    background: var(--accent);
   }
 
-  /* Desktop silhouette. The title baseline sits --header-baseline from the
-     top. Selawik Light's baseline is 0.893em below the top of a 1.05 line
-     box (measured in the browser: 50px at 56px). So the title line starts at
-     100px - 0.893 * font-size, and the app name (one caption line plus
-     --space-1) sits above it. The nav starts on the next 20px line. */
+  header.home {
+    padding-bottom: var(--space-4);
+  }
+
+  /* Phones: no pinned baseline; the overline row, then the title. */
+  header {
+    padding-top: var(--space-2);
+  }
+
+  /* Desktop: the title baseline sits --header-baseline (100px) from the top.
+     Plex Sans: unitsPerEm 1000, ascender 1025, descender 275, so the content
+     area is 1.3em. With line-height L the baseline is at
+     (L - 1.3) / 2 * fs + 1.025 * fs from the top of the line box:
+       hero  96px, L 0.917 -> 80.0px
+       title 56px, L 1.071 -> 51.0px
+     The overline line is 16px and the gap below it is --space-1 (4px), so the
+     top padding is 100 - 16 - 4 - baseline offset. A hub hero needs 0; if the
+     hero is below 96px (narrow desktop), max() keeps the padding at 0. */
   @media (min-width: 768px) {
     header {
-      padding-top: calc(
-        var(--header-baseline) - 0.893 * var(--type-header)
-        - var(--type-caption) * var(--type-caption-leading) - var(--space-1)
-      );
-    }
-    .app-name {
-      margin-bottom: var(--space-1);
-    }
-    .app-name a {
-      display: inline;
-      min-height: 0;
-    }
-    /* The home page has no app name: the title takes its place. */
-    header.home {
-      padding-top: calc(var(--header-baseline) - 0.893 * var(--type-header));
-      padding-bottom: 0;
+      --overline-line: calc(var(--overline-size) * var(--overline-leading));
       min-height: var(--content-top);
       box-sizing: border-box;
+      padding-top: max(
+        0px,
+        calc(
+          var(--header-baseline) - var(--overline-line) - var(--space-1)
+          - (var(--hero-size) * ((var(--hero-leading) - 1.3) / 2 + 1.025))
+        )
+      );
     }
-    /* The line box ends 0.157em below the baseline; pad to the 120px line. */
-    .title {
-      margin-bottom: calc(var(--space-4) - 0.157 * var(--type-header));
+    header.detail {
+      padding-top: calc(
+        var(--header-baseline) - var(--overline-line) - var(--space-1)
+        - (var(--title-size) * ((var(--title-leading) - 1.3) / 2 + 1.025))
+      );
+    }
+    .overline-row {
+      margin-bottom: var(--space-1);
+    }
+    /* The overline row is 16px tall on desktop: the touch target is for phones. */
+    .overline-row a {
+      min-height: 0;
+    }
+    .overline-row :global(.header-back) {
+      min-height: 0;
+    }
+    /* The home page has no overline: the hero baseline alone sets the top. */
+    header.home {
+      padding-top: calc(
+        var(--header-baseline)
+        - (var(--hero-size) * ((var(--hero-leading) - 1.3) / 2 + 1.025))
+      );
+      padding-bottom: 0;
     }
     nav {
       flex-wrap: wrap;
@@ -188,23 +196,11 @@ const nav = (await getNav()).filter((s) => s.navbar);
       padding-right: 0;
       overflow: visible;
     }
-    /* Windows 8 silhouette: the back button sits in the left margin, its
-       left edge 40px from the window edge, so the title keeps the 120px
-       line. */
-    .title-row.detail {
-      position: relative;
-      display: block;
-    }
-    .title-row :global(.title-back) {
-      position: absolute;
-      left: calc(var(--space-8) - var(--page-margin));
-      top: 0;
-    }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .app-name,
-    .title,
+    .overline-row,
+    .page-title,
     nav {
       animation: none;
     }

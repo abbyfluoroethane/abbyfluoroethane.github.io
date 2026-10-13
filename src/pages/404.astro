@@ -3,82 +3,44 @@ import Base from '../layouts/Base.astro';
 import BackButton from '../components/BackButton.astro';
 ---
 <Base title="404" bare>
-  <div class="bsod" role="alert" aria-live="polite">
-    <div class="bsod-inner">
-      <p class="bsod-face" aria-hidden="true">:(</p>
-      <p class="bsod-text">
-        This page doesn't exist.
-        You may have entered the URL wrong, or the link has gone stale.
-      </p>
-      <div class="bsod-detail">
-        <p class="bsod-detail-line">If you'd like to know more, you can search online later for this error:</p>
-        <p class="bsod-code">0x00000194 PAGE_NOT_FOUND</p>
-        <p class="bsod-detail-line"><BackButton href="/" label="go home" /></p>
-      </div>
-    </div>
-  </div>
+  <main class="not-found" role="alert" aria-live="polite">
+    <p class="overline">404 · not found</p>
+    <p class="numeral">404</p>
+    <p class="title">this page doesn't exist</p>
+    <p class="body-text">The URL may be wrong, or the link has gone stale.</p>
+    <BackButton href="/" label="home" />
+  </main>
 </Base>
 
 <style>
-  /* A real bluescreen is a fixed blue, not a themed surface, so this is the
-     one page that ignores the --ctp light/dark tokens on purpose. #1a73c9 is
-     white-text safe (4.84:1, clears AA) and still reads as the right blue.
-     The page is `bare`: no header, like the real thing. */
-  .bsod {
-    position: fixed;
-    inset: 0;
-    z-index: 1000;
-    overflow-y: auto;
-    /* Top-anchored at a fixed offset, not centered, so the message sits at
-       the same spot whatever its length. Offsets were measured off a real
-       1920x1080 sad-face screenshot: top edge ~17% of height, left edge
-       ~10.6% of width. */
-    padding: 13vh var(--space-4) var(--space-8) var(--space-2); /* off-grid: 13vh is measured off the real screen */
-    background: #1a73c9;
-    color: #fff;
-    /* The back button: white on the blue, blue arrow when pressed. */
-    --back-color: #fff;
-    --back-pressed: #1a73c9;
+  /* The page is bare: no header. It keeps the one left edge and the one loud
+     element (the numeral). */
+  .not-found {
+    min-height: 100vh;
+    box-sizing: border-box;
+    padding: var(--space-16) var(--space-8) var(--space-16);
   }
   @media (min-width: 768px) {
-    .bsod {
-      padding: 13vh var(--space-16) var(--space-8) 200px; /* off-grid: 200px is the measured left edge */
+    .not-found {
+      padding: var(--header-baseline) var(--space-16) var(--space-16) var(--page-margin);
     }
   }
-  .bsod-inner {
-    max-width: 720px; /* off-grid: measured text column */
+  .not-found :where(p) {
+    margin: 0;
   }
-  /* Sizes measured off the same screenshot (":(" ink ~179px tall, body text
-     ~40px at line-height 1.5). The site uses Selawik. Its "(" is shorter for
-     its em-box than the Segoe UI one, so the size here matches the ink
-     height of the real screen, not the nominal font-size. */
-  .bsod-face {
-    margin: 0 0 var(--space-6);
-    /* off-ramp: imitates the 179px sad face of the real Windows 8 BSOD */
-    font-size: clamp(6.5rem, 11vw, 13.3125rem);
-    font-weight: var(--type-header-weight);
-    line-height: 1; /* off-ramp: tight line box to match the measured offsets */
+  .overline {
+    color: var(--muted);
   }
-  .bsod-text {
-    margin: 0 0 var(--space-8);
+  .numeral {
+    margin-top: var(--space-4);
+  }
+  .title {
+    margin-top: var(--space-2);
+    max-width: 20em;
+  }
+  .body-text {
+    margin: var(--space-4) 0 var(--space-6);
     max-width: 42ch;
-    /* off-ramp: imitates the ~40px message text of the real BSOD */
-    font-size: clamp(1.75rem, 2.1vw, 2.5rem);
-    font-weight: var(--type-header-weight);
-    line-height: 1.5; /* off-ramp: matches the real screen */
-  }
-  .bsod-detail {
-    /* off-ramp: imitates the 18px detail text of the real BSOD */
-    font-size: 1.125rem;
-    font-weight: var(--type-header-weight);
-    line-height: 1.6; /* off-ramp: matches the real screen */
-  }
-  .bsod-detail-line {
-    margin: 0 0 var(--space-2);
-  }
-  .bsod-code {
-    margin: 0 0 var(--space-4);
-    font-family: var(--font-mono);
-    letter-spacing: 0.02em;
+    color: var(--muted);
   }
 </style>

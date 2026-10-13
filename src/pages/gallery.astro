@@ -1,55 +1,70 @@
 ---
 import { getCollection } from 'astro:content';
+import type { ImageMetadata } from 'astro';
 import { getImage, Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 
 const photos = (await getCollection('gallery')).sort((a, b) => a.data.order - b.data.order);
 
-// When the alt text equals the visible caption, the image is decorative for
-// screen readers: announcing both repeats the same sentence. The first row is
+// Photos sharing a caption form one group, in file order. The group heading
+// carries the caption, so the tiles carry only the alt text. The first row is
 // above the fold, so it loads eagerly. The link opens a large version.
-const items = await Promise.all(
-  photos.map(async ({ data }, i) => ({
+const groups: { name: string; items: { image: ImageMetadata; full: string; alt: string; loading: 'eager' | 'lazy' }[] }[] = [];
+let n = 0;
+for (const { data } of photos) {
+  const name = data.caption ?? data.alt;
+  let group = groups[groups.length - 1];
+  if (!group || group.name !== name) {
+    group = { name, items: [] };
+    groups.push(group);
+  }
+  group.items.push({
     image: data.image,
     full: (await getImage({ src: data.image, width: Math.min(data.image.width, 2400) })).src,
-    alt: data.caption && data.alt === data.caption ? '' : data.alt,
-    caption: data.caption,
-    loading: i < 4 ? ('eager' as const) : ('lazy' as const),
-  })),
-);
+    alt: data.alt,
+    loading: n++ < 4 ? 'eager' : 'lazy',
+  });
+}
 ---
 <Base title="gallery">
-  <div class="gallery-grid">
-    {items.map((item) => (
-      <a class="gallery-item" href={item.full} target="_blank" rel="noopener">
-        <Image src={item.image} alt={item.alt} widths={[400, 800]} sizes="(min-width: 768px) 25vw, 50vw" loading={item.loading} />
-        {item.caption && <span class="gallery-caption">{item.caption}</span>}
-      </a>
-    ))}
-  </div>
+  {groups.map((group, g) => (
+    <section class="gallery-group" aria-labelledby={`group-${g}`}>
+      <p class="overline muted">{String(g + 1).padStart(2, '0')} · {group.items.length} {group.items.length === 1 ? 'photo' : 'photos'}</p>
+      <h2 class="heading" id={`group-${g}`}>{group.name}</h2>
+      <div class="gallery-grid">
+        {group.items.map((item) => (
+          <a class="gallery-item" href={item.full} target="_blank" rel="noopener">
+            <Image src={item.image} alt={item.alt} widths={[400, 800]} sizes="(min-width: 768px) 25vw, 50vw" loading={item.loading} />
+          </a>
+        ))}
+      </div>
+    </section>
+  ))}
 </Base>
 
 <style>
+  .gallery-group {
+    margin-top: var(--space-8);
+  }
+  .gallery-group > p,
+  .gallery-group > h2 {
+    margin: 0;
+  }
   .gallery-grid {
     display: grid;
-    /* 180px is the smallest thumbnail that still shows a photo clearly. */
+    /* 180px is the smallest square that still shows a photo clearly. */
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: var(--space-2);
+    gap: var(--tile-gap);
     margin-top: var(--space-4);
   }
   .gallery-item {
-    position: relative;
     display: block;
-    aspect-ratio: 4 / 3;
-    transition: transform 0.1s ease;
+    aspect-ratio: 1 / 1;
+    background: var(--mantle);
   }
-  /* Same hover and press as the home tiles. */
+  /* Hover and press fill, as on the home tiles. */
   .gallery-item:hover {
-    outline: 3px solid var(--ctp-overlay1);
-  }
-  .gallery-item:active {
-    transform: scale(0.97);
-    outline: 0;
+    background: var(--hover);
   }
   .gallery-item img {
     display: block;
@@ -58,26 +73,7 @@ const items = await Promise.all(
     object-fit: cover;
     margin: 0;
   }
-  /* Flat band: the caption stays white in both themes, so a dark
-     semi-transparent fill keeps it readable on any picture. */
-  .gallery-caption {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    padding: var(--space-1) var(--space-2);
-    font-size: var(--type-caption);
-    font-weight: var(--type-caption-weight);
-    line-height: var(--type-caption-leading);
-    color: #fff;
-    background: rgba(0, 0, 0, 0.6);
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .gallery-item {
-      transition: none;
-    }
-    .gallery-item:active {
-      transform: none;
-    }
+  .gallery-item:hover img {
+    opacity: 0.85;
   }
 </style>
