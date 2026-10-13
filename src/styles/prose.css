@@ -339,3 +339,12 @@
 .prose .fedi-embed a {
   word-break: break-all;
 }
+
+/* Inline colors in post markdown (e.g. <span style="color: pink">) are not
+   Catppuccin tokens, and pink is decoration only. Keep the text color and
+   mark the span with the accent underline. */
+.prose [style*="color"] {
+  color: var(--text) !important;
+  text-decoration: underline 2px var(--accent);
+  text-underline-offset: 0.2em;
+}

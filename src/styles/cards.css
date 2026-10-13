@@ -51,6 +51,7 @@ a.card:hover .card-date,
   font-size: var(--subheading-size);
   font-weight: 600;
   line-height: var(--subheading-leading);
+  text-transform: lowercase; /* writing rule: titles are lowercase */
 }
 
 .card-title a {
