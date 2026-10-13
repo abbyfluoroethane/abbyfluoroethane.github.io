@@ -1,25 +1,18 @@
 ---
-// The Windows 8.1 app back button, from WinJS 3.0.0 (Apache-2.0, Microsoft
-// Open Technologies): the 41px circle with a 2px border from .win-backbutton
-// in ui-dark.css, and the arrow glyph U+E0D5 from WinJS fonts/Symbols.ttf.
-// See THIRD_PARTY_NOTICES.md.
-// On a colored surface, set --back-color (ring, arrow, label) and
-// --back-pressed (the arrow color when the ring fills on press) on a parent.
+// A plain text back link: the Plex arrow glyph, then the label, in overline
+// style. With iconOnly, the glyph stands alone and the label is the aria-label.
 interface Props {
   href: string;
-  /** The accessible name, also shown after the button unless iconOnly. */
+  /** The word after the arrow, also the accessible name when iconOnly. */
   label: string;
-  /** Show only the round button, as in a Windows 8 page header. */
+  /** Show only the arrow glyph. */
   iconOnly?: boolean;
   class?: string;
 }
 const { href, label, iconOnly = false, class: className } = Astro.props;
 ---
-<a class:list={['back', className]} {href} aria-label={iconOnly ? label : undefined}>
-  <svg class="button" viewBox="0 0 41 41" width="41" height="41" aria-hidden="true">
-    <circle class="ring" cx="20.5" cy="20.5" r="19.5" />
-    <path class="arrow" d="M17.8 11.13H24.14L17.46 18.13H31.96V22.87H17.46L24.14 29.87H17.8L9.04 20.53V20.47Z" />
-  </svg>
+<a class:list={['back', 'overline', className]} {href} aria-label={iconOnly ? label : undefined}>
+  <span class="glyph" aria-hidden="true">←</span>
   {!iconOnly && <span>{label}</span>}
 </a>
 
@@ -29,32 +22,16 @@ const { href, label, iconOnly = false, class: className } = Astro.props;
     align-items: center;
     gap: var(--space-2);
     min-height: var(--touch-target);
-    color: var(--back-color, var(--ctp-text));
+    color: var(--muted);
     text-decoration: none;
   }
   .back:hover {
+    color: var(--text);
     text-decoration: none;
   }
-  .button {
-    flex: 0 0 auto;
-  }
-  .ring {
-    fill: transparent;
-    stroke: currentColor;
-    stroke-width: 2;
-  }
-  .arrow {
-    fill: currentColor;
-  }
-  /* WinJS states: hover tints the inside 13%, press fills the circle and
-     inverts the arrow. */
-  .back:hover .ring {
-    fill: color-mix(in srgb, currentColor 13%, transparent);
-  }
-  .back:active .ring {
-    fill: currentColor;
-  }
-  .back:active .arrow {
-    fill: var(--back-pressed, var(--ctp-base));
+  .glyph {
+    font-family: var(--font-sans);
+    font-size: var(--body-size);
+    letter-spacing: 0;
   }
 </style>

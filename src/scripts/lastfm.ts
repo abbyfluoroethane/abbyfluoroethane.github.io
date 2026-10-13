@@ -22,7 +22,9 @@ interface CaptionEls {
   title?: HTMLElement;
   artist?: HTMLElement;
   album?: HTMLElement;
+  when?: HTMLElement;
   coverLink?: HTMLAnchorElement;
+  more?: HTMLAnchorElement;
 }
 
 // matches .art-layer's opacity transition in LastfmWidget.astro — the outgoing cover
@@ -71,27 +73,27 @@ function trackArtist(t: LfmTrack): string {
 }
 
 // last.fm gives every scrobble time twice: date["#text"] rendered in UTC,
-// and date.uts as a unix timestamp. formatting the timestamp puts the time
-// in whatever zone the visitor is actually in. the locale is pinned to
-// en-GB because it reproduces last.fm's own "17 Aug 2026, 19:01" exactly,
-// so the zone is the only thing that changes.
-const whenFormat: Intl.DateTimeFormat | null = window.Intl && Intl.DateTimeFormat
-  ? new Intl.DateTimeFormat("en-GB", {
-      day: "2-digit", month: "short", year: "numeric",
-      hour: "2-digit", minute: "2-digit",
-    })
-  : null;
+// and date.uts as a unix timestamp. the timestamp is formatted in the
+// visitor's own zone as an ISO date and a 24h time: "2026-10-13 14:05".
+function pad(n: number): string {
+  return String(n).padStart(2, "0");
+}
 
-// a <time> carrying the exact instant, or null for a track with no
-// scrobble time (the now-playing one). falls back to last.fm's own UTC
-// string if the timestamp is missing or unparseable.
+function isoLocal(at: Date): string {
+  return at.getFullYear() + "-" + pad(at.getMonth() + 1) + "-" + pad(at.getDate())
+    + " " + pad(at.getHours()) + ":" + pad(at.getMinutes());
+}
+
+// a <time> in the data style carrying the exact instant, or null for a track
+// with no scrobble time (the now-playing one). falls back to last.fm's own
+// UTC string if the timestamp is missing or unparseable.
 function scrobbleTime(t: LfmTrack): HTMLElement | null {
   const d = t.date || {};
   const secs = parseInt(d.uts ?? "", 10);
-  const at = whenFormat && isFinite(secs) ? new Date(secs * 1000) : null;
-  const text = whenFormat && at ? whenFormat.format(at) : d["#text"];
+  const at = isFinite(secs) ? new Date(secs * 1000) : null;
+  const text = at ? isoLocal(at) : d["#text"];
   if (!text) return null;
-  const stamp = line("time", "card-date", text);
+  const stamp = line("time", "data lastfm-when", text);
   if (at) stamp.setAttribute("datetime", at.toISOString());
   return stamp;
 }
@@ -281,7 +283,7 @@ function initWidget(root: HTMLElement): void {
   let swapId = 0;
 
   function fadeCaption(out: boolean): void {
-    [els.label, els.title, els.artist, els.album].forEach((n) => {
+    [els.label, els.title, els.artist, els.album, els.when, els.more].forEach((n) => {
       if (n) n.classList.toggle("is-swapping", out);
     });
   }
@@ -328,35 +330,57 @@ function initWidget(root: HTMLElement): void {
 
   function buildAside(): void {
     root.textContent = "";
-    const label = els.label = el("h2", "lastfm-label lastfm-swap");
+    const label = els.label = el("p", "lastfm-label lastfm-swap");
     const coverLink = els.coverLink = el("a", "lastfm-cover-link");
+    coverLink.setAttribute("aria-label", "open the track on last.fm");
     stack = makeStack("lastfm-cover");
     coverLink.appendChild(stack);
     const title = els.title = el("h3", "lastfm-track-title lastfm-swap");
-    const artist = els.artist = el("h4", "lastfm-track-artist lastfm-swap");
-    const album = els.album = el("h4", "lastfm-track-album lastfm-swap");
+    const artist = els.artist = el("p", "lastfm-track-artist lastfm-swap");
+    const album = els.album = el("p", "lastfm-track-album lastfm-swap");
+    const when = els.when = el("p", "data lastfm-when lastfm-swap");
+    const more = els.more = el("a", "lastfm-more lastfm-swap");
+    more.textContent = "open on last.fm \u2197";
     root.appendChild(label);
     root.appendChild(coverLink);
-    [title, artist, album].forEach((n) => root.appendChild(n));
+    [title, artist, album, when, more].forEach((n) => root.appendChild(n));
     setBar(label, "45%");
     setBar(title, "80%");
     setBar(artist, "55%");
     setBar(album, "40%");
+    when.hidden = true;
+    more.hidden = true;
+  }
+
+  // on the music page the state is a status: a square plus the label, never
+  // colour alone. "last played" is plain overline text, it has no state.
+  function setLabel(text: string, kind: "ok" | "error" | ""): void {
+    const node = els.label;
+    if (!node) return;
+    setLine(node, text);
+    if (tileMode) return;
+    node.classList.toggle("status", !!kind);
+    node.classList.toggle("ok", kind === "ok");
+    node.classList.toggle("error", kind === "error");
+    node.classList.toggle("overline", !kind);
   }
 
   function setCoverLink(href: string): void {
-    if (!els.coverLink) return;
-    if (href) {
-      els.coverLink.href = href;
-      els.coverLink.target = "_blank";
-      els.coverLink.rel = "noopener";
-    } else {
-      // an <a> with no href is inert and unfocusable, which is what a track
-      // last.fm gave no url for should be
-      els.coverLink.removeAttribute("href");
-      els.coverLink.removeAttribute("target");
-      els.coverLink.removeAttribute("rel");
-    }
+    [els.coverLink, els.more].forEach((a) => {
+      if (!a) return;
+      if (href) {
+        a.href = href;
+        a.target = "_blank";
+        a.rel = "noopener";
+      } else {
+        // an <a> with no href is inert and unfocusable, which is what a track
+        // last.fm gave no url for should be
+        a.removeAttribute("href");
+        a.removeAttribute("target");
+        a.removeAttribute("rel");
+      }
+    });
+    if (els.more) els.more.hidden = !href;
   }
 
   function renderNow(first: LfmTrack): void {
@@ -367,9 +391,14 @@ function initWidget(root: HTMLElement): void {
     const album = first.album && first.album["#text"];
     const href = safeUrl(first.url);
     const art = safeUrl(artUrl(first));
+    const when = nowPlaying ? null : scrobbleTime(first);
 
     function apply(): void {
-      setLine(els.label, label);
+      setLabel(label, nowPlaying ? "ok" : "");
+      if (els.when) {
+        els.when.hidden = !when;
+        els.when.textContent = when ? when.textContent : "";
+      }
       setLine(els.title, title);
       setLine(els.artist, artist);
       setLine(els.album, album);
@@ -393,16 +422,18 @@ function initWidget(root: HTMLElement): void {
   // nothing to show, either because the account has no scrobbles or because
   // last.fm couldn't be reached and there was no cached response to fall
   // back on. the tile keeps its own colour and the last.fm mark.
-  function renderNotice(text: string): void {
+  function renderNotice(text: string, failed = false): void {
     noticed = true;
     // whatever cover was on its way is no longer coming, so nothing is left
     // to hand over to — and the next real track counts as a first paint again
     cancelSwap();
     textShown = false;
-    setLine(els.label, "");
+    if (failed && !tileMode) setLabel("unavailable", "error");
+    else setLabel("", "");
     setLine(els.title, text);
     setLine(els.artist, "");
     setLine(els.album, "");
+    setLine(els.when, "");
     setCoverLink("");
     setArt(stack, "");
     // a message is as settled as a track — nothing else is on its way
@@ -414,8 +445,8 @@ function initWidget(root: HTMLElement): void {
 
   function historyCard(t: LfmTrack): HTMLElement {
     const href = safeUrl(t.url);
-    // a track with no usable link still gets a card, just not an anchor
-    const card: HTMLElement = href ? el("a", "card lastfm-history-card") : el("div", "card lastfm-history-card");
+    // a track with no usable link still gets a row, just not an anchor
+    const card: HTMLElement = href ? el("a", "lastfm-history-card") : el("div", "lastfm-history-card");
     if (card instanceof HTMLAnchorElement) {
       card.href = href;
       card.target = "_blank";
@@ -426,10 +457,16 @@ function initWidget(root: HTMLElement): void {
 
     const info = el("span", "lastfm-history-info");
     const when = scrobbleTime(t);
-    info.appendChild(line("span", "card-title", t.name || "unknown track"));
-    info.appendChild(line("span", "card-desc", trackArtist(t)));
+    info.appendChild(line("span", "lastfm-history-title", t.name || "unknown track"));
+    info.appendChild(line("span", "lastfm-history-artist", trackArtist(t)));
     if (when) info.appendChild(when);
     card.appendChild(info);
+    if (href) {
+      // the row leaves the site
+      const out = line("span", "lastfm-history-out", "\u2197");
+      out.setAttribute("aria-hidden", "true");
+      card.appendChild(out);
+    }
     setArt(cover, safeUrl(artUrl(t)));
     return card;
   }
@@ -443,7 +480,7 @@ function initWidget(root: HTMLElement): void {
     // list doesn't grow into place once it lands
     const rows = Math.max(1, (parseInt(count, 10) || 1) - 1);
     for (let i = 0; i < rows; i++) {
-      const card = el("div", "card lastfm-history-card lastfm-history-skeleton");
+      const card = el("div", "lastfm-history-card lastfm-history-skeleton");
       card.setAttribute("aria-hidden", "true");
       card.appendChild(el("span", "lastfm-history-cover skeleton"));
       const info = el("span", "lastfm-history-info");
@@ -534,7 +571,7 @@ function initWidget(root: HTMLElement): void {
       })
       .catch(() => {
         if (!rendered) fromCache();
-        if (!rendered) renderNotice("couldn't reach last.fm.");
+        if (!rendered) renderNotice("couldn't reach last.fm.", true);
       });
   }
 

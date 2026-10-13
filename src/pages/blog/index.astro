@@ -1,10 +1,11 @@
 ---
-// The blog as a panorama: the newest post is the hero, set bigger than the
-// page header; older posts sit in one column per year under a giant faded
-// year numeral, like the Zune panorama's section titles.
+// The blog as a panorama: the newest post is the hero, set as a quiet Light
+// title; older posts sit in one column per year under a mono year overline.
+// The title is the link, the date is data, the summary is muted body text.
+// The one loud element of the view is the newest post's title.
 import Base from '../../layouts/Base.astro';
 import { getPosts } from '../../lib/collections';
-import { excerpt, formatLongDate, readingMinutes, truncateSentences } from '../../lib/format';
+import { excerpt, formatDate, formatMinutes, readingMinutes, truncateSentences } from '../../lib/format';
 
 const [latest, ...older] = await getPosts();
 const years = [...new Set(older.map((p) => p.data.date.getUTCFullYear()))];
@@ -17,27 +18,33 @@ const groups = years.map((year) => ({
 const COLUMN_YEARS = 3;
 const columns = groups.slice(0, COLUMN_YEARS);
 const archive = groups.slice(COLUMN_YEARS).flatMap((g) => g.posts);
-const summary = latest.data.summary ?? truncateSentences(excerpt(latest.body), 40);
+const summaryOf = (post: typeof latest) =>
+  post.data.summary ?? truncateSentences(excerpt(post.body), 28);
 ---
 <Base title="blog">
   <article class="hero">
-    <h2><a href={`/blog/${latest.id}/`}>{latest.data.title}</a></h2>
-    <p class="caption">
-      <time datetime={latest.data.date.toISOString()}>{formatLongDate(latest.data.date)}</time>
-      · {readingMinutes(latest.body)} min read
-    </p>
-    <p class="summary">{summary}</p>
+    <a class="row" href={`/blog/${latest.id}/`}>
+      <p class="data muted">
+        <time datetime={formatDate(latest.data.date)}>{formatDate(latest.data.date)}</time>
+        · {formatMinutes(readingMinutes(latest.body))}
+      </p>
+      <h2 class="title">{latest.data.title}</h2>
+      <p class="summary">{summaryOf(latest)}</p>
+    </a>
   </article>
 
   <div class="years">
     {columns.map(({ year, posts }) => (
       <section aria-labelledby={`year-${year}`}>
-        <h2 id={`year-${year}`} class="year">{year}</h2>
+        <h2 id={`year-${year}`} class="overline">{year}</h2>
         <ul>
           {posts.map((post) => (
             <li>
-              <a href={`/blog/${post.id}/`}>{post.data.title}</a>
-              <time class="caption" datetime={post.data.date.toISOString()}>{formatLongDate(post.data.date)}</time>
+              <a class="row" href={`/blog/${post.id}/`}>
+                <time class="data muted" datetime={formatDate(post.data.date)}>{formatDate(post.data.date)}</time>
+                <span class="name">{post.data.title}</span>
+                <span class="summary">{summaryOf(post)}</span>
+              </a>
             </li>
           ))}
         </ul>
@@ -47,12 +54,15 @@ const summary = latest.data.summary ?? truncateSentences(excerpt(latest.body), 4
 
   {archive.length > 0 && (
     <section class="archive" aria-labelledby="archive">
-      <h2 id="archive">archive</h2>
+      <h2 id="archive" class="overline">archive</h2>
       <ul>
         {archive.map((post) => (
           <li>
-            <a href={`/blog/${post.id}/`}>{post.data.title}</a>
-            <time class="caption" datetime={post.data.date.toISOString()}>{formatLongDate(post.data.date)}</time>
+            <a class="row" href={`/blog/${post.id}/`}>
+              <time class="data muted" datetime={formatDate(post.data.date)}>{formatDate(post.data.date)}</time>
+              <span class="name">{post.data.title}</span>
+              <span class="summary">{summaryOf(post)}</span>
+            </a>
           </li>
         ))}
       </ul>
@@ -61,74 +71,78 @@ const summary = latest.data.summary ?? truncateSentences(excerpt(latest.body), 4
 </Base>
 
 <style>
-  .hero {
-    margin-top: var(--space-8);
-    margin-bottom: var(--space-16);
-  }
-  .hero h2 {
-    max-width: 14em;
-    margin: 0 0 var(--space-4);
-    font-size: var(--type-display);
-    font-weight: 300;
-    line-height: 1.05;
-    letter-spacing: -0.03em;
-  }
-  .hero h2 a {
-    color: var(--ctp-text);
-  }
-  .hero h2 a:hover {
-    color: var(--ctp-pink);
+  /* A row is one link: no underline, the hover fill is the affordance. The
+     text stays text color on hover, and muted parts switch to it. */
+  .row {
+    display: block;
+    padding: var(--space-3) var(--space-4);
     text-decoration: none;
+    color: var(--text);
   }
-  .caption {
-    margin: 0;
-    font-size: var(--type-caption);
-    font-weight: var(--type-caption-weight);
-    line-height: var(--type-caption-leading);
-    color: var(--ctp-subtext0);
+  .row:hover {
+    background-color: var(--hover);
   }
-  .hero .caption {
-    margin-bottom: var(--space-3);
+  .row:hover .muted,
+  .row:hover .summary,
+  .row:hover time {
+    color: var(--text);
   }
   .summary {
-    max-width: 38em;
+    display: block;
+    max-width: 66ch;
+    margin: var(--space-1) 0 0;
+    font-size: var(--body-size);
+    line-height: var(--body-leading);
+    color: var(--muted);
+  }
+  .row time {
+    display: block;
+  }
+  .name {
+    display: block;
+    margin-top: var(--space-1);
+    font-size: var(--subheading-size);
+    font-weight: 600;
+    line-height: var(--subheading-leading);
+    text-transform: lowercase;
+  }
+
+  /* The hero sits on the same left edge as the page: the padding of the row
+     is pulled back, so the text lines up with the title above. */
+  .hero {
+    margin: var(--space-8) calc(-1 * var(--space-4)) var(--space-12);
+  }
+  .hero .row {
+    padding: var(--space-4);
+  }
+  .hero .title {
+    max-width: 14em;
+    margin: var(--space-2) 0 var(--space-3);
+  }
+  .hero .summary {
+    max-width: 52ch;
+  }
+  .hero p.data {
     margin: 0;
-    font-size: var(--type-item);
-    line-height: var(--type-item-leading);
-    color: var(--ctp-subtext1);
   }
 
   /* Phone and tablet: columns stack. Desktop: the (at most three) year
      columns side by side. */
   .years {
     display: grid;
-    gap: var(--space-12) var(--space-16);
+    gap: var(--space-12) var(--space-8);
+    margin-inline: calc(-1 * var(--space-4));
   }
   @media (min-width: 1000px) {
     .years {
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
   }
-  .years section {
-    container-type: inline-size; /* the numeral sizes to its column */
-  }
-  .year {
-    /* A decoration size outside the ramp: the numeral is a landmark. It
-       never wraps, and it shrinks to fit a narrow column: four digits of
-       Selawik Light are about 1.95em wide, so 45cqi leaves a small margin. */
-    margin: 0 0 var(--space-4);
-    overflow: hidden;
-    white-space: nowrap;
-    font-size: min(clamp(5rem, 11vw, 9rem), 45cqi); /* 80-144px */
-    font-weight: 300;
-    line-height: 1;
-    letter-spacing: -0.04em;
-    color: var(--ctp-surface1);
-  }
-  @media (prefers-color-scheme: dark) {
-    .year {
-      color: var(--ctp-surface0);
-    }
+  .years h2,
+  .archive h2 {
+    margin: 0 0 var(--space-2);
+    padding: 0 var(--space-4);
+    color: var(--muted);
   }
   ul {
     margin: 0;
@@ -137,28 +151,10 @@ const summary = latest.data.summary ?? truncateSentences(excerpt(latest.body), 4
   }
   li {
     max-width: none;
-    margin-bottom: var(--space-6);
-  }
-  li a {
-    display: block;
-    font-size: var(--type-item);
-    line-height: var(--type-item-leading);
-    color: var(--ctp-text);
-  }
-  li a:hover {
-    color: var(--ctp-pink);
-    text-decoration: none;
-  }
-  li .caption {
-    display: block;
-    margin-top: var(--space-1);
+    margin: 0;
   }
 
-  /* The archive: a plain list, the 80px group gap above it. */
   .archive {
-    margin-top: var(--space-16);
-  }
-  .archive h2 {
-    margin: 0 0 var(--space-4);
+    margin: var(--space-12) calc(-1 * var(--space-4)) 0;
   }
 </style>

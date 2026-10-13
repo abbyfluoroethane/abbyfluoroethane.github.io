@@ -1,7 +1,9 @@
 ---
-// A blog post: the detail layout with the agenda date in the rail.
+// A blog post: the detail layout with the date and reading time in the rail,
+// and the body set in Plex Serif (the one place the serif is used).
 import DetailLayout from './DetailLayout.astro';
 import DateBlock from '../components/DateBlock.astro';
+import { formatMinutes } from '../lib/format';
 
 export interface Props {
   title: string;
@@ -26,12 +28,11 @@ const {
   ...rest
 } = Astro.props;
 ---
-<DetailLayout {...rest} appName="blog" {back} publishedTime={date}>
+<DetailLayout {...rest} appName="blog" {back} publishedTime={date} serif>
   <Fragment slot="meta">
-    <DateBlock {date} />
-    <p class="rail-caption">
-      {date.getUTCFullYear()}
-      {minutes && <span> · {minutes} min read</span>}
+    <p class="rail-caption data">
+      <DateBlock {date} />
+      {minutes && <> · {formatMinutes(minutes)}</>}
     </p>
   </Fragment>
   <slot />

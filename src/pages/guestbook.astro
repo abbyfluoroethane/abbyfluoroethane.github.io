@@ -2,7 +2,6 @@
 import Base from '../layouts/Base.astro';
 import Button from '../components/Button.astro';
 import PageColumns from '../components/PageColumns.astro';
-import CardGrid from '../components/CardGrid.astro';
 import { site } from '../site';
 import { getGuestbook } from '../lib/collections';
 
@@ -22,34 +21,32 @@ const safeUrl = (w?: string) => {
 <PageColumns prose={false}>
   <Fragment slot="aside">
     <h2>sign the guestbook</h2>
-    <p id="guestbook-form-status" class="guestbook-form-status"></p>
+    <p id="guestbook-form-status" class="guestbook-form-status" role="status" aria-live="polite"></p>
     <form id="guestbook-form" class="guestbook-form" action={site.guestbookEndpoint} method="POST">
       <div class="guestbook-honeypot" aria-hidden="true">
         <label for="guestbook-url">leave this empty</label>
         <input type="text" id="guestbook-url" name="url" tabindex="-1" autocomplete="off" />
       </div>
-      <label>name <input type="text" name="name" required maxlength="100" /></label>
-      <label>website (optional)<input type="url" name="website" maxlength="200" /></label>
-      <label>message <textarea name="message" required maxlength="1000" rows="3"></textarea></label>
+      <label>Name <input type="text" name="name" required maxlength="100" /></label>
+      <label>Website (optional)<input type="url" name="website" maxlength="200" /></label>
+      <label>Message <textarea name="message" required maxlength="1000" rows="3"></textarea></label>
       <div class="cf-turnstile" data-sitekey={site.guestbookTurnstileSitekey} data-theme="auto"></div>
       <Button type="submit">sign the guestbook</Button>
     </form>
   </Fragment>
-    <h2>entries</h2>
-    <CardGrid>
+    <h2 class="entries-head">entries</h2>
+    <ul class="entries">
       {entries.map((entry) => {
         const url = safeUrl(entry.website);
         return (
-      <div class="card">
-        <div class="card-head">
-          <h3 class="card-title">{url ? <a href={url} rel="nofollow ugc noopener">{entry.name}</a> : entry.name}</h3>
-          <p class="card-date">{entry.date}</p>
-        </div>
-        <p class="card-desc">{entry.message}</p>
-      </div>
+      <li class="entry">
+        <h3 class="subheading">{url ? <a href={url} rel="nofollow ugc noopener">{entry.name}</a> : entry.name}</h3>
+        <p class="data muted"><time datetime={entry.date}>{entry.date}</time></p>
+        <p class="entry-message">{entry.message}</p>
+      </li>
         );
       })}
-    </CardGrid>
+    </ul>
 </PageColumns>
 
 <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
@@ -67,52 +64,69 @@ const safeUrl = (w?: string) => {
     max-width: 480px; /* off-grid: comfortable form width */
     margin: var(--space-4) 0 var(--space-8);
   }
+  /* Label above the field: label style, sentence case. */
   .guestbook-form label {
     display: flex;
     flex-direction: column;
     gap: var(--space-1);
-    font-size: var(--type-caption);
-    font-weight: var(--type-caption-weight);
-    line-height: var(--type-caption-leading);
-    color: var(--ctp-subtext0);
+    font-size: var(--label-size);
+    font-weight: 600;
+    line-height: var(--label-leading);
+    color: var(--text);
   }
   .guestbook-form input,
   .guestbook-form textarea {
     min-height: var(--touch-target);
     font-family: inherit;
-    font-size: var(--type-body);
-    font-weight: var(--type-body-weight);
-    line-height: var(--type-body-leading);
-    padding: var(--space-1) var(--space-2);
-    border: 2px solid var(--ctp-overlay0);
+    font-size: var(--body-size);
+    font-weight: 400;
+    line-height: var(--body-leading);
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--control-border);
     border-radius: 0;
-    background: var(--ctp-base);
-    color: var(--ctp-text);
+    background: var(--mantle);
+    color: var(--text);
   }
   .guestbook-form input:hover,
   .guestbook-form textarea:hover {
-    border-color: var(--ctp-overlay1);
+    background: var(--hover);
   }
   .guestbook-form :global(.btn) {
     align-self: flex-start;
   }
-  /* guestbook.ts fills this in and adds is-success or is-error. */
+  /* guestbook.ts fills this in and adds "status ok" or "status error". Empty,
+     it takes no space. */
+  .guestbook-form-status:empty {
+    display: none;
+  }
   .guestbook-form-status {
-    min-height: var(--space-4);
-    font-size: var(--type-body);
-    line-height: var(--type-body-leading);
-    color: var(--ctp-subtext0);
-  }
-  .guestbook-form-status.is-success {
-    color: var(--ctp-green);
-  }
-  .guestbook-form-status.is-error {
-    color: var(--ctp-red);
+    margin: var(--space-2) 0 0;
   }
   /* Bots fill every field; people never see this one. Off-screen rather than
      display: none, which some bots skip. */
   .guestbook-honeypot {
     position: absolute;
     left: -9999px;
+  }
+
+  /* ---- entries: name, ISO date, message. Type only, no panels ---- */
+  .entries-head {
+    margin-top: 0;
+  }
+  .entries {
+    margin: var(--space-4) 0 var(--space-8);
+    padding: 0;
+    list-style: none;
+  }
+  .entry {
+    padding: var(--space-4) 0;
+    border-top: 1px solid var(--line);
+  }
+  .entry h3,
+  .entry p {
+    margin: 0;
+  }
+  .entry-message {
+    margin-top: var(--space-2);
   }
 </style>

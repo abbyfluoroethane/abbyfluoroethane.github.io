@@ -94,10 +94,12 @@ const ogImage = abs(image ?? '/assets/favicon/konata-512.png');
 </html>
 
 <style>
-  /* Phone: Windows Phone tight edges, 10px each side. Desktop: the Windows 8
-     silhouette, left margin 120px; the header sets its own top offset. */
+  /* One left edge: --space-8 on phones, --page-margin on desktop. The shell
+     clips sideways so a hub hero can run off the right edge without a
+     horizontal scrollbar. */
   .page-shell {
-    padding: var(--space-2) var(--space-2) var(--space-12);
+    padding: 0 var(--space-8) var(--space-16);
+    overflow-x: clip;
   }
   @media (min-width: 768px) {
     .page-shell {

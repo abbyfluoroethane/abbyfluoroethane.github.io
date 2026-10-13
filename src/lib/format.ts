@@ -1,14 +1,15 @@
 // Dates in front matter have no time zone. Format them in UTC so the build
-// machine's time zone does not shift the day.
+// machine's time zone does not shift the day. RSS and XML dates keep the
+// format their specifications ask for (formatXmlDate, @astrojs/rss).
 
-/** "July 22, 2026" (Jekyll's "%B %-d, %Y") */
-export const formatLongDate = (date: Date) =>
-  date.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    timeZone: 'UTC',
-  });
+/** "2026-07-22": the one date format of the UI (ISO 8601, in UTC). */
+export const formatDate = (date: Date) => date.toISOString().slice(0, 10);
+
+/** Kept for older callers. The UI has one date format, so it is the ISO one. */
+export const formatLongDate = formatDate;
+
+/** "5 min": a number, a space, the unit. */
+export const formatMinutes = (minutes: number) => `${minutes} min`;
 
 /** "2026-07-22T00:00:00+00:00" (Jekyll's date_to_xmlschema) */
 export const formatXmlDate = (date: Date) =>

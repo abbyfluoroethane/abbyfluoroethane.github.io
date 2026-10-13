@@ -24,3 +24,90 @@ const { title, full_name, tagline, description } = Astro.props.frontmatter;
   </PageColumns>
 </Base>
 
+
+<style is:global>
+  /* The resume prints on the paper theme (print.md): no background, text
+     #11111b, muted #45475a, 0.75in margins, Plex Sans only. The two hex
+     values below are the paper tokens and appear nowhere else. */
+  @page {
+    size: letter;
+    margin: 0.75in;
+  }
+  @media print {
+    :root {
+      --text: #11111b;
+      --muted: #45475a;
+    }
+    html,
+    body {
+      height: auto;
+      background: none;
+      color: var(--text);
+    }
+    body {
+      font-family: var(--font-sans);
+      font-size: 10pt;
+      line-height: 1.4;
+    }
+    .page-shell {
+      padding: 0;
+    }
+    /* Site header and nav stay on screen. */
+    .page-shell > header,
+    .page-shell > nav,
+    .site-header {
+      display: none;
+    }
+    main > * {
+      animation: none;
+    }
+    .post-layout {
+      display: block;
+    }
+    .post-meta {
+      position: static;
+      margin-bottom: 16pt;
+    }
+    .post-title {
+      font-size: 36pt;
+      line-height: 1.05;
+    }
+    .post-tagline {
+      font-size: 10pt;
+    }
+    /* Sections open with an overline. */
+    .post-content h2 {
+      margin: 18pt 0 6pt;
+      font-family: var(--font-mono);
+      font-size: 8pt;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .post-content h3 {
+      margin: 10pt 0 0;
+      font-size: 12pt;
+      break-after: avoid;
+    }
+    .post-content h4 {
+      margin: 0 0 4pt;
+      font-size: 8pt;
+      color: var(--muted);
+    }
+    .post-content li,
+    .post-content p {
+      max-width: none;
+    }
+    a {
+      color: var(--text);
+      text-decoration: none;
+    }
+    h2, h3, h4 {
+      break-after: avoid;
+    }
+    li {
+      break-inside: avoid;
+    }
+  }
+</style>

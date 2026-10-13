@@ -23,6 +23,8 @@ export interface Props {
   mathjax?: boolean;
   /** Headings from render(post). Depth 2 and 3 make the contents. */
   headings?: { depth: number; slug: string; text: string }[];
+  /** Blog long-form only: set the body in Plex Serif. Projects stay in Plex Sans. */
+  serif?: boolean;
 }
 const {
   title,
@@ -34,6 +36,7 @@ const {
   description,
   mathjax,
   headings = [],
+  serif = false,
 } = Astro.props;
 
 let contents = headings.filter(
@@ -78,10 +81,10 @@ const items = contents.map((h) => ({
     </aside>
 
     <article class="post">
-      <h1>{title}</h1>
+      <h1 class="title">{title}</h1>
       {subtitle && <p class="standfirst" set:html={inlineMarkdown(subtitle)} />}
       {attribution && <p class="attribution" set:html={inlineMarkdown(attribution)} />}
-      <div class="prose" data-numbered={items.some((h) => h.num) ? numbered : undefined}><slot /></div>
+      <div class:list={['prose', { serif }]} data-numbered={items.some((h) => h.num) ? numbered : undefined}><slot /></div>
     </article>
   </div>
 </Base>
@@ -148,11 +151,15 @@ const items = contents.map((h) => ({
     align-items: center;
     gap: var(--space-3);
   }
+  /* The meta line: small and muted. A post adds .data (mono, ISO date). */
   .rail-date :global(.rail-caption) {
     margin: 0;
-    font-size: var(--type-caption);
-    line-height: var(--type-caption-leading);
-    color: var(--ctp-subtext0);
+    font-size: var(--small-size);
+    line-height: var(--small-leading);
+    color: var(--muted);
+  }
+  .rail-date :global(.rail-caption time) {
+    color: var(--text);
   }
   .rail-date :global(.rail-caption span) {
     display: block;
@@ -160,16 +167,20 @@ const items = contents.map((h) => ({
 
   .contents {
     margin: var(--space-4) 0 0;
-    border-top: 1px solid var(--ctp-surface1);
+    border-top: 1px solid var(--line);
   }
+  /* "contents" is an overline: the label of the list. */
   summary {
     display: flex;
     align-items: center;
     min-height: var(--touch-target);
-    font-size: var(--type-caption);
-    font-weight: var(--type-title-weight);
-    letter-spacing: 0.06em;
-    color: var(--ctp-subtext0);
+    font-family: var(--font-mono);
+    font-size: var(--overline-size);
+    font-weight: 500;
+    line-height: var(--overline-leading);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
     cursor: pointer;
   }
   .contents ol {
@@ -181,22 +192,38 @@ const items = contents.map((h) => ({
     max-width: none;
   }
   .contents a {
+    position: relative;
     display: flex;
     gap: var(--space-2);
-    padding: var(--space-1) 0;
+    padding: var(--space-1) var(--space-2);
     min-height: var(--touch-target);
     align-items: center;
-    font-size: var(--type-body);
-    line-height: var(--type-body-leading);
-    color: var(--ctp-subtext1);
-  }
-  .contents a:hover {
-    color: var(--ctp-pink);
+    font-size: var(--small-size);
+    line-height: var(--small-leading);
     text-decoration: none;
+    color: var(--muted);
   }
+  /* Muted text is for base only: on the hover fill it is the text color. */
+  .contents a:hover {
+    color: var(--text);
+    background-color: var(--hover);
+  }
+  .contents a:hover .num {
+    color: var(--text);
+  }
+  /* The section being read: text color, 600, accent marker. */
   .contents a[aria-current] {
-    color: var(--ctp-text);
-    font-weight: var(--type-title-weight);
+    color: var(--text);
+    font-weight: 600;
+  }
+  .contents a[aria-current]::before {
+    content: "";
+    position: absolute;
+    top: var(--space-1);
+    bottom: var(--space-1);
+    left: 0;
+    width: 2px;
+    background: var(--accent);
   }
   .contents li.sub a {
     padding-left: var(--space-4);
@@ -204,14 +231,17 @@ const items = contents.map((h) => ({
   .num {
     flex: 0 0 auto;
     min-width: var(--space-4);
-    font-size: var(--type-caption);
-    color: var(--ctp-overlay1);
+    font-family: var(--font-mono);
+    font-size: var(--label-size);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    color: var(--muted);
   }
 
   .post {
     display: flow-root; /* contain floated images */
     min-width: 0;
-    margin-top: var(--space-2);
+    margin-top: var(--space-4);
   }
   h1 {
     margin: 0 0 var(--space-4);
@@ -219,31 +249,22 @@ const items = contents.map((h) => ({
   }
   .standfirst {
     margin: 0 0 var(--space-4);
-    font-size: var(--type-item);
-    font-weight: var(--type-item-weight);
-    line-height: var(--type-item-leading);
-    color: var(--ctp-subtext1);
+    font-size: var(--body-size);
+    line-height: var(--body-leading);
+    color: var(--muted);
   }
   .attribution {
     margin: 0 0 var(--space-6);
-    font-size: var(--type-caption);
-    font-weight: var(--type-title-weight);
-    line-height: var(--type-caption-leading);
-    color: var(--ctp-overlay1);
-  }
-
-  /* Tablet and up: the date block grows to the list's size. */
-  @media (min-width: 768px) {
-    .post {
-      margin-top: var(--space-4);
-    }
+    font-size: var(--small-size);
+    line-height: var(--small-leading);
+    color: var(--muted);
   }
 
   /* Desktop: the rail is 240px on the grid and sticks while the text scrolls. */
   @media (min-width: 1000px) {
     .post-page {
       display: grid;
-      grid-template-columns: calc(12 * var(--space-4)) minmax(0, calc(36 * var(--space-4)));
+      grid-template-columns: calc(12 * var(--space-4)) minmax(0, 42rem);
       column-gap: var(--space-12);
       align-items: start;
     }
@@ -276,7 +297,6 @@ const items = contents.map((h) => ({
     }
     .post {
       margin-top: 0;
-      /* Align the title's cap height with the back button. */
     }
     .contents {
       margin-top: var(--space-6);
@@ -300,12 +320,15 @@ const items = contents.map((h) => ({
       position: absolute;
       right: 100%;
       margin-right: var(--space-4);
-      font-size: var(--type-caption);
-      line-height: calc(var(--type-subheader) * var(--type-subheader-leading));
-      color: var(--ctp-overlay1);
+      font-family: var(--font-mono);
+      font-size: var(--label-size);
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+      line-height: calc(var(--heading-size) * var(--heading-leading));
+      color: var(--muted);
     }
     .post :global(.prose[data-numbered='3'] h3:not(#footnotes))::before {
-      line-height: calc(var(--type-item) * var(--type-item-leading));
+      line-height: calc(var(--subheading-size) * var(--subheading-leading));
     }
   }
 </style>

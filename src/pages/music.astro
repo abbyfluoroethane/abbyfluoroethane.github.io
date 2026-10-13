@@ -7,52 +7,84 @@ import { site } from '../site';
 <Base title="music" description="a live look at what i've been listening to, pulled from last.fm.">
 <PageColumns prose={false}>
   <Fragment slot="aside">
-    <p class="post-date">live from <a href={`https://www.last.fm/user/${site.lastfm.username}`}>last.fm</a></p>
+    <p class="overline muted lastfm-source">live from <a href={`https://www.last.fm/user/${site.lastfm.username}`} target="_blank" rel="noopener">last.fm ↗</a></p>
     <LastfmWidget id="lastfm-now" count={11} historyId="lastfm-history" />
   </Fragment>
   <h2>history</h2>
-  <div class="card-grid history" id="lastfm-history">
+  <div class="lastfm-list" id="lastfm-history">
     <p class="lastfm-status">loading…</p>
   </div>
 </PageColumns>
 </Base>
 
 <style>
-  /* The rows are built at runtime by lastfm.ts, so they are reached with
-     :global() under this scoped container. The row itself is the link and
-     inherits the flat hover fill from .card in cards.css. */
-  .history :global(.lastfm-status) {
-    margin: 0;
-    font-size: var(--type-caption);
-    font-weight: var(--type-caption-weight);
-    line-height: var(--type-caption-leading);
-    text-transform: lowercase;
-    color: var(--ctp-subtext0);
+  .lastfm-source {
+    margin: 0 0 var(--space-3);
   }
-  .history :global(.lastfm-history-card) {
+  .lastfm-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    margin: var(--space-4) 0 var(--space-8);
+  }
+  /* The rows are built at runtime by lastfm.ts, so they are reached with
+     :global() under this scoped container. The row itself is the link. */
+  .lastfm-list :global(.lastfm-status) {
+    margin: 0;
+    font-size: var(--small-size);
+    line-height: var(--small-leading);
+    color: var(--muted);
+  }
+  .lastfm-list :global(.lastfm-history-card) {
     display: flex;
     align-items: center;
-    gap: var(--space-2); /* hard-edged art next to text: the 10px gutter */
+    gap: var(--space-4);
     min-height: var(--touch-target);
+    margin: 0 calc(-1 * var(--space-2));
+    padding: var(--space-1) var(--space-2);
+    color: var(--text);
+    text-decoration: none;
   }
-  .history :global(.lastfm-history-cover) {
+  .lastfm-list :global(a.lastfm-history-card:hover) {
+    background-color: var(--hover);
+  }
+  .lastfm-list :global(.lastfm-history-cover) {
     flex: 0 0 auto;
-    /* Four grid units square: as tall as the three lines of text beside it. */
-    width: calc(4 * var(--space-4));
-    height: calc(4 * var(--space-4));
-    color: var(--ctp-overlay0);
+    width: calc(var(--tile-unit) - var(--space-2)); /* 56px */
+    height: calc(var(--tile-unit) - var(--space-2));
+    --art-fallback-text: "n/a";
   }
-  .history :global(.lastfm-history-info) {
+  .lastfm-list :global(.lastfm-history-info) {
     display: flex;
     flex-direction: column;
     flex: 1 1 auto;
     min-width: 0;
   }
-  /* Placeholder bars stand where title, artist and time land. */
-  .history :global(.lastfm-history-skeleton .lastfm-history-info) {
+  .lastfm-list :global(.lastfm-history-skeleton .lastfm-history-info) {
     gap: var(--space-1);
   }
-  .history :global(.lastfm-history-info .card-date) {
-    margin: var(--space-1) 0 0;
+  .lastfm-list :global(.lastfm-history-title) {
+    font-size: var(--body-size);
+    line-height: var(--body-leading);
+  }
+  .lastfm-list :global(.lastfm-history-artist) {
+    font-size: var(--small-size);
+    line-height: var(--small-leading);
+    color: var(--muted);
+  }
+  .lastfm-list :global(.lastfm-history-info .lastfm-when) {
+    color: var(--muted);
+  }
+  /* Muted text is for base only: on the hover fill it goes to text. */
+  .lastfm-list :global(a.lastfm-history-card:hover .lastfm-history-artist),
+  .lastfm-list :global(a.lastfm-history-card:hover .lastfm-when) {
+    color: var(--text);
+  }
+  .lastfm-list :global(.lastfm-history-out) {
+    flex: none;
+    color: var(--muted);
+  }
+  .lastfm-list :global(a.lastfm-history-card:hover .lastfm-history-out) {
+    color: var(--text);
   }
 </style>

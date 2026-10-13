@@ -53,8 +53,29 @@ const { asideLast = false, prose = true } = Astro.props;
   }
 
   /* ---- aside basics ---- */
+  /* Column headers are overlines: mono, upper, muted (the aside sits on base). */
   .post-meta :global(h2) {
     margin: var(--space-8) 0 var(--space-2);
+    font-family: var(--font-mono);
+    font-size: var(--overline-size);
+    font-weight: 500;
+    line-height: var(--overline-leading);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .post-meta :global(h2:first-child) {
+    margin-top: 0;
+  }
+  .post-meta :global(ul) {
+    margin: 0 0 var(--space-4);
+    padding: 0;
+    list-style: none;
+  }
+  .post-meta :global(li) {
+    padding: var(--space-1) 0;
+    font-size: var(--small-size);
+    line-height: var(--small-leading);
   }
 
   /* Stacked: about page reads the bio first, links and contact last. */
@@ -98,24 +119,32 @@ const { asideLast = false, prose = true } = Astro.props;
   /* ---- aside metadata ---- */
   .post-meta :global(.post-date) {
     margin: 0 0 var(--space-1);
-    font-size: var(--type-caption);
-    line-height: var(--type-caption-leading);
-    text-transform: lowercase;
-    color: var(--ctp-subtext0);
+    font-family: var(--font-mono);
+    font-size: var(--data-size);
+    font-weight: 500;
+    line-height: var(--data-leading);
+    color: var(--muted);
   }
-  /* h1 from global.css is already the title step; h2 on the resume needs it. */
-  .post-meta :global(.post-title) {
+  /* The name or page title: title style, Light, lowercase. */
+  .post-meta :global(h2.post-title) {
     margin: 0;
-    font-size: var(--type-title-lg);
-    font-weight: var(--type-title-lg-weight);
-    line-height: var(--type-title-lg-leading);
+    font-family: var(--font-sans);
+    font-size: var(--title-size);
+    font-weight: 300;
+    line-height: var(--title-leading);
+    letter-spacing: -0.02em;
+    text-transform: lowercase;
+    color: var(--text);
   }
   /* Short line under the name (resume). */
-  .post-meta :global(.post-tagline) {
+  .post-meta :global(h2.post-tagline) {
     margin: var(--space-3) 0 0;
-    font-size: var(--type-item);
-    font-weight: var(--type-item-weight);
-    line-height: var(--type-item-leading);
-    color: var(--ctp-subtext0);
+    font-family: var(--font-sans);
+    font-size: var(--body-size);
+    font-weight: 400;
+    line-height: var(--body-leading);
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--muted);
   }
 </style>

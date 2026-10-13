@@ -1,13 +1,26 @@
 /* Rendered markdown.
    Global on purpose: markdown output has no owning component. Every rule is
    scoped under .prose, which layouts put on any element that holds it.
-   Headings and paragraph rhythm come from the page typography in global.css. */
+   Headings, paragraph rhythm, links, lists, blockquote and hr come from the
+   page typography in global.css (h1/h2 heading, h3 subheading, h4/h5 body 600,
+   h6 overline). This file adds what markdown output needs beyond that.
+   No borders, shadows or radii: surfaces are mantle fills, dividers are 1px
+   --line. */
 
-/* Long-form text reads at the reading size. Paragraphs keep the 62ch
-   measure from global.css, so lines stay near 60-70 characters. */
-.prose {
-  font-size: var(--type-reading);
-  line-height: var(--type-reading-leading);
+/* Blog long-form: Plex Serif at 17/28, for body text only. Headings, tables,
+   code and footnotes stay in Plex Sans and Plex Mono. */
+.prose.serif :is(p, li, dd, blockquote) {
+  font-family: var(--font-serif);
+  font-size: var(--serif-body-size);
+  line-height: var(--serif-body-leading);
+}
+.prose.serif :is(li, blockquote) :is(p, li) {
+  font-size: inherit;
+  line-height: inherit;
+}
+.prose.serif table :is(p, li),
+.prose.serif section.footnotes :is(p, li) {
+  font-family: var(--font-sans);
 }
 
 /* A float belongs to the section it was written in. Every heading and rule
@@ -21,22 +34,45 @@
 .prose hr {
   clear: both;
 }
-
-/* ---- blockquote ---- */
-.prose blockquote {
-  margin: var(--space-4) 0;
-  padding: 0 0 0 var(--space-3);
-  border-left: var(--space-1) solid var(--ctp-pink);
-  color: var(--ctp-subtext0);
-  max-width: 62ch;
+/* The post title is the page's h1; a markdown h1 in the body is a heading. */
+.prose > :first-child {
+  margin-top: 0;
 }
 
-/* ---- inline code ---- */
+/* ---- lists ---- */
+.prose li {
+  margin-bottom: var(--space-1);
+}
+.prose li > ul,
+.prose li > ol {
+  margin-top: var(--space-1);
+}
+.prose input[type="checkbox"] {
+  margin: 0 var(--space-2) 0 0;
+  accent-color: var(--text);
+}
+.prose dt {
+  margin-top: var(--space-4);
+}
+
+/* ---- blockquote: mantle fill, no rule (global.css), set a little wider ---- */
+.prose blockquote {
+  max-width: 66ch;
+}
+.prose blockquote cite,
+.prose blockquote footer {
+  color: var(--muted);
+  font-size: var(--small-size);
+}
+
+/* ---- inline code: mantle fill, mono ---- */
 .prose code {
   font-family: var(--font-mono);
-  font-size: 0.9em; /* off-ramp: mono runs optically larger than the body face */
-  background: var(--ctp-mantle);
+  font-size: var(--data-size);
+  font-weight: 400;
+  background: var(--mantle);
   padding: 0 var(--space-1);
+  overflow-wrap: anywhere;
 }
 
 /* ---- code blocks ----
@@ -46,38 +82,52 @@
 .prose pre {
   margin: var(--space-6) 0;
   padding: var(--space-3) var(--space-4);
-  background: var(--ctp-mantle);
+  background: var(--mantle);
+  color: var(--text);
   font-family: var(--font-mono);
-  font-size: calc(var(--type-body) * 0.9); /* off-ramp: same as inline code; caption size is too small to read code */
-  line-height: var(--type-body-leading);
+  font-size: var(--data-size);
+  line-height: var(--data-leading);
   overflow-x: auto;
+  tab-size: 2;
 }
 .prose pre code {
   display: block;
   padding: 0;
   background: none;
   font-size: inherit;
+  overflow-wrap: normal;
 }
 
 /* Syntax highlighting (Shiki). Astro runs it with catppuccin-latte and
    catppuccin-mocha and no default colour, so every token span carries both
-   as custom properties and the stylesheet picks one. The <pre> above supplies
-   the background, so Shiki's own theme background is never used. */
+   as custom properties and the stylesheet picks one. Mocha is the default,
+   Latte replaces it in a light scheme, as in global.css. The <pre> above
+   supplies the background, so Shiki's own theme background is never used. */
 .prose pre.astro-code,
 .prose pre.astro-code span {
-  color: var(--shiki-light);
-  font-style: var(--shiki-light-font-style);
-  font-weight: var(--shiki-light-font-weight);
-  text-decoration: var(--shiki-light-text-decoration);
+  color: var(--shiki-dark, var(--text));
+  font-style: var(--shiki-dark-font-style);
+  font-weight: var(--shiki-dark-font-weight);
+  text-decoration: var(--shiki-dark-text-decoration);
 }
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: light) {
   .prose pre.astro-code,
   .prose pre.astro-code span {
-    color: var(--shiki-dark);
-    font-style: var(--shiki-dark-font-style);
-    font-weight: var(--shiki-dark-font-weight);
-    text-decoration: var(--shiki-dark-text-decoration);
+    color: var(--shiki-light, var(--text));
+    font-style: var(--shiki-light-font-style);
+    font-weight: var(--shiki-light-font-weight);
+    text-decoration: var(--shiki-light-text-decoration);
   }
+}
+
+/* ---- keyboard keys: mantle fill and the 1px control edge ---- */
+.prose kbd {
+  padding: 0 var(--space-1);
+  background: var(--mantle);
+  border: 1px solid var(--control-border);
+  font-family: var(--font-mono);
+  font-size: var(--data-size);
+  font-weight: 500;
 }
 
 /* ---- footnotes (GFM) ----
@@ -91,9 +141,9 @@
 .prose section.footnotes {
   margin-top: var(--space-8);
   padding-top: var(--space-4);
-  border-top: 2px solid var(--ctp-surface1);
-  font-size: var(--type-caption);
-  line-height: var(--type-caption-leading);
+  border-top: 1px solid var(--line);
+  font-size: var(--small-size);
+  line-height: var(--small-leading);
 }
 .prose section.footnotes ol {
   padding-left: var(--space-6);
@@ -101,6 +151,10 @@
 /* keeps the back arrow on the same line as the last paragraph */
 .prose section.footnotes li > p:last-child {
   display: inline;
+}
+.prose section.footnotes :is(p, li) {
+  font-size: inherit;
+  line-height: inherit;
 }
 .prose a.data-footnote-backref {
   text-decoration: none;
@@ -111,37 +165,89 @@
    display: block lets a table that is too wide for the column scroll inside
    itself. As a table box it has no scroll container and pushes the whole page
    sideways. GFM writes column alignment as an inline style on each cell, which
-   still wins over text-align here. */
+   still wins over text-align here. The header row is a label; rows are
+   separated by a 1px line; numbers line up. */
 .prose table {
   display: block;
   overflow-x: auto;
   border-collapse: collapse;
   margin: var(--space-6) 0;
-  font-size: var(--type-body);
-  line-height: var(--type-body-leading);
+  font-size: var(--body-size);
+  line-height: var(--body-leading);
+  font-variant-numeric: tabular-nums;
 }
 .prose th,
 .prose td {
   padding: var(--space-2) var(--space-3);
-  border-bottom: 1px solid var(--ctp-surface0);
+  border-bottom: 1px solid var(--line);
   text-align: left;
   vertical-align: top;
 }
+.prose th:first-child,
+.prose td:first-child {
+  padding-left: 0;
+}
 .prose thead th {
-  border-bottom: 2px solid var(--ctp-overlay0);
-  font-weight: var(--type-title-weight);
+  font-size: var(--label-size);
+  font-weight: 600;
+  line-height: var(--label-leading);
+  color: var(--muted);
   white-space: nowrap;
 }
 .prose tbody tr:last-child td {
   border-bottom: 0;
 }
 
-/* ---- images ---- */
+/* ---- images: square, no frame ---- */
 .prose img {
   max-width: 100%;
   height: auto;
   display: block;
   margin: var(--space-6) 0;
+  border-radius: 0;
+}
+.prose figure {
+  margin: var(--space-6) 0;
+}
+.prose figure img {
+  margin: 0;
+}
+.prose figcaption,
+.prose caption {
+  margin-top: var(--space-2);
+  font-size: var(--small-size);
+  line-height: var(--small-leading);
+  color: var(--muted);
+}
+.prose caption {
+  caption-side: bottom;
+  text-align: left;
+}
+
+/* ---- callouts and admonitions ----
+   Mantle fill. The state is a .status square and a label, never color alone:
+     <div class="callout"><p class="status warn">careful</p><p>…</p></div> */
+.prose .callout,
+.prose .admonition,
+.prose aside {
+  margin: var(--space-6) 0;
+  padding: var(--space-4);
+  background: var(--mantle);
+}
+.prose .callout > :last-child,
+.prose .admonition > :last-child,
+.prose aside > :last-child {
+  margin-bottom: 0;
+}
+.prose .callout .status,
+.prose .admonition .status {
+  margin-bottom: var(--space-2);
+}
+
+/* ---- MathJax: keep the text color ---- */
+.prose mjx-container,
+.prose mjx-container * {
+  color: inherit;
 }
 
 /* ---- image helpers ----
@@ -162,7 +268,7 @@
 
 .prose .img-pair {
   display: flex;
-  gap: var(--space-2); /* hard-edged items sit 10px apart */
+  gap: var(--space-2);
   flex-wrap: wrap;
   margin: var(--space-6) 0;
   /* a wrapper written as a paragraph would otherwise keep the prose measure
@@ -170,7 +276,7 @@
   max-width: none;
 }
 .prose .img-pair img {
-  flex: 1 1 220px; /* off-grid: minimum width before the pair stacks */ /* two across when there is room, stacked on a phone */
+  flex: 1 1 220px; /* two across when there is room, stacked on a phone */
   min-width: 0;
   margin: 0;
 }
@@ -178,7 +284,7 @@
 .prose .img-center-sm {
   /* min(), not a bare 480px: on the image itself a bare width would let it
      grow past a phone screen */
-  max-width: min(480px, 100%); /* off-grid: measured image width */
+  max-width: min(480px, 100%);
   margin: var(--space-6) auto;
 }
 .prose img.img-center-sm {
@@ -192,7 +298,7 @@
 @media (min-width: 768px) {
   .prose .img-float-left,
   .prose .img-float-right {
-    max-width: min(320px, 100%); /* off-grid: measured image width */
+    max-width: min(320px, 100%);
   }
   .prose .img-float-left {
     float: left;
@@ -213,20 +319,22 @@
 }
 
 /* ---- fediverse post embed ----
-   A quote of external content, so it is a blockquote: a left rule, no fill.
+   A quote of external content, so it is a blockquote: mantle fill, no rule.
    Hand-written in one post:
    <blockquote class="fedi-embed"><p class="fedi-embed-label">…</p><a>…</a></blockquote> */
 .prose .fedi-embed {
   margin: var(--space-6) 0;
-  padding: 0 0 0 var(--space-3);
-  border-left: var(--space-1) solid var(--ctp-lavender);
+  padding: var(--space-4);
 }
 .prose .fedi-embed-label {
   margin: 0 0 var(--space-1);
-  font-size: var(--type-caption);
-  line-height: var(--type-caption-leading);
-  text-transform: lowercase; /* chrome label, not author prose */
-  color: var(--ctp-subtext0);
+  font-family: var(--font-mono);
+  font-size: var(--overline-size);
+  font-weight: 500;
+  line-height: var(--overline-leading);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
 }
 .prose .fedi-embed a {
   word-break: break-all;
