@@ -141,7 +141,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 /* Headings in content are sentence case reading styles. Page titles use the
-   .title class instead (SiteHeader). */
+   .title and .hero classes instead. */
 h1, h2, h3, h4, h5, h6 {
   margin: var(--space-8) 0 var(--space-2);
 }

@@ -1,10 +1,10 @@
 ---
 // The one site header. Base.astro renders it on every page, the 404
-// included. The header is the overline row and the nav, a row of overline
-// links. The page title follows the header, below the nav, in the title
-// style on every page. Detail pages (`back` set) add a back link to the
-// overline row. The home page shows the site name as a plain overline, its
-// greeting as the title, and no nav.
+// included. The Metro header: an overline over a big lowercase title, then
+// the nav as a row of overline links. Hub pages use the hero (it may run off the right
+// edge); detail pages (`back` set) use the title style and wrap. The home
+// page shows the site name as the overline, its greeting as the hero, and
+// no nav.
 import { site } from '../site';
 import { getNav } from '../lib/collections';
 import BackButton from './BackButton.astro';
@@ -29,12 +29,18 @@ const Tag = plainTitle ? 'p' : 'h1';
 ---
 <header class:list={{ home: !title, detail: !!back }}>
   {title ? (
-    <p class="overline-row overline">
-      <a href="/">{site.title}</a>
-      {back && <BackButton class="header-back" href={back.href} label={back.label} />}
-    </p>
+    <>
+      <p class="overline-row overline">
+        <a href="/">{site.title}</a>
+        {back && <BackButton class="header-back" href={back.href} label={back.label} />}
+      </p>
+      <Tag class:list={['page-title', back ? 'title' : 'hero']}>{appName ?? title}</Tag>
+    </>
   ) : (
-    <p class="overline-row overline">{site.title}</p>
+    <>
+      <p class="overline-row overline">{site.title}</p>
+      <h1 class="page-title hero">{appName ?? site.title}</h1>
+    </>
   )}
   {!isHome && (
     <nav aria-label="Site">
@@ -45,7 +51,6 @@ const Tag = plainTitle ? 'p' : 'h1';
     </nav>
   )}
 </header>
-<Tag class="page-title title">{appName ?? title ?? site.title}</Tag>
 
 <style>
   .overline-row,
@@ -88,11 +93,19 @@ const Tag = plainTitle ? 'p' : 'h1';
     text-decoration: none;
   }
 
-  /* The page title: below the nav, title style, wraps. 24px above the
-     page content, the same gap as between the nav and the title. */
   .page-title {
+    margin: 0;
+  }
+  /* A hub hero runs off the right edge; the shell clips it. */
+  /* Phones wrap the hero, so no words are lost. */
+  @media (min-width: 768px) {
+    .hero {
+      white-space: nowrap;
+    }
+  }
+  /* A detail title wraps. */
+  .title {
     max-width: 20em;
-    margin: 0 0 var(--space-6);
   }
 
   /* Nav: type as navigation. Overline links in one row. Phones: one line that
@@ -142,9 +155,14 @@ const Tag = plainTitle ? 'p' : 'h1';
     background: var(--accent);
   }
 
+  header.home {
+    padding-bottom: var(--space-4);
+  }
+
   /* One spacing rule for every page and every width: 32px above the
-     overline row (the phone side margin), 8px under it, 24px under the nav.
-     Pages differ only in the back link and the nav (none on home). */
+     overline row (the phone side margin) and 8px between the overline and
+     the title. Hub, detail and home headers differ only in the title style
+     and the nav. */
   header {
     padding-top: var(--space-8);
   }
@@ -153,6 +171,10 @@ const Tag = plainTitle ? 'p' : 'h1';
   }
 
   @media (min-width: 768px) {
+    /* No nav on the home page: leave a group gap under the hero. */
+    header.home {
+      padding-bottom: var(--space-8);
+    }
     nav {
       flex-wrap: wrap;
       margin-right: 0;
