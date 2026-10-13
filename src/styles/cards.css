@@ -1,4 +1,4 @@
-/* List-item primitive: type-driven rows with no panel, plus the status pill.
+/* List-item primitive: type-driven rows with no panel, plus the status label.
 
    Global on purpose. These classes are shared by Astro components (blog and
    project items, the project layout) and by DOM built at runtime (the Last.fm
@@ -9,7 +9,6 @@
 .card-grid {
   display: flex;
   flex-direction: column;
-  /* 30px minus the 2 x 5px the rows pull back = 20px between texts. */
   gap: var(--space-6);
   margin: var(--space-4) 0 var(--space-8);
 }
@@ -22,15 +21,22 @@
   display: block;
   margin: calc(-1 * var(--space-1)) calc(-1 * var(--space-2));
   padding: var(--space-1) var(--space-2);
-  color: var(--ctp-text);
+  color: var(--text);
   text-decoration: none;
 }
 
 /* Only rows that are a link get the hover fill: a runtime <a class="card">,
-   or a row whose title link is stretched over it. */
+   or a row whose title link is stretched over it. The fill is --hover, so
+   text stays --text (muted text is only for base). */
 a.card:hover,
 .card:has(.card-title a:hover) {
-  background: var(--ctp-surface0);
+  background: var(--hover);
+}
+a.card:hover .card-desc,
+.card:has(.card-title a:hover) .card-desc,
+a.card:hover .card-date,
+.card:has(.card-title a:hover) .card-date {
+  color: var(--text);
 }
 
 .card-head {
@@ -42,14 +48,17 @@ a.card:hover,
 
 .card-title {
   margin: 0;
-  font-size: var(--type-item);
-  font-weight: var(--type-item-weight);
-  line-height: var(--type-item-leading);
+  font-size: var(--subheading-size);
+  font-weight: 600;
+  line-height: var(--subheading-leading);
 }
 
 .card-title a {
-  color: var(--ctp-text);
+  color: var(--text);
   text-decoration: none;
+}
+.card-title a:hover {
+  background: none;
 }
 
 /* Stretch the title link over the whole row so the row is the touch target. */
@@ -59,24 +68,26 @@ a.card:hover,
   inset: 0;
 }
 
+/* Dates and years are data: Mono. */
 .card-date {
   margin: 0;
-  color: var(--ctp-subtext0);
-  font-size: var(--type-caption);
-  font-weight: var(--type-caption-weight);
-  line-height: var(--type-caption-leading);
-  text-transform: lowercase;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: var(--data-size);
+  font-weight: 500;
+  line-height: var(--data-leading);
+  font-variant-numeric: tabular-nums;
 }
 
 .card-desc {
   margin: var(--space-1) 0 0;
   max-width: 62ch;
-  color: var(--ctp-subtext1);
-  font-size: var(--type-body);
-  line-height: var(--type-body-leading);
+  color: var(--muted);
+  font-size: var(--body-size);
+  line-height: var(--body-leading);
 }
 
-/* Date and links on one line. Each link is a 40px-tall target; the row is
+/* Status and links on one line. Each link is a 40px-tall target; the row is
    not stretched because a project can have two destinations. */
 .card-meta {
   display: flex;
@@ -84,32 +95,41 @@ a.card:hover,
   flex-wrap: wrap;
   min-height: var(--touch-target); /* rows without a link keep the same rhythm */
   column-gap: var(--space-4);
-  font-size: var(--type-body);
+  font-size: var(--body-size);
 }
 
+/* Text with the global 2px accent underline. Put " ↗" (leaves the site) or
+   " →" (inside the site) at the end of the label. */
 .card-link {
   display: inline-flex;
   align-items: center;
   min-height: var(--touch-target);
-  font-weight: var(--type-title-weight);
-  text-decoration: none;
+  font-weight: 600;
 }
 
+/* Status: a square plus the label, same look as .status. The state is in the
+   words, the square only repeats it. */
 .status-pill {
-  display: inline-block;
-  padding: var(--space-1) var(--space-2);
-  background: var(--ctp-surface0);
-  font-size: var(--type-caption);
-  font-weight: var(--type-caption-weight);
-  line-height: var(--type-caption-leading);
-  text-transform: lowercase;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0;
+  background: none;
+  color: var(--text);
+  font-size: var(--label-size);
+  font-weight: 600;
+  line-height: var(--label-leading);
 }
-
+.status-pill::before {
+  content: "";
+  flex: none;
+  width: 8px;
+  height: 8px;
+  background: var(--status-color, var(--overlay));
+}
 .status-pill.status-active {
-  background: var(--ctp-green);
-  color: var(--ctp-on-accent);
+  --status-color: var(--status-ok);
 }
-
 .status-pill.status-archive {
-  background: var(--ctp-surface1);
+  --status-color: var(--overlay);
 }

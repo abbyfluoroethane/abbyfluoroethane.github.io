@@ -1,30 +1,63 @@
 ---
-// The pink Metro block button. Renders a link when given an href, otherwise
-// a <button>.
+// A square button. Renders a link when given an href, otherwise a <button>.
+// Filled (default): raised fill. Unfilled: transparent with a 1px control
+// border. The label is sentence case. An icon always sits beside a label.
 import type { HTMLAttributes } from 'astro/types';
+import Icon from './Icon.astro';
+import type { IconName } from './Icon.astro';
 
-type Props = HTMLAttributes<'a'> & HTMLAttributes<'button'>;
-const { href, class: className, ...rest } = Astro.props;
+type Props = HTMLAttributes<'a'> &
+  HTMLAttributes<'button'> & {
+    /** Unfilled: transparent with a 1px control border. */
+    outline?: boolean;
+    /** Phosphor icon, shown before the label. */
+    icon?: IconName;
+  };
+const { href, class: className, outline = false, icon, ...rest } = Astro.props;
 const Tag = href ? 'a' : 'button';
 ---
-<Tag class:list={['btn', className]} href={href} {...rest}><slot /></Tag>
+<Tag class:list={['btn', { outline }, className]} href={href} {...rest}>
+  {icon && <Icon name={icon} size={20} />}<slot />
+</Tag>
 
 <style>
   .btn {
     display: inline-flex;
     align-items: center;
+    gap: var(--space-2);
     min-height: var(--touch-target);
     padding: 0 var(--space-4);
-    border: 0;
-    background: var(--ctp-pink);
-    color: var(--ctp-on-accent);
-    font-size: var(--type-body);
-    font-weight: var(--type-title-weight);
-    line-height: var(--type-body-leading);
+    border: 1px solid transparent;
+    border-radius: 0;
+    background: var(--raised);
+    color: var(--text);
+    font-family: inherit;
+    font-size: var(--body-size);
+    font-weight: 600;
+    line-height: var(--body-leading);
+    text-decoration: none;
+    text-transform: none;
+    cursor: pointer;
+  }
+  .btn.outline {
+    background: transparent;
+    border-color: var(--control-border);
+  }
+  .btn:hover,
+  .btn:active {
+    background: var(--hover);
     text-decoration: none;
   }
-  .btn:hover {
-    opacity: 0.85;
-    text-decoration: none;
+  .btn:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+  .btn:disabled,
+  .btn[aria-disabled='true'] {
+    background: transparent;
+    border-color: var(--line);
+    color: var(--disabled);
+    cursor: not-allowed;
+    pointer-events: none;
   }
 </style>
