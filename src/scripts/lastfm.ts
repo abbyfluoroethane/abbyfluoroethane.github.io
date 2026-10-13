@@ -324,6 +324,10 @@ function initWidget(root: HTMLElement): void {
     if (tileEl) {
       stack = makeStack("tile-art");
       tileEl.insertBefore(stack, tileEl.firstChild);
+      progressBar = el("span", "tile-progress");
+      progressBar.setAttribute("aria-hidden", "true");
+      progressBar.hidden = true;
+      tileEl.appendChild(progressBar);
     }
   }
 
@@ -433,6 +437,8 @@ function initWidget(root: HTMLElement): void {
     setLine(els.when, "");
     setCoverLink("");
     setArt(stack, "");
+    progressKey = null;
+    hideProgress();
     // a message is as settled as a track — nothing else is on its way
     root.removeAttribute("aria-busy");
     clearHistory();
@@ -509,6 +515,98 @@ function initWidget(root: HTMLElement): void {
     rest.forEach((t) => list.appendChild(historyCard(t)));
   }
 
+  /* ---- song progress (home tile) ----
+     last.fm reports what is playing, not where in the song you are, so the
+     bar is an estimate. a scrobble's timestamp is when that track started,
+     so the now-playing track started about when the previous one ended:
+     its timestamp plus its length. when the track changes while the page is
+     open, the moment the poll saw it bounds the start to within 30s. with
+     no length, or an estimate that has already run past the end (a pause or
+     a gap between songs), the bar stays hidden rather than lie. */
+
+  let progressBar: HTMLElement | null = null;
+  let progressTimer: number | null = null;
+  let progressKey: string | null = null;
+  let progressSeenLive = 0;
+  const lengths = new Map<string, Promise<number>>();
+
+  function trackKey(t: LfmTrack): string {
+    return trackArtist(t) + "\u001f" + (t.name || "");
+  }
+
+  // track length in ms from track.getInfo, 0 when last.fm doesn't know it
+  function trackLength(t: LfmTrack): Promise<number> {
+    const k = trackKey(t);
+    let p = lengths.get(k);
+    if (!p) {
+      const url = "https://ws.audioscrobbler.com/2.0/?method=track.getInfo"
+        + "&artist=" + encodeURIComponent(trackArtist(t))
+        + "&track=" + encodeURIComponent(t.name || "")
+        + "&api_key=" + encodeURIComponent(key) + "&format=json";
+      p = fetch(url)
+        .then((r) => r.json() as Promise<{ track?: { duration?: string } }>)
+        .then((d) => parseInt((d && d.track && d.track.duration) || "0", 10) || 0)
+        .catch(() => 0);
+      lengths.set(k, p);
+    }
+    return p;
+  }
+
+  function hideProgress(): void {
+    if (progressTimer) {
+      clearInterval(progressTimer);
+      progressTimer = null;
+    }
+    if (progressBar) progressBar.hidden = true;
+  }
+
+  function showProgress(start: number, length: number): void {
+    const bar = progressBar;
+    if (!bar) return;
+    const tick = (): void => {
+      const done = Math.min(1, Math.max(0, (Date.now() - start) / length));
+      bar.style.setProperty("--progress", (done * 100).toFixed(2) + "%");
+    };
+    hideProgress();
+    tick();
+    bar.hidden = false;
+    progressTimer = window.setInterval(tick, 1000);
+  }
+
+  function updateProgress(tracks: LfmTrack[]): void {
+    if (!progressBar) return;
+    const first = tracks[0];
+    if (!(first["@attr"] && first["@attr"].nowplaying === "true")) {
+      progressKey = null;
+      hideProgress();
+      return;
+    }
+    const k = trackKey(first);
+    if (k === progressKey) return; // same song: the running bar stays
+    // a change seen while the page is open dates the start to this poll
+    progressSeenLive = progressKey !== null ? Date.now() : 0;
+    progressKey = k;
+    const prev = tracks[1];
+    const prevStart = prev && prev.date && prev.date.uts ? parseInt(prev.date.uts, 10) * 1000 : 0;
+    Promise.all([trackLength(first), prev && prevStart ? trackLength(prev) : Promise.resolve(0)])
+      .then(([length, prevLength]) => {
+        if (k !== progressKey) return; // a newer song landed meanwhile
+        if (!length) { hideProgress(); return; }
+        const fromPrev = prevStart && prevLength ? prevStart + prevLength : 0;
+        let start = 0;
+        if (progressSeenLive) {
+          // the poll saw it within 30s of the real start: trust the scrobble
+          // estimate only when it agrees with that window
+          start = fromPrev && fromPrev <= progressSeenLive + 5000
+            && fromPrev >= progressSeenLive - 35000 ? fromPrev : progressSeenLive;
+        } else {
+          start = fromPrev;
+        }
+        if (!start || Date.now() - start > length + 10000) { hideProgress(); return; }
+        showProgress(start, length);
+      });
+  }
+
   /* ---- data ---- */
 
   // the poll runs every 30s but the answer usually hasn't changed. rebuilding
@@ -535,6 +633,7 @@ function initWidget(root: HTMLElement): void {
     noticed = false;
     root.removeAttribute("aria-busy");
     renderNow(tracks[0]);
+    updateProgress(tracks);
     renderHistory(tracks);
   }
 
