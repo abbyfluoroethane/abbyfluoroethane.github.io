@@ -3,6 +3,6 @@ title: Chibidon
 status: active
 featured: true
 article: false
-description: a very cute mastodon client for wearOS devices
+description: A very cute Mastodon client for Wear OS devices.
 date: 2026-04-01
 ---

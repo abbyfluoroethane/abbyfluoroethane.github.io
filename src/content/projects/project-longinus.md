@@ -3,7 +3,7 @@ title: project longinus
 status: archive
 featured: false
 article: false
-description: experimental development and flight test campaign involving rockets, avionics, and propulsion. named after the spear of longinus from neon genesis evangelion.
+description: Experimental development and flight test campaign involving rockets, avionics, and propulsion. Named after the Spear of Longinus from Neon Genesis Evangelion.
 external_url: ""
 url_text: ""
 date: 2024-12-01
@@ -14,10 +14,10 @@ date: 2024-12-01
 Project Longinus is an experimental rocketry program focused on the design, testing, and deployment of modular rockets and supporting avionics systems.
 
 ## Rockets:
-- Chroma Mk1: A robust, 54mm L2+ airframe designed for high-G flight testing and avionics validation.
+- Chroma Mk1: A robust, 54 mm L2+ airframe designed for high-G flight testing and avionics validation.
 - Chroma Mk1X: A stretched variant of Mk1, offering increased volume and thrust margin for testing advanced avionics.
 - Chroma Mk2 / Mk2U: High-Mach, upper-atmosphere rockets.
-- Chroma Mk0U: A 38mm upper-stage demonstrator to fly on Mk1.
+- Chroma Mk0U: A 38 mm upper-stage demonstrator to fly on Mk1.
 
 ## Untitled Flight Computer
 

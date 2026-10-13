@@ -9,7 +9,7 @@ interface Props {
 const { id: lfmId = 'lastfm', count = 1, tile = false, historyId } = Astro.props;
 ---
 <div id={lfmId} class:list={['lastfm-widget', { 'lastfm-widget-tile': tile }]} data-user={site.lastfm.username} data-key={site.lastfm.apiKey} data-count={count} data-tile={String(tile)} data-history-id={historyId ?? ''}>
-  <p class={tile ? 'tile-live-label' : 'lastfm-status'}>loading…</p>
+  <p class={tile ? 'tile-live-label' : 'lastfm-status'}>Loading…</p>
 </div>
 <script>
   import '../scripts/lastfm';

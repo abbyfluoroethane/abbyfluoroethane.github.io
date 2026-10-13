@@ -104,7 +104,7 @@
   --mantle: #181825; /* recessed areas, code blocks, quiet tiles */
   --deep: #11111b; /* deepest surface */
   --raised: #313244; /* tiles, cards, inputs, buttons. Text on it: --text only */
-  --line: #45475a; /* hairlines and dividers. Not text, not a control edge */
+  --line: #45475a; /* edge of a disabled control. Not text, not a divider */
   --overlay: #6c7086; /* non-text marks that also have a label */
   --text: #cdd6f4; /* all text, links included */
   --muted: #a6adc8; /* secondary text on base, mantle and deep only */
@@ -363,15 +363,20 @@ blockquote {
 blockquote > :last-child {
   margin-bottom: 0;
 }
+/* The browser default is yellow, which is not a token. */
+mark {
+  background: var(--raised);
+  color: var(--text);
+}
 abbr {
   text-decoration: underline dotted var(--overlay);
   cursor: help;
 }
+/* A break is space, not a drawn line. */
 hr {
-  height: 1px;
-  margin: var(--space-8) 0;
+  height: 0;
+  margin: var(--space-12) 0;
   border: 0;
-  background-color: var(--line);
 }
 
 /* Links: the text token with a 2px accent underline. No visited style. */
@@ -445,7 +450,7 @@ a:hover {
   font-weight: 600;
   line-height: var(--label-leading);
 }
-/* One big number. The unit goes in a <small> at 40%. */
+/* One big number. The unit goes in a <small> at 38%, after a space. */
 .numeral {
   font-size: var(--numeral-size);
   font-weight: 700;
@@ -454,8 +459,7 @@ a:hover {
   font-variant-numeric: tabular-nums;
 }
 .numeral small {
-  margin-left: 0.05em;
-  font-size: 0.4em;
+  font-size: 0.38em;
   font-weight: 600;
   letter-spacing: 0;
 }

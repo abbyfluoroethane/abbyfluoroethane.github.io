@@ -3,7 +3,7 @@ title: ALEx-1 rocket engine
 status: active
 featured: true
 article: true
-description: "in-development IPA-nitrous rocket engine pushing 2000N thrust."
+description: "In-development IPA-nitrous rocket engine pushing 2000 N thrust."
 date: 2025-07-08
 stat:
   value: "2000"
