@@ -8,9 +8,8 @@
 #   url    — where the tile links (required)
 #   size   — square (1×1, 152px), wide (2×1, 312×152) or large (2×2,
 #            312×312). default square.
-#   fill   — raised (default) or mantle. These are the only two tile fills;
-#            the one loud tile and the live tiles (music, blog, guestbook,
-#            projects) are always raised, set in src/pages/index.astro.
+#   icon   — a Phosphor icon (src/components/phosphor.ts), drawn top right
+#            and sized in proportion to the tile. Every tile is raised.
 #   navbar — whether the entry also appears in the nav bar shown on
 #            subpages. omit it and the entry is included, so a new tile
 #            can't drop out of the nav by accident; set it to false for
@@ -18,41 +17,45 @@
 
 - name: music
   url: /music/
+  icon: music-notes
   size: large
   navbar: true
 
 - name: blog
   url: /blog/
+  icon: article
   size: wide
   navbar: true
 
 - name: projects
   url: /projects/
+  icon: rocket
   size: large
   navbar: true
 
 - name: about
   url: /about/
-  fill: mantle
+  icon: user
   navbar: true
 
 - name: résumé
   url: /resume/
-  fill: mantle
+  icon: identification-card
   navbar: true
 
 - name: gallery
   url: /gallery/
-  fill: mantle
+  icon: images
   navbar: true
 
 - name: guestbook
   url: /guestbook/
+  icon: book-open-text
   size: wide
   navbar: true
 
 # external
 - name: foid.space
   url: https://foid.space
-  fill: mantle
+  icon: cloud
   navbar: false
