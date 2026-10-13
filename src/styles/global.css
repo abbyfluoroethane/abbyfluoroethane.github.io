@@ -65,9 +65,6 @@
 
   /* Spacing (--space-*), --page-margin, --tile-1, --tile-2, --radius,
      --bar-edge and --bar-field come from tokens.css. */
-  /* The page silhouette. One left edge: everything aligns to it. */
-  --header-baseline: 100px; /* title baseline from the top */
-  --content-top: 140px; /* content region from the top */
   --energy-bar: linear-gradient(90deg, var(--bar-start), var(--bar-end));
   /* Tiles: 1×1 is --tile-1 (152px), 2×2 is --tile-2 (312px). */
   --tile-gap: var(--space-2);

@@ -29,9 +29,12 @@ const { href, label, iconOnly = false, class: className } = Astro.props;
     color: var(--text);
     text-decoration: none;
   }
+  /* The arrow is set larger than the overline, but on the overline's line
+     height, so a header row with a back link is as tall as one without. */
   .glyph {
     font-family: var(--font-sans);
     font-size: var(--body-size);
+    line-height: calc(var(--overline-size) * var(--overline-leading));
     letter-spacing: 0;
   }
 </style>
