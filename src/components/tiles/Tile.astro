@@ -167,6 +167,20 @@ const { size = 'square', icon, href, label, nav = false, loud = false, external 
     background-color: var(--tile-fill);
     color: var(--text);
   }
+  /* Song progress on the music tile, built by src/scripts/lastfm.ts: a
+     --bar-edge energy bar along the bottom edge, below the caption padding,
+     so never behind text. The gradient spans the full tile width and the
+     clip reveals it left to right, so peach and pink stay put as it fills.
+     An estimate, so lastfm.ts hides it when it cannot place the song. */
+  .tile-live-tile :global(.tile-progress) {
+    position: absolute;
+    inset: auto 0 0 0;
+    z-index: 2;
+    height: var(--bar-edge);
+    background: var(--energy-bar);
+    clip-path: inset(0 calc(100% - var(--progress, 0%)) 0 0);
+    pointer-events: none;
+  }
   /* Only over a loaded cover: with no art the tile keeps the plain raised
      fill of the other tiles. */
   .tile-live-tile :global(.tile-art:has(.art-layer.is-loaded))::after {
