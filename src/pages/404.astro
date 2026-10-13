@@ -2,43 +2,17 @@
 import Base from '../layouts/Base.astro';
 import BackButton from '../components/BackButton.astro';
 ---
-<Base title="404" bare>
-  <main class="not-found" role="alert" aria-live="polite">
-    <p class="overline">404 · not found</p>
-    <p class="numeral">404</p>
-    <p class="heading">This page doesn't exist</p>
-    <p class="body-text">The URL may be wrong, or the link has gone stale.</p>
+<Base title="404" appName="not found">
+  <div class="not-found">
+    <p>The URL may be wrong, or the link has gone stale.</p>
     <BackButton href="/" label="home" />
-  </main>
+  </div>
 </Base>
 
 <style>
-  /* The page is bare: no header. It keeps the one left edge and the one loud
-     element (the numeral). */
-  .not-found {
-    min-height: 100vh;
-    box-sizing: border-box;
-    padding: var(--space-16) var(--space-8) var(--space-16);
-  }
-  @media (min-width: 768px) {
-    .not-found {
-      padding: var(--header-baseline) var(--space-16) var(--space-16) var(--page-margin);
-    }
-  }
-  .not-found :where(p) {
-    margin: 0;
-  }
-  .overline {
-    color: var(--muted);
-  }
-  .numeral {
-    margin-top: var(--space-4);
-  }
-  .heading {
-    margin-top: var(--space-8);
-  }
-  .body-text {
-    margin: var(--space-4) 0 var(--space-6);
+  /* The shared header carries the overline and the hero. No loud element. */
+  .not-found p {
+    margin: 0 0 var(--space-4);
     max-width: 42ch;
     color: var(--muted);
   }

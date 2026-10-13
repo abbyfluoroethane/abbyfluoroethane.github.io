@@ -20,8 +20,6 @@ export interface Props {
   plainTitle?: boolean;
   /** Detail pages: the back button target shown before the header title. */
   back?: { href: string; label: string };
-  /** Skip the header and nav, for a page that owns the whole viewport (404). */
-  bare?: boolean;
   /** Load MathJax for \( \) and \[ \] delimiters. */
   mathjax?: boolean;
   ogType?: 'website' | 'article';
@@ -35,7 +33,6 @@ const {
   appName,
   plainTitle = false,
   back,
-  bare = false,
   mathjax = false,
   ogType = 'website',
   publishedTime,
@@ -81,14 +78,12 @@ const ogImage = abs(image ?? '/og-image.png');
   {mathjax && <script is:inline defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js" integrity="sha384-M5jmNxKC9EVnuqeMwRHvFuYUE8Hhp0TgBruj/GZRkYtiMrCRgH7yvv5KY+Owi7TW" crossorigin="anonymous"></script>}
 </head>
 <body>
-  {bare ? <slot /> : (
-    <div class="page-shell">
-      <SiteHeader {title} {appName} {back} {plainTitle} />
-      <main>
-        <slot />
-      </main>
-    </div>
-  )}
+  <div class="page-shell">
+    <SiteHeader {title} {appName} {back} {plainTitle} />
+    <main>
+      <slot />
+    </main>
+  </div>
 </body>
 </html>
 
