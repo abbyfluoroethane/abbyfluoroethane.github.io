@@ -125,7 +125,7 @@ const { asideLast = false, prose = true } = Astro.props;
     line-height: var(--data-leading);
     color: var(--muted);
   }
-  /* The name or page title: title style, Light, lowercase. */
+  /* The name or page title: title style, Light. Write it lowercase by hand. */
   .post-meta :global(h2.post-title) {
     margin: 0;
     font-family: var(--font-sans);
@@ -133,7 +133,6 @@ const { asideLast = false, prose = true } = Astro.props;
     font-weight: 300;
     line-height: var(--title-leading);
     letter-spacing: -0.02em;
-    text-transform: lowercase;
     color: var(--text);
   }
   /* Short line under the name (resume). */

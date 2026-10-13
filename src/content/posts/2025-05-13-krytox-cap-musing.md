@@ -1,5 +1,5 @@
 ---
-title: "The humble Krytox cap: Musings on work ethic and ownership"
+title: "the humble Krytox cap: musings on work ethic and ownership"
 date: 2025-05-13
 ---
 

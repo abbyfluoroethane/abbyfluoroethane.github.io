@@ -3,6 +3,7 @@
 // as `frontmatter`.
 import Base from './Base.astro';
 import PageColumns from '../components/PageColumns.astro';
+import { site } from '../site';
 
 export interface Props {
   frontmatter: {
@@ -17,6 +18,7 @@ const { title, full_name, tagline, description } = Astro.props.frontmatter;
 <Base {title} {description}>
   <PageColumns>
     <Fragment slot="aside">
+      <p class="overline muted name-overline">{site.title}</p>
       <h2 class="post-title">{full_name}</h2>
       <h2 class="post-tagline">{tagline}</h2>
     </Fragment>
@@ -25,19 +27,22 @@ const { title, full_name, tagline, description } = Astro.props.frontmatter;
 </Base>
 
 
+<style>
+  /* The overline above the title-style name. */
+  .name-overline {
+    margin: 0 0 var(--space-1);
+  }
+</style>
+
 <style is:global>
-  /* The resume prints on the paper theme (print.md): no background, text
-     #11111b, muted #45475a, 0.75in margins, Plex Sans only. The two hex
-     values below are the paper tokens and appear nowhere else. */
+  /* The résumé prints on the paper theme (print.md): no background,
+     0.75in margins, Plex Sans only. tokens.css sets the paper colors in
+     @media print. */
   @page {
     size: letter;
     margin: 0.75in;
   }
   @media print {
-    :root {
-      --text: #11111b;
-      --muted: #45475a;
-    }
     html,
     body {
       height: auto;

@@ -1,5 +1,5 @@
 ---
-title: "Op-Ed: DoW punishing Anthropic over Claude safeguards was never about national security"
+title: "op-ed: DoW punishing Anthropic over Claude safeguards was never about national security"
 date: 2026-03-01
 ---
 

@@ -1,5 +1,5 @@
 ---
-title: Contemplations of a future true believer
+title: contemplations of a future true believer
 date: 2026-03-22
 summary: Orbital datacenters are scary.
 ---

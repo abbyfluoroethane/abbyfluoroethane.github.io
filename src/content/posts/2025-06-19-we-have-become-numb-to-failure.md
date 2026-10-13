@@ -1,5 +1,5 @@
 ---
-title: We have become numb to failure
+title: we have become numb to failure
 date: 2025-06-19
 ---
 
