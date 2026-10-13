@@ -46,6 +46,10 @@ for (const { data } of photos) {
   .gallery-group {
     margin-top: var(--space-8);
   }
+  /* The first group starts 24px under the nav, as on every other page. */
+  .gallery-group:first-child {
+    margin-top: 0;
+  }
   .gallery-group > p,
   .gallery-group > h2 {
     margin: 0;
