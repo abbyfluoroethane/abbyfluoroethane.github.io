@@ -68,10 +68,12 @@ const ogImage = abs(image ?? '/og-image.png');
   <link rel="sitemap" href="/sitemap-index.xml">
   <meta name="theme-color" content="#1e1e2e">
   <meta name="theme-color" media="(prefers-color-scheme: light)" content="#eff1f5">
-  <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/konata-16.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/konata-32.png">
-  <link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon/konata-192.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">
+  {/* The ab monogram from the brand package (logos/). The SVG switches
+      between Latte and Mocha with the color scheme. The ICO (16, 32, 48)
+      is Mocha, for browsers without SVG favicons. iOS reads only the PNG. */}
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="preload" href="/fonts/IBMPlexSans-Light.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/IBMPlexSans-Regular.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/IBMPlexMono-Medium.woff2" as="font" type="font/woff2" crossorigin>
