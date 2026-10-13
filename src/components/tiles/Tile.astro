@@ -1,51 +1,55 @@
 ---
-import Icon, { type IconName } from '../Icon.astro';
-
+// One Start screen tile. A tile holds an overline (its name, top left), then
+// slot content: a numeral, a title-style word or body text. Never an icon
+// alone. Fills are raised and mantle only. The loud tile (one per view) is
+// raised with a 6px energy bar across its top edge.
 interface Props {
   size?: 'square' | 'wide' | 'large';
-  /** A Catppuccin accent name, or the neutrals `surface` and `white`. */
-  color?: string;
+  fill?: 'raised' | 'mantle';
   href: string;
+  /** The overline text. */
   label: string;
-  /** Centered glyph. Ignored when the tile has slot content. */
-  icon?: IconName;
+  /** The one loud tile of the view: energy bar on the top edge. */
+  loud?: boolean;
+  /** The link leaves the site: the overline gets a ↗. */
+  external?: boolean;
   /** Slot content is live: src/scripts/lastfm.ts looks for `.tile-live-tile`. */
   live?: boolean;
+  /** Album art fills the tile; the overline sits on a solid strip. */
+  art?: boolean;
 }
-const { size = 'square', color = 'pink', href, label, icon, live = false } = Astro.props;
-
-// `orange` is the nav data's name for peach. The accents keep light text in
-// both themes. `white` is near-black in mocha, near-white in latte.
-const accent = color === 'orange' ? 'peach' : color;
-const colors: Record<string, [string, string]> = {
-  surface: ['var(--ctp-surface0)', 'var(--ctp-text)'],
-  white: ['var(--ctp-crust)', 'var(--ctp-text)'],
-};
-const [bg, fg] = colors[accent] ?? [`var(--ctp-${accent})`, 'var(--ctp-on-accent)'];
-const hasSlot = Astro.slots.has('default');
+const { size = 'square', fill = 'raised', href, label, loud = false, external = false, live = false, art = false } = Astro.props;
 ---
 <a
-  class:list={['tile', { 'tile-live-tile': live }]}
+  class:list={['tile', { 'tile-live-tile': live, loud, 'has-strip': art }]}
   data-size={size}
+  data-fill={loud ? 'raised' : fill}
   href={href}
-  style={`--tile-bg: ${bg}; --tile-fg: ${fg}`}
+  {...external ? { rel: 'noopener' } : {}}
 >
-  {hasSlot ? <slot /> : icon && <span class="tile-icon"><Icon name={icon} /></span>}
-  <span class="tile-label">{label}</span>
+  <span class="overline tile-label">{label}{external && <span aria-hidden="true"> ↗</span>}{external && <span class="sr-only"> (external site)</span>}</span>
+  <slot />
 </a>
 
 <style>
   .tile {
+    --tile-fill: var(--raised);
     position: relative;
-    display: block;
-    background-color: var(--tile-bg, var(--ctp-surface0));
-    color: var(--tile-fg, var(--ctp-text));
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: var(--space-2) var(--space-3);
+    background-color: var(--tile-fill);
+    color: var(--text); /* always text on a tile, never muted */
     text-decoration: none;
     cursor: pointer;
     user-select: none;
-    --tile-desc-lines: 3;
+    overflow: hidden;
     transition: transform 0.1s ease;
     animation: metro-enter 0.7s var(--ease-metro) backwards; /* delay set by home.ts */
+  }
+  .tile[data-fill='mantle'] {
+    --tile-fill: var(--mantle);
   }
   .tile[data-size='wide'] {
     grid-column: span 2;
@@ -53,21 +57,20 @@ const hasSlot = Astro.slots.has('default');
   .tile[data-size='large'] {
     grid-column: span 2;
     grid-row: span 2;
-    --tile-desc-lines: 5;
+    padding: var(--space-3);
   }
-  .tile:hover {
-    outline: 3px solid var(--ctp-overlay1);
+  /* Hover and pressed: the same fill. The tilt stays from the Metro base. */
+  .tile:hover,
+  .tile:active {
+    --tile-fill: var(--hover);
     text-decoration: none;
   }
   .tile:active {
     transform: scale(0.97);
-    outline: 0;
   }
-  /* Wide tiles on a phone are short, so only one line of description fits. */
-  @media (max-width: 767px) {
-    .tile[data-size='wide'] {
-      --tile-desc-lines: 1;
-    }
+  .tile:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
   }
   @media (prefers-reduced-motion: reduce) {
     .tile {
@@ -77,54 +80,52 @@ const hasSlot = Astro.slots.has('default');
   }
 
   .tile-label {
-    position: absolute;
-    left: var(--space-2);
-    bottom: var(--space-1);
-    z-index: 2; /* above the album art (0) and its scrim (inside the art) */
-    font-size: 0.8125rem; /* off-ramp: 13px, between caption and body; reads best on a tile */
-    font-weight: var(--type-caption-weight); /* Windows 8 tile names are regular */
-    line-height: var(--type-caption-leading);
-    text-transform: lowercase;
-  }
-  .tile-icon {
-    position: absolute;
-    inset: 0;
-    display: grid;
-    place-items: center;
-    font-size: 40px; /* Icon is 1em square */
+    position: relative;
+    z-index: 2;
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
-  /* The music tile's album art, inserted by src/scripts/lastfm.ts: a layer
-     stack over the tile colour and under the text. The colour stays beneath
-     so a cover has something to fade in from, and a track with no art still
-     shows a tile. */
+  /* The loud tile: a bar on the top edge, decoration only. */
+  .tile.loud {
+    padding-top: calc(var(--bar-edge) + var(--space-3));
+  }
+  .tile.loud::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: var(--bar-edge);
+    background: var(--energy-bar);
+  }
+
+  /* Tile with album art (the music tile). The art is inserted by
+     src/scripts/lastfm.ts as `.tile-art`, behind everything. The overline
+     sits on a solid strip of the tile fill so it never depends on the
+     cover; hover shows on that strip and the art stays. */
+  .tile.has-strip {
+    padding: 0;
+  }
+  .tile.has-strip .tile-label {
+    padding: var(--space-2) var(--space-3);
+    background-color: var(--tile-fill);
+  }
   .tile-live-tile :global(.tile-art) {
     position: absolute;
     inset: 0;
     z-index: 0;
-    background-color: transparent;
-    color: var(--ctp-on-accent);
-    --art-fallback-opacity: 0.32;
+    background-color: var(--tile-fill);
+    color: var(--text);
   }
-  /* Flat dark veil over the whole cover so the text stays readable, fading
-     in with the art. Without art the flat accent colour already has enough
-     contrast. */
-  .tile-live-tile :global(.tile-art)::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    background-color: rgba(17, 17, 27, 0.45); /* mocha crust; dark in both schemes */
-    opacity: 0;
-    transition: opacity 0.6s ease;
-    pointer-events: none;
+  .tile.has-strip:hover,
+  .tile.has-strip:active {
+    --tile-fill: var(--raised);
   }
-  .tile-live-tile :global(.tile-art.has-art)::after {
-    opacity: 1;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .tile-live-tile :global(.tile-art)::after {
-      transition: none;
-    }
+  .tile.has-strip:hover .tile-label,
+  .tile.has-strip:active .tile-label,
+  .tile.has-strip:hover :global(.tile-live),
+  .tile.has-strip:active :global(.tile-live) {
+    background-color: var(--hover);
   }
 </style>

@@ -5,95 +5,64 @@ import { getGuestbook, getNav, getPosts, getProjects } from '../lib/collections'
 import Tile from '../components/tiles/Tile.astro';
 import TileGrid from '../components/tiles/TileGrid.astro';
 import TileLive from '../components/tiles/TileLive.astro';
-import type { IconName } from '../components/Icon.astro';
-import { excerpt, truncateWords } from '../lib/format';
 
 const nav = await getNav();
 const latestPost = (await getPosts())[0];
-const latestPostDesc = latestPost
-  ? truncateWords(latestPost.data.summary ?? excerpt(latestPost.body), 20, '')
-  : '';
-
-// Oldest featured project first, so the cycle starts with the longest-running one.
-// Only active projects are featured: an archived project leaves the cycle even
-// if its front matter still says featured.
-const featuredProjects = (await getProjects())
-  .filter((p) => p.data.featured && p.data.status === 'active')
-  .reverse();
-
-const recentEntries = (await getGuestbook()).slice(0, 3);
-
-const iconOf = (icon: string) => icon.replace(/^mif-/, '') as IconName;
+const activeProjects = (await getProjects()).filter((p) => p.data.status === 'active').length;
+const latestEntry = (await getGuestbook())[0];
 ---
 
 <Base>
   <div class="home-layout">
     <div class="home-intro">
-      <h1 class="home-heading">haii, i'm abby :3</h1>
-      <p>welcome to my little corner of the internet. i build things that go to space, break things that stay on earth, and occasionally muse about my thoughts.</p>
+      <h1 class="title home-heading">haii, i'm abby :3</h1>
+      <p class="muted">welcome to my little corner of the internet. i build things that go to space, break things that stay on earth, and occasionally muse about my thoughts.</p>
     </div>
 
     <TileGrid>
       {nav.map((s) => {
-        const tile = { size: s.size, color: s.color, href: s.url, label: s.name };
+        const tile = { size: s.size, fill: s.fill, href: s.url, label: s.name };
         if (s.name === 'blog') return (
           <Tile {...tile} live>
-            <TileLive caption>
-              <p class="tile-live-label">latest post</p>
-              {latestPost && (
+            <TileLive>
+              {latestPost && <p class="tile-live-desc is-oneline">{latestPost.data.title}</p>}
+            </TileLive>
+          </Tile>
+        );
+        if (s.name === 'music') return (
+          <Tile {...tile} live art>
+            <TileLive strip><LastfmWidget id="lastfm-tile" count={1} tile={true} /></TileLive>
+          </Tile>
+        );
+        // The one loud tile of the view.
+        if (s.name === 'projects') return (
+          <Tile {...tile} loud>
+            <p class="numeral tile-numeral">{activeProjects}<small>active</small></p>
+            <p class="small tile-note">all projects →</p>
+          </Tile>
+        );
+        if (s.name === 'guestbook') return (
+          <Tile {...tile} live>
+            <TileLive>
+              {latestEntry && (
                 <>
-                  <p class="tile-live-title">{latestPost.data.title}</p>
-                  <p class="tile-live-desc">{latestPostDesc}</p>
+                  <p class="tile-live-title">{latestEntry.name}</p>
+                  <p class="tile-live-desc" style="--tile-lines: 3">{latestEntry.message}</p>
                 </>
               )}
             </TileLive>
           </Tile>
         );
-        if (s.name === 'music') return (
-          <Tile {...tile} live>
-            <TileLive><LastfmWidget id="lastfm-tile" count={1} tile={true} /></TileLive>
-          </Tile>
-        );
-        if (s.name === 'projects') return (
-          <Tile {...tile} live>
-            <TileLive caption cycle>
-              <p class="tile-live-label">featured project</p>
-              <div class="tile-cycle-viewport">
-              {featuredProjects.map((p, i) => (
-                <div class={`tile-cycle-item${i === 0 ? ' is-active' : ''}`}>
-                  <p class="tile-live-title">{p.data.title}</p>
-                  <p class="tile-live-years">{p.data.date.getUTCFullYear()}{p.data.status === 'active' && ' – present'}</p>
-                  <p class="tile-live-desc">{p.data.description}</p>
-                </div>
-              ))}
-              </div>
-            </TileLive>
-          </Tile>
-        );
-        if (s.name === 'guestbook') return (
-          <Tile {...tile} live>
-            <TileLive caption cycle>
-              <p class="tile-live-label">recent guestbook</p>
-              <div class="tile-cycle-viewport">
-              {recentEntries.map((e, i) => (
-                <div class={`tile-cycle-item${i === 0 ? ' is-active' : ''}`}>
-                  <p class="tile-live-title">{e.name}</p>
-                  <p class="tile-live-desc">{e.message}</p>
-                </div>
-              ))}
-              </div>
-            </TileLive>
-          </Tile>
-        );
-        return <Tile {...tile} icon={iconOf(s.icon)} />;
+        return <Tile {...tile} external={s.url.startsWith('http')} />;
       })}
     </TileGrid>
   </div>
 </Base>
 
 <style>
-  /* Intro and tiles are two Start screen groups. Main begins at the
-     content-top line on desktop, so the layout adds no top margin there. */
+  /* The intro and the tile field sit side by side when the row holds both:
+     120px margin + 320px intro + 80px gap + 568px tiles + 64px right
+     padding is 1152. Narrower, they stack. */
   .home-layout {
     display: grid;
     grid-template-columns: 1fr;
@@ -101,24 +70,34 @@ const iconOf = (icon: string) => icon.replace(/^mif-/, '') as IconName;
   }
   @media (min-width: 768px) {
     .home-layout {
-      gap: var(--space-16); /* groups are 80px apart */
+      gap: var(--space-16);
     }
   }
-  /* 1224 and not 768: the intro column is floored at 320px, and 120 + 320 +
-     80 + 640 + 64 is 1224. Narrower than that there is no room for both, so
-     they stack. The tile track is max-content, so the field always gets its
-     whole 4 or 6 columns and the intro takes the rest up to 420px. */
-  @media (min-width: 1224px) {
+  @media (min-width: 1152px) {
     .home-layout {
-      grid-template-columns: minmax(320px, 420px) max-content;
+      grid-template-columns: minmax(320px, 420px) calc(8 * var(--tile-unit) + 7 * var(--tile-gap));
       align-items: start;
     }
   }
-  /* The greeting is the screen's title: content title size, Light. */
+  /* The greeting is a title-style line: quiet voice, Light. */
   .home-heading {
     margin: 0 0 var(--space-4);
-    font-size: var(--type-title-lg);
-    font-weight: var(--type-title-lg-weight);
-    line-height: var(--type-title-lg-leading);
+  }
+  .home-intro p {
+    margin: 0;
+  }
+  /* The loud tile: the numeral at 72px, a label bottom left. */
+  .tile-numeral {
+    --numeral-size: 4.5rem;
+    margin: var(--space-1) 0 0;
+    white-space: nowrap;
+  }
+  /* 38% unit (the guide's loud tile figure) so "active" fits 112px. */
+  .tile-numeral :global(small) {
+    font-size: 0.36em;
+    margin-left: 0.12em;
+  }
+  .tile-note {
+    margin: auto 0 0;
   }
 </style>
