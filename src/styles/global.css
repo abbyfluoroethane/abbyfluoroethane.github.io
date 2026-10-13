@@ -373,6 +373,18 @@ a:hover {
   }
 }
 
+/* ---- warn banner: the status-warn fill with its on-warn label ----
+   Shown in a <noscript> where a feature needs JavaScript. */
+.js-warn {
+  margin: 0;
+  padding: var(--space-2) var(--space-3);
+  background: var(--status-warn);
+  color: var(--on-warn);
+  font-size: var(--small-size);
+  font-weight: 600;
+  line-height: var(--small-leading);
+}
+
 /* ---- the Metro page-enter animation ---- */
 @keyframes metro-enter {
   from {
