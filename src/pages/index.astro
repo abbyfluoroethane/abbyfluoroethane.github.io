@@ -114,14 +114,13 @@ const recentEntries = (await getGuestbook()).slice(0, 3);
     margin: var(--space-2) 0 var(--space-3);
     white-space: nowrap;
   }
+  /* Wide tiles on a phone are short: one line of description fits. */
   .blog-desc {
     --tile-lines: 2;
   }
-  /* Wide tiles on a phone are the full width and half as tall: room for
-     three lines. */
   @media (max-width: 767px) {
     .blog-desc {
-      --tile-lines: 3;
+      --tile-lines: 1;
     }
   }
   .tile-clamp {

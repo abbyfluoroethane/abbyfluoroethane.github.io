@@ -21,13 +21,11 @@
     gap: var(--tile-gap);
     max-width: calc(4 * var(--tile-unit) + 3 * var(--tile-gap));
   }
-  /* Phone: the Windows Phone Start screen. Two columns fill the width
-     inside the side margins: a square is half the width, wide and large
-     tiles are the full width. */
+  /* Phone: three columns that fill the width inside the 32px gutters. */
   @media (max-width: 767px) {
     .tile-grid {
-      --tile-unit: calc((100vw - 2 * var(--phone-margin) - var(--tile-gap)) / 2);
-      grid-template-columns: repeat(2, var(--tile-unit));
+      --tile-unit: calc((100vw - 2 * var(--space-8) - 2 * var(--tile-gap)) / 3);
+      grid-template-columns: repeat(3, var(--tile-unit));
     }
   }
 </style>
