@@ -5,13 +5,12 @@
 // The page fills the meta block through the "meta" slot; .rail-caption styles
 // a caption line inside it.
 import Base from './Base.astro';
-import BackButton from '../components/BackButton.astro';
 import { inlineMarkdown } from '../lib/inlineMarkdown';
 
 export interface Props {
   title: string;
-  /** The page header label above the columns (the section name). */
-  appName: string;
+  /** Kept for callers; the header shows the item title with the back link. */
+  appName?: string;
   back: { href: string; label: string };
   /** Posts: the publish date, for the article meta tag. */
   publishedTime?: Date;
@@ -28,7 +27,6 @@ export interface Props {
 }
 const {
   title,
-  appName,
   back,
   publishedTime,
   subtitle,
@@ -54,11 +52,10 @@ const items = contents.map((h) => ({
   num: h.depth === numbered ? ++n : undefined,
 }));
 ---
-<Base {title} {description} {mathjax} {appName} plainTitle ogType="article" {publishedTime}>
+<Base {title} {description} {mathjax} {back} ogType="article" {publishedTime}>
   <div class="post-page">
     <aside class="rail">
       <div class="rail-top">
-        <BackButton class="rail-back" href={back.href} label={back.label} />
         <div class="rail-date">
           <slot name="meta" />
         </div>
@@ -81,7 +78,6 @@ const items = contents.map((h) => ({
     </aside>
 
     <article class="post">
-      <h1 class="title">{title}</h1>
       {subtitle && <p class="standfirst" set:html={inlineMarkdown(subtitle)} />}
       {attribution && <p class="attribution" set:html={inlineMarkdown(attribution)} />}
       <div class:list={['prose', { serif }]} data-numbered={items.some((h) => h.num) ? numbered : undefined}><slot /></div>
@@ -136,15 +132,6 @@ const items = contents.map((h) => ({
     display: flex;
     align-items: center;
     gap: var(--space-3);
-  }
-  /* The label stays for assistive tech; the round button is enough on a phone. */
-  .rail :global(.rail-back span) {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
   }
   .rail-date {
     display: flex;
@@ -243,10 +230,6 @@ const items = contents.map((h) => ({
     min-width: 0;
     margin-top: var(--space-4);
   }
-  h1 {
-    margin: 0 0 var(--space-4);
-    max-width: 20em;
-  }
   .standfirst {
     margin: 0 0 var(--space-4);
     font-size: var(--body-size);
@@ -277,13 +260,6 @@ const items = contents.map((h) => ({
     }
     .rail-top {
       display: block;
-    }
-    .rail :global(.rail-back span) {
-      position: static;
-      width: auto;
-      height: auto;
-      overflow: visible;
-      clip: auto;
     }
     .rail-date {
       display: block;
