@@ -9,7 +9,9 @@
 #   size   — square (1×1, 152px), wide (2×1, 312×152) or large (2×2,
 #            312×312). default square.
 #   icon   — a Phosphor icon (src/components/phosphor.ts), drawn top right
-#            and sized in proportion to the tile. Every tile is raised.
+#            and sized in proportion to the tile. Navigation tiles only
+#            (no content); an external link shows ↗ there instead. Every
+#            tile is raised.
 #   navbar — whether the entry also appears in the nav bar shown on
 #            subpages. omit it and the entry is included, so a new tile
 #            can't drop out of the nav by accident; set it to false for
@@ -17,19 +19,16 @@
 
 - name: music
   url: /music/
-  icon: music-notes
   size: large
   navbar: true
 
 - name: blog
   url: /blog/
-  icon: article
   size: wide
   navbar: true
 
 - name: projects
   url: /projects/
-  icon: rocket
   size: large
   navbar: true
 
@@ -50,12 +49,10 @@
 
 - name: guestbook
   url: /guestbook/
-  icon: book-open-text
   size: wide
   navbar: true
 
 # external
 - name: foid.space
   url: https://foid.space
-  icon: cloud
   navbar: false
