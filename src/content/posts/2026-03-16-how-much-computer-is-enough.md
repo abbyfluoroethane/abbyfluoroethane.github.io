@@ -1,5 +1,5 @@
 ---
-title: How much computer is enough? It doesn't matter if it's fun!
+title: how much computer is enough? it doesn't matter if it's fun!
 date: 2026-03-16
 summary: pls stop criticizing my favorite computer, it makes him sad :c
 ---

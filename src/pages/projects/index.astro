@@ -23,7 +23,7 @@ const years = (p: Project) =>
     <div class="loud-tile">
       <span class="overline">{loud.data.stat.overline ?? loud.data.title}</span>
       <span class="numeral">{loud.data.stat.value} <small>{loud.data.stat.unit}</small></span>
-      <span class="label">
+      <span class="small">
         {href(loud) ? <a href={href(loud)}>{loud.data.stat.label}</a> : loud.data.stat.label}
       </span>
     </div>
@@ -57,8 +57,9 @@ const years = (p: Project) =>
 </Base>
 
 <style>
-  /* The loud tile: raised, a 6px energy bar across the top edge. 2 x 2 tile
-     units at least. Text stays --text on raised. */
+  /* The loud tile: raised, a 6px energy bar across the top edge. A 2×2
+     tile (--tile-2) at least, so the numeral is 96px. Text stays --text on
+     raised. */
   .loud-tile {
     position: relative;
     display: flex;
@@ -67,8 +68,8 @@ const years = (p: Project) =>
     gap: var(--space-2);
     box-sizing: border-box;
     width: fit-content;
-    min-width: calc(2 * var(--tile-unit) + var(--tile-gap));
-    min-height: calc(2 * var(--tile-unit) + var(--tile-gap));
+    min-width: var(--tile-2);
+    min-height: var(--tile-2);
     margin: 0 0 var(--space-12);
     padding: var(--space-3) var(--space-4) var(--space-3);
     padding-top: calc(var(--bar-edge) + var(--space-3));
@@ -81,9 +82,6 @@ const years = (p: Project) =>
     inset: 0 0 auto 0;
     height: var(--bar-edge);
     background: var(--energy-bar);
-  }
-  .loud-tile .numeral {
-    font-size: 4.5rem; /* 72px: the low end of the numeral range */
   }
 
   .columns {

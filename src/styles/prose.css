@@ -4,8 +4,8 @@
    Headings, paragraph rhythm, links, lists, blockquote and hr come from the
    page typography in global.css (h1/h2 heading, h3 subheading, h4/h5 body 600,
    h6 overline). This file adds what markdown output needs beyond that.
-   No borders, lines, shadows or radii: surfaces are mantle fills, and space
-   separates blocks. */
+   No outlines, lines, shadows or radii: surfaces are mantle fills, and space
+   separates blocks. Print adds row rules to tables. */
 
 /* Blog long-form: Plex Serif at 17/28, for body text only. Headings, tables,
    code and footnotes stay in Plex Sans and Plex Mono. */
@@ -98,6 +98,28 @@
   overflow-wrap: normal;
 }
 
+/* Syntax highlighting (Shiki). Astro runs it with catppuccin-latte and
+   catppuccin-mocha and no default colour, so every token span carries both
+   as custom properties and the stylesheet picks one. Mocha is the default,
+   Latte replaces it in a light scheme, as in global.css. The <pre> above
+   supplies the background, so Shiki's own theme background is never used. */
+.prose pre.astro-code,
+.prose pre.astro-code span {
+  color: var(--shiki-dark, var(--text));
+  font-style: var(--shiki-dark-font-style);
+  font-weight: var(--shiki-dark-font-weight);
+  text-decoration: var(--shiki-dark-text-decoration);
+}
+@media (prefers-color-scheme: light) {
+  .prose pre.astro-code,
+  .prose pre.astro-code span {
+    color: var(--shiki-light, var(--text));
+    font-style: var(--shiki-light-font-style);
+    font-weight: var(--shiki-light-font-weight);
+    text-decoration: var(--shiki-light-text-decoration);
+  }
+}
+
 /* ---- keyboard keys: raised fill, no edge (a key is not a form control) ---- */
 .prose kbd {
   padding: 0 var(--space-1);
@@ -140,8 +162,9 @@
    display: block lets a table that is too wide for the column scroll inside
    itself. As a table box it has no scroll container and pushes the whole page
    sideways. GFM writes column alignment as an inline style on each cell, which
-   still wins over text-align here. The header row is a label; body rows
-   alternate base and mantle, with no lines; numbers line up. */
+   still wins over text-align here. The header row is a label. On screen,
+   every second body row is mantle, with no lines. In print, fills can drop,
+   so rows separate by line hairlines. Numbers line up. */
 .prose table {
   display: block;
   overflow-x: auto;
@@ -157,8 +180,17 @@
   text-align: left;
   vertical-align: top;
 }
-.prose tbody tr:nth-child(odd) {
+.prose tbody tr:nth-child(even) {
   background: var(--mantle);
+}
+@media print {
+  .prose tbody tr:nth-child(even) {
+    background: none;
+  }
+  .prose th,
+  .prose td {
+    border-bottom: 1px solid var(--line);
+  }
 }
 .prose thead th {
   font-size: var(--label-size);

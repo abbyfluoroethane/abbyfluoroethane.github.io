@@ -1,10 +1,13 @@
-// tile cycling: slide the active item up and out for the next in every .tile-cycle every 15s
+// tile cycling: slide the active item up and out for the next in every .tile-cycle every 15s.
+// the cycle holds while the tile is hovered or focused, and never runs with reduced motion.
 document.querySelectorAll(".tile-cycle").forEach((cycle) => {
   const items = cycle.querySelectorAll(".tile-cycle-item");
   if (items.length < 2) return;
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const tile = cycle.closest(".tile") ?? cycle;
   let i = 0;
   setInterval(() => {
+    if (tile.matches(":hover, :focus-within")) return;
     const leaving = items[i];
     leaving.classList.replace("is-active", "is-leaving");
     // Back to the resting spot below once it is out of sight (0.55s slide).

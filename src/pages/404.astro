@@ -6,7 +6,7 @@ import BackButton from '../components/BackButton.astro';
   <main class="not-found" role="alert" aria-live="polite">
     <p class="overline">404 · not found</p>
     <p class="numeral">404</p>
-    <p class="title">this page doesn't exist</p>
+    <p class="heading">This page doesn't exist</p>
     <p class="body-text">The URL may be wrong, or the link has gone stale.</p>
     <BackButton href="/" label="home" />
   </main>
@@ -34,9 +34,8 @@ import BackButton from '../components/BackButton.astro';
   .numeral {
     margin-top: var(--space-4);
   }
-  .title {
+  .heading {
     margin-top: var(--space-8);
-    max-width: 20em;
   }
   .body-text {
     margin: var(--space-4) 0 var(--space-6);

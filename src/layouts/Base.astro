@@ -1,11 +1,11 @@
 ---
+// The package files first (design system 1.1): fonts, then tokens.
+import '../styles/fonts.css';
+import '../styles/tokens.css';
 import '../styles/global.css';
 import '../styles/prose.css';
 import '../styles/cards.css';
 import SiteHeader from '../components/SiteHeader.astro';
-import plexLight from '../assets/fonts/IBMPlexSans-Light.woff2?url';
-import plexRegular from '../assets/fonts/IBMPlexSans-Regular.woff2?url';
-import plexMono from '../assets/fonts/IBMPlexMono-Medium.woff2?url';
 import { site } from '../site';
 import { formatXmlDate } from '../lib/format';
 
@@ -43,9 +43,10 @@ const {
 
 const path = Astro.url.pathname;
 const abs = (p: string) => new URL(p, Astro.site).href;
+// Titles are lowercase by hand, so the tab and og:title read
+// "projects · abby bigaouette".
 const fullTitle = title ? `${title} · ${site.title}` : site.title;
-const ogTitle = title ?? site.title;
-const ogImage = abs(image ?? '/assets/favicon/konata-512.png');
+const ogImage = abs(image ?? '/og-image.png');
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -58,14 +59,12 @@ const ogImage = abs(image ?? '/assets/favicon/konata-512.png');
   <meta property="og:type" content={ogType}>
   {publishedTime && <meta property="article:published_time" content={formatXmlDate(publishedTime)}>}
   <meta property="og:site_name" content={site.title}>
-  <meta property="og:title" content={ogTitle}>
+  <meta property="og:title" content={fullTitle}>
   <meta property="og:description" content={description}>
   <meta property="og:url" content={abs(path)}>
   <meta property="og:image" content={ogImage}>
-  {/* "summary", not "summary_large_image", for the fallback: the fallback is
-      the square favicon, and a large card crops a square badly. */}
-  <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'}>
-  <meta name="twitter:title" content={ogTitle}>
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content={fullTitle}>
   <meta name="twitter:description" content={description}>
   <meta name="twitter:image" content={ogImage}>
   <link rel="alternate" type="application/rss+xml" href={abs('/feed.xml')} title={site.title}>
@@ -76,9 +75,9 @@ const ogImage = abs(image ?? '/assets/favicon/konata-512.png');
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/konata-32.png">
   <link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon/konata-192.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">
-  <link rel="preload" href={plexLight} as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href={plexRegular} as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href={plexMono} as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/IBMPlexSans-Light.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/IBMPlexSans-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/IBMPlexMono-Medium.woff2" as="font" type="font/woff2" crossorigin>
   {mathjax && <script is:inline defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js" integrity="sha384-M5jmNxKC9EVnuqeMwRHvFuYUE8Hhp0TgBruj/GZRkYtiMrCRgH7yvv5KY+Owi7TW" crossorigin="anonymous"></script>}
 </head>
 <body>

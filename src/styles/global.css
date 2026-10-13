@@ -2,21 +2,24 @@
    type and tile classes. Everything else lives in component <style> blocks.
    Markdown output, which no component owns, is styled in prose.css.
 
-   Source: abby bigaouette design system version 1.0 and style guide
-   revision 1.0. The page structure is the Metro one the site already had:
+   Source: abby bigaouette design system version 1.1 and style guide
+   revision 2.0. Fonts and color tokens come from the package files
+   fonts.css and tokens.css, which Base.astro loads first. Do not edit them
+   by hand. The page structure is the Metro one the site already had:
    a small overline over a large lowercase title, type as navigation, tiles,
    one left edge. Every color is a Catppuccin Mocha or Latte token.
 
    Rules that the CSS cannot enforce, so each component must:
-   - Radius 0. No borders, shadows or gradients, except the energy bar and
-     the 1px control-border on form controls.
+   - Radius 0. No outlines, shadows or gradients, except the energy bar,
+     the 1px control-border on form controls and row rules in print.
    - Accent (pink) is decoration only: underlines, rules, the current-page
      marker. No text in it or on it.
    - Peach appears only inside the energy bar.
    - Light weight only from 24px. Uppercase only in headline and overline,
-     set with text-transform.
-   - One loud element in each view: one headline, one numeral or one loud
-     tile.
+     set with text-transform. Never lowercase with CSS: write titles
+     lowercase by hand, so names keep their case.
+   - At most one loud element in each view: one headline, one numeral or
+     one loud tile.
    - Muted text only on base, mantle and deep. On raised or hover, use text.
 
    Breakpoints (CSS has no variables in media queries, so use only these):
@@ -24,146 +27,9 @@
      1000px  post columns side by side
      1200px  home intro beside the tiles, wider post columns */
 
-@font-face {
-  font-family: "IBM Plex Sans";
-  src: url("../assets/fonts/IBMPlexSans-Light.woff2") format("woff2");
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "IBM Plex Sans";
-  src: url("../assets/fonts/IBMPlexSans-Regular.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "IBM Plex Sans";
-  src: url("../assets/fonts/IBMPlexSans-Italic.woff2") format("woff2");
-  font-weight: 400;
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: "IBM Plex Sans";
-  src: url("../assets/fonts/IBMPlexSans-SemiBold.woff2") format("woff2");
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "IBM Plex Sans";
-  src: url("../assets/fonts/IBMPlexSans-Bold.woff2") format("woff2");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "IBM Plex Serif";
-  src: url("../assets/fonts/IBMPlexSerif-Regular.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "IBM Plex Serif";
-  src: url("../assets/fonts/IBMPlexSerif-Italic.woff2") format("woff2");
-  font-weight: 400;
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: "IBM Plex Serif";
-  src: url("../assets/fonts/IBMPlexSerif-SemiBold.woff2") format("woff2");
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "IBM Plex Mono";
-  src: url("../assets/fonts/IBMPlexMono-Regular.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "IBM Plex Mono";
-  src: url("../assets/fonts/IBMPlexMono-Medium.woff2") format("woff2");
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
-/* ---- color tokens: Mocha first ----
-   Latte replaces Mocha when the system is in light mode. Token names and
-   values are the design system's tokens.json. */
 :root {
-  color-scheme: dark light;
-  --base: #1e1e2e; /* page, 80% of a view or more */
-  --mantle: #181825; /* recessed areas, code blocks, quiet tiles */
-  --deep: #11111b; /* deepest surface */
-  --raised: #313244; /* tiles, cards, inputs, buttons. Text on it: --text only */
-  --line: #45475a; /* edge of a disabled control. Not text, not a divider */
-  --overlay: #6c7086; /* non-text marks that also have a label */
-  --text: #cdd6f4; /* all text, links included */
-  --muted: #a6adc8; /* secondary text on base, mantle and deep only */
-  --accent: #f5c2e7; /* pink. Decoration only */
-  --link-underline: var(--accent);
-  --bar-start: #fab387; /* peach. Energy bar only */
-  --bar-end: var(--accent);
-  --focus: #f5c2e7;
-  --control-border: #7f849c; /* 1px edge of inputs and unfilled buttons */
-  --hover: #45475a; /* hover and pressed fill */
-  --disabled: #7f849c;
-  --status-error: #f38ba8;
-  --on-error: #11111b;
-  --status-warn: #f9e2af;
-  --on-warn: #11111b;
-  --status-ok: #a6e3a1;
-  --on-ok: #11111b;
-  --status-info: #74c7ec;
-  --on-info: #11111b;
-  --chart-1: #89b4fa;
-  --chart-2: #cba6f7;
-  --chart-3: #9399b2;
-}
-@media (prefers-color-scheme: light) {
-  :root {
-    --base: #eff1f5;
-    --mantle: #e6e9ef;
-    --deep: #dce0e8;
-    --raised: #ccd0da;
-    --line: #bcc0cc;
-    --overlay: #9ca0b0;
-    --text: #4c4f69;
-    --muted: #5c5f77;
-    --accent: #ea76cb;
-    --bar-start: #fe640b;
-    --focus: #4c4f69;
-    --control-border: #7c7f93;
-    --hover: #dce0e8;
-    --disabled: #8c8fa1;
-    --status-error: #d20f39;
-    --on-error: #eff1f5;
-    --status-warn: #df8e1d;
-    --on-warn: #11111b;
-    --status-ok: #40a02b;
-    --on-ok: #11111b;
-    --status-info: #209fb5;
-    --on-info: #11111b;
-    --chart-1: #1e66f5;
-    --chart-2: #8839ef;
-    --chart-3: #7c7f93;
-  }
-}
-
-:root {
-  /* ---- type ---- */
-  --font-sans: "IBM Plex Sans", system-ui, sans-serif;
-  --font-serif: "IBM Plex Serif", Georgia, serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
-
+  /* ---- type ----
+     Font stacks come from tokens.css. */
   /* The thirteen styles of the scale. Size, line height, weight and letter
      spacing go together: use the classes below, or all four variables.
      Hero and title step down on phones so the first word stays whole. */
@@ -197,25 +63,13 @@
   --serif-body-size: 1.0625rem; /* 17px */
   --serif-body-leading: 1.647; /* 28 / 17 */
 
-  /* ---- spacing: 4px base ---- */
-  --space-1: 4px; /* icon-to-label gap */
-  --space-2: 8px; /* tile gutter, tight gaps */
-  --space-3: 12px; /* control padding */
-  --space-4: 16px; /* card padding, default gap */
-  --space-6: 24px; /* group gap */
-  --space-8: 32px; /* section gap, phone page margin */
-  --space-12: 48px; /* large section gap */
-  --space-16: 64px; /* one tile */
+  /* Spacing (--space-*), --page-margin, --tile-1, --tile-2, --radius,
+     --bar-edge and --bar-field come from tokens.css. */
   /* The page silhouette. One left edge: everything aligns to it. */
-  --page-margin: 120px; /* desktop; phones use --space-8 */
   --header-baseline: 100px; /* title baseline from the top */
   --content-top: 140px; /* content region from the top */
-  --radius: 0;
-  --bar-edge: 6px; /* loud tile top edge, the label bar above a title */
-  --bar-field: 12px; /* full-measure bar on openers */
   --energy-bar: linear-gradient(90deg, var(--bar-start), var(--bar-end));
-  /* Tiles: 1×1 is 64px, 2×1 and 2×2 add one 8px gutter. */
-  --tile-unit: var(--space-16);
+  /* Tiles: 1×1 is --tile-1 (152px), 2×2 is --tile-2 (312px). */
   --tile-gap: var(--space-2);
   /* Smallest touch target. */
   --touch-target: 40px;
@@ -406,14 +260,12 @@ a:hover {
   font-weight: 300;
   line-height: var(--hero-leading);
   letter-spacing: -0.03em;
-  text-transform: lowercase;
 }
 .title {
   font-size: var(--title-size);
   font-weight: 300;
   line-height: var(--title-leading);
   letter-spacing: -0.02em;
-  text-transform: lowercase;
 }
 .headline {
   font-size: var(--headline-size);
@@ -427,7 +279,6 @@ a:hover {
   font-weight: 600;
   line-height: var(--display-leading);
   letter-spacing: -0.02em;
-  text-transform: lowercase;
 }
 .heading {
   font-size: var(--heading-size);
@@ -450,7 +301,7 @@ a:hover {
   font-weight: 600;
   line-height: var(--label-leading);
 }
-/* One big number. The unit goes in a <small> at 38%, after a space. */
+/* One big number. The unit goes in a <small> at about 40%, after a space. */
 .numeral {
   font-size: var(--numeral-size);
   font-weight: 700;

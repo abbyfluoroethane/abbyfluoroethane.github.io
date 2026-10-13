@@ -1,14 +1,17 @@
 ---
-// One Start screen tile. A tile holds an overline (its name, top left), then
-// slot content: a numeral, a title-style word or body text. Never an icon
-// alone. Fills are raised and mantle only. The loud tile (one per view) is
-// raised with a 6px energy bar across its top edge.
+// One Start screen tile. A navigation tile is an overline only, bottom left.
+// A content or live tile holds an overline (top left), then slot content.
+// Never an icon alone. Fills are raised and mantle only. The loud tile (at
+// most one per view) is raised with a 6px energy bar across its top edge,
+// then an overline, a numeral, a label and an optional live block.
 interface Props {
   size?: 'square' | 'wide' | 'large';
   fill?: 'raised' | 'mantle';
   href: string;
   /** The overline text. */
   label: string;
+  /** Navigation tile: the overline only, bottom left. */
+  nav?: boolean;
   /** The one loud tile of the view: energy bar on the top edge. */
   loud?: boolean;
   /** The link leaves the site: the overline gets a ↗. */
@@ -18,10 +21,10 @@ interface Props {
   /** Album art fills the tile; the overline sits on a solid strip. */
   art?: boolean;
 }
-const { size = 'square', fill = 'raised', href, label, loud = false, external = false, live = false, art = false } = Astro.props;
+const { size = 'square', fill = 'raised', href, label, nav = false, loud = false, external = false, live = false, art = false } = Astro.props;
 ---
 <a
-  class:list={['tile', { 'tile-live-tile': live, loud, 'has-strip': art }]}
+  class:list={['tile', { 'tile-live-tile': live, 'tile-nav': nav, loud, 'has-strip': art }]}
   data-size={size}
   data-fill={loud ? 'raised' : fill}
   href={href}
@@ -47,6 +50,9 @@ const { size = 'square', fill = 'raised', href, label, loud = false, external = 
     overflow: hidden;
     transition: transform 0.1s ease;
     animation: metro-enter 0.7s var(--ease-metro) backwards; /* delay set by home.ts */
+  }
+  .tile-nav {
+    justify-content: flex-end;
   }
   .tile[data-fill='mantle'] {
     --tile-fill: var(--mantle);

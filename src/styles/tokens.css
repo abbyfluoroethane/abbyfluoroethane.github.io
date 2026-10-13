@@ -1,0 +1,163 @@
+/* abby bigaouette design system, version 1.1. Generated from tokens.json. Do not edit by hand. */
+
+/* Mocha is the default theme. Latte follows the OS light setting, or data-theme="latte". Paper is for print. */
+:root, [data-theme="mocha"] {
+  --base: #1e1e2e;
+  --mantle: #181825;
+  --deep: #11111b;
+  --raised: #313244;
+  --line: #45475a;
+  --overlay: #6c7086;
+  --text: #cdd6f4;
+  --muted: #a6adc8;
+  --accent: #f5c2e7;
+  --link-underline: var(--accent);
+  --bar-start: #fab387;
+  --bar-end: var(--accent);
+  --focus: #f5c2e7;
+  --control-border: #7f849c;
+  --hover: #45475a;
+  --disabled: #7f849c;
+  --status-error: #f38ba8;
+  --on-error: #11111b;
+  --status-warn: #f9e2af;
+  --on-warn: #11111b;
+  --status-ok: #a6e3a1;
+  --on-ok: #11111b;
+  --status-info: #74c7ec;
+  --on-info: #11111b;
+  --chart-1: #89b4fa;
+  --chart-2: #cba6f7;
+  --chart-3: #9399b2;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="mocha"]) {
+    --base: #eff1f5;
+    --mantle: #e6e9ef;
+    --deep: #dce0e8;
+    --raised: #ccd0da;
+    --line: #bcc0cc;
+    --overlay: #9ca0b0;
+    --text: #4c4f69;
+    --muted: #5c5f77;
+    --accent: #ea76cb;
+    --link-underline: var(--accent);
+    --bar-start: #fe640b;
+    --bar-end: var(--accent);
+    --focus: #4c4f69;
+    --control-border: #7c7f93;
+    --hover: #dce0e8;
+    --disabled: #8c8fa1;
+    --status-error: #d20f39;
+    --on-error: #eff1f5;
+    --status-warn: #df8e1d;
+    --on-warn: #11111b;
+    --status-ok: #40a02b;
+    --on-ok: #11111b;
+    --status-info: #209fb5;
+    --on-info: #11111b;
+    --chart-1: #1e66f5;
+    --chart-2: #8839ef;
+    --chart-3: #7c7f93;
+    color-scheme: light;
+  }
+}
+[data-theme="latte"] {
+  --base: #eff1f5;
+  --mantle: #e6e9ef;
+  --deep: #dce0e8;
+  --raised: #ccd0da;
+  --line: #bcc0cc;
+  --overlay: #9ca0b0;
+  --text: #4c4f69;
+  --muted: #5c5f77;
+  --accent: #ea76cb;
+  --link-underline: var(--accent);
+  --bar-start: #fe640b;
+  --bar-end: var(--accent);
+  --focus: #4c4f69;
+  --control-border: #7c7f93;
+  --hover: #dce0e8;
+  --disabled: #8c8fa1;
+  --status-error: #d20f39;
+  --on-error: #eff1f5;
+  --status-warn: #df8e1d;
+  --on-warn: #11111b;
+  --status-ok: #40a02b;
+  --on-ok: #11111b;
+  --status-info: #209fb5;
+  --on-info: #11111b;
+  --chart-1: #1e66f5;
+  --chart-2: #8839ef;
+  --chart-3: #7c7f93;
+  color-scheme: light;
+}
+@media print {
+  :root, [data-theme] {
+    --base: #eff1f5;
+    --mantle: #e6e9ef;
+    --deep: #dce0e8;
+    --raised: #ccd0da;
+    --line: #bcc0cc;
+    --overlay: #9ca0b0;
+    --text: #11111b;
+    --muted: #45475a;
+    --accent: #ea76cb;
+    --link-underline: var(--accent);
+    --bar-start: #fe640b;
+    --bar-end: var(--accent);
+    --focus: #11111b;
+    --control-border: #7c7f93;
+    --hover: #dce0e8;
+    --disabled: #8c8fa1;
+    --status-error: #d20f39;
+    --on-error: #eff1f5;
+    --status-warn: #df8e1d;
+    --on-warn: #11111b;
+    --status-ok: #40a02b;
+    --on-ok: #11111b;
+    --status-info: #209fb5;
+    --on-info: #11111b;
+    --chart-1: #1e66f5;
+    --chart-2: #8839ef;
+    --chart-3: #7c7f93;
+    color-scheme: light;
+  }
+}
+
+:root {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --page-margin: 120px;
+  --tile-1: 152px;
+  --tile-2: 312px;
+  --radius: 0;
+  --bar-edge: 6px;
+  --bar-field: 12px;
+  --font-sans: "IBM Plex Sans", system-ui, sans-serif;
+  --font-serif: "IBM Plex Serif", Georgia, serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+/* Type styles. Uppercase is set here for headline and overline only. Never lowercase with CSS: write titles lowercase by hand. */
+.type-hero { font-family: var(--font-sans); font-size: 96px; line-height: 88px; font-weight: 300; letter-spacing: -0.03em; }
+.type-title { font-family: var(--font-sans); font-size: 56px; line-height: 60px; font-weight: 300; letter-spacing: -0.02em; }
+.type-headline { font-family: var(--font-sans); font-size: 40px; line-height: 36px; font-weight: 700; letter-spacing: -0.03em; text-transform: uppercase; }
+.type-display { font-family: var(--font-sans); font-size: 40px; line-height: 44px; font-weight: 600; letter-spacing: -0.02em; }
+.type-heading { font-family: var(--font-sans); font-size: 24px; line-height: 32px; font-weight: 600; letter-spacing: -0.01em; }
+.type-subheading { font-family: var(--font-sans); font-size: 18px; line-height: 24px; font-weight: 600; }
+.type-body { font-family: var(--font-sans); font-size: 16px; line-height: 24px; font-weight: 400; }
+.type-small { font-family: var(--font-sans); font-size: 14px; line-height: 20px; font-weight: 400; }
+.type-label { font-family: var(--font-sans); font-size: 12px; line-height: 16px; font-weight: 600; }
+.type-numeral { font-family: var(--font-sans); font-size: 96px; line-height: 84px; font-weight: 700; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
+.type-serif-body { font-family: var(--font-serif); font-size: 17px; line-height: 28px; font-weight: 400; }
+.type-overline { font-family: var(--font-mono); font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; }
+.type-code { font-family: var(--font-mono); font-size: 14px; line-height: 20px; font-weight: 400; }
+.type-data { font-family: var(--font-mono); font-size: 14px; line-height: 20px; font-weight: 500; font-variant-numeric: tabular-nums; }

@@ -178,7 +178,7 @@ const { id: lfmId = 'lastfm', count = 1, tile = false, historyId } = Astro.props
   }
   .lastfm-widget :global(.lastfm-cover) {
     width: 100%;
-    max-width: calc(8 * var(--tile-unit)); /* 512px: no taller than the page */
+    max-width: calc(8 * var(--space-16)); /* 512px: no taller than the page */
     aspect-ratio: 1;
   }
   .lastfm-widget :global(.lastfm-track-title) {

@@ -1,7 +1,7 @@
 ---
 layout: ../layouts/ResumeLayout.astro
-title: resume
-full_name: "Hi, I'm Abby."
+title: résumé
+full_name: "hi, i'm abby."
 tagline: Rocket mechanic and quality complainer at Astra. Former Blue Origin.
 ---
 
