@@ -96,7 +96,7 @@ const summaryOf = (post: typeof latest) =>
     line-height: var(--body-leading);
     color: var(--muted);
   }
-  .row time {
+  .row > time {
     display: block;
   }
   .name {
@@ -108,9 +108,10 @@ const summaryOf = (post: typeof latest) =>
   }
 
   /* The latest post sits on the same left edge as the page: the padding of the row
-     is pulled back, so the text lines up with the title above. */
+     is pulled back on the sides and the top, so the text lines up with the
+     title and starts 24px under the nav, as on every other page. */
   .latest {
-    margin: var(--space-8) calc(-1 * var(--space-4)) var(--space-12);
+    margin: calc(-1 * var(--space-4)) calc(-1 * var(--space-4)) var(--space-12);
   }
   .latest .row {
     padding: var(--space-4);
