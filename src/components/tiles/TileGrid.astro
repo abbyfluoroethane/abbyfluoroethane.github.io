@@ -7,36 +7,22 @@
 </script>
 
 <style>
-  /* Packing: `dense` lets a square fill the gap that a wide or large tile
-     leaves, and the tracks tell the grid how big one unit is so it can place
-     the spans. auto-fill drops to fewer columns as the viewport narrows. */
+  /* Metro dense packing on the 64 + 8px pitch: `dense` lets a 2×1 fill the
+     gap that a 2×2 leaves. Desktop is 8 units wide: 8 × 64 + 7 × 8 = 568px.
+     Empty cells are fine; no filler tiles. */
   .tile-grid {
-    --tile-unit: 150px; /* Metro's square tile */
-    --tile-gap: var(--space-2); /* the 10px gutter between hard-edged items */
     display: grid;
     grid-auto-flow: dense;
-    grid-template-columns: repeat(auto-fill, var(--tile-unit));
+    grid-template-columns: repeat(8, var(--tile-unit));
     grid-auto-rows: var(--tile-unit);
     gap: var(--tile-gap);
-    /* Cap at 4 columns. A max-width (not repeat(4, ...)) keeps auto-fill
-       free to use fewer columns on a narrow viewport. */
-    max-width: calc(4 * var(--tile-unit) + 3 * var(--tile-gap));
   }
-  /* Six columns, but only once the row really holds them: 120px of left
-     padding + a 320px intro + the 80px gap + the tiles + 64px of right
-     padding is 1534 exactly. */
-  @media (min-width: 1534px) {
-    .tile-grid {
-      max-width: calc(6 * var(--tile-unit) + 5 * var(--tile-gap));
-    }
-  }
-  /* Phone: three columns that fill the width. The unit comes from the
-     viewport so the columns leave nothing over: the page shell's 10px
-     side padding and the two gaps are the only other things in the row. */
+  /* Phone: 4 units fill the width inside the 32px gutters, so the unit
+     scales up from 64px. 1:1 and 2:1 ratios stay. */
   @media (max-width: 767px) {
     .tile-grid {
-      --tile-unit: calc((100vw - 2 * var(--space-2) - 2 * var(--tile-gap)) / 3);
-      grid-template-columns: repeat(3, var(--tile-unit));
+      --tile-unit: calc((100vw - 2 * var(--space-8) - 3 * var(--tile-gap)) / 4);
+      grid-template-columns: repeat(4, var(--tile-unit));
     }
   }
 </style>
