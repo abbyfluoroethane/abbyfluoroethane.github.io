@@ -20,11 +20,9 @@ export default defineConfig({
     // quotes straight (the site never used curly ones). Dashes and ellipses
     // still convert.
     processor: satteri({ features: { smartPunctuation: { quotes: false } } }),
-    // Shiki emits both themes as CSS variables (--shiki-light / --shiki-dark);
-    // site.css picks one with prefers-color-scheme.
-    shikiConfig: {
-      themes: { light: 'catppuccin-latte', dark: 'catppuccin-mocha' },
-      defaultColor: false,
-    },
+    // No syntax colors. The Catppuccin Shiki themes set code in peach and
+    // pink and in the status colors, and the style guide keeps peach in the
+    // energy bar, pink for decoration and status colors beside a label.
+    syntaxHighlight: false,
   },
 });

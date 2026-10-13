@@ -26,11 +26,11 @@ const year = date.getUTCFullYear();
     <p class="overline muted">{status === 'active' ? `${year} – present` : year}</p>
     <p class="rail-caption">
       {status === 'active'
-        ? <span class="status ok">active</span>
-        : <span class="status">archived</span>}
+        ? <span class="status ok">Active</span>
+        : <span class="status">Archived</span>}
     </p>
     {external_url && (
-      <p class="link"><Button href={external_url}>{url_text ?? 'external link'} ↗</Button></p>
+      <p class="link"><Button href={external_url}>{url_text || 'External link'} ↗</Button></p>
     )}
   </Fragment>
   <slot />

@@ -25,7 +25,7 @@ const recentEntries = (await getGuestbook()).slice(0, 3);
 <Base appName="haii, i'm abby :3">
   <div class="home-layout">
     <div class="home-intro">
-      <p class="muted">welcome to my little corner of the internet. i build things that go to space, break things that stay on earth, and occasionally muse about my thoughts.</p>
+      <p class="muted">Welcome to my little corner of the internet. I build things that go to space, break things that stay on earth, and occasionally muse about my thoughts.</p>
     </div>
 
     <TileGrid>
@@ -52,7 +52,7 @@ const recentEntries = (await getGuestbook()).slice(0, 3);
         // projects taking turns.
         if (s.name === 'projects') return (
           <Tile {...tile} loud live>
-            <p class="numeral tile-numeral">{activeProjects}<small>active</small></p>
+            <p class="numeral tile-numeral">{activeProjects} <small>active</small></p>
             <TileLive cycle>
               <div class="tile-cycle-viewport">
                 {featuredProjects.map((p, i) => (
@@ -109,7 +109,7 @@ const recentEntries = (await getGuestbook()).slice(0, 3);
   .home-intro p {
     margin: 0;
   }
-  /* The loud tile: a 96px numeral with its unit at 40%. */
+  /* The loud tile: a 96px numeral with its unit at 38%. */
   .tile-numeral {
     margin: var(--space-2) 0 var(--space-3);
     white-space: nowrap;

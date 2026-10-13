@@ -69,7 +69,7 @@ function line<K extends keyof HTMLElementTagNameMap>(tag: K, cls: string, text: 
 }
 
 function trackArtist(t: LfmTrack): string {
-  return (t.artist && (t.artist["#text"] || t.artist.name)) || "unknown artist";
+  return (t.artist && (t.artist["#text"] || t.artist.name)) || "Unknown artist";
 }
 
 // last.fm gives every scrobble time twice: date["#text"] rendered in UTC,
@@ -332,7 +332,7 @@ function initWidget(root: HTMLElement): void {
     root.textContent = "";
     const label = els.label = el("p", "lastfm-label lastfm-swap");
     const coverLink = els.coverLink = el("a", "lastfm-cover-link");
-    coverLink.setAttribute("aria-label", "open the track on last.fm");
+    coverLink.setAttribute("aria-label", "Open the track on last.fm");
     stack = makeStack("lastfm-cover");
     coverLink.appendChild(stack);
     const title = els.title = el("h3", "lastfm-track-title lastfm-swap");
@@ -340,7 +340,7 @@ function initWidget(root: HTMLElement): void {
     const album = els.album = el("p", "lastfm-track-album lastfm-swap");
     const when = els.when = el("p", "data lastfm-when lastfm-swap");
     const more = els.more = el("a", "lastfm-more lastfm-swap");
-    more.textContent = "open on last.fm \u2197";
+    more.textContent = "Open on last.fm \u2197";
     root.appendChild(label);
     root.appendChild(coverLink);
     [title, artist, album, when, more].forEach((n) => root.appendChild(n));
@@ -385,8 +385,8 @@ function initWidget(root: HTMLElement): void {
 
   function renderNow(first: LfmTrack): void {
     const nowPlaying = !!(first["@attr"] && first["@attr"].nowplaying === "true");
-    const label = nowPlaying ? "now playing" : "last played";
-    const title = first.name || "unknown track";
+    const label = nowPlaying ? "Now playing" : "last played";
+    const title = first.name || "Unknown track";
     const artist = trackArtist(first);
     const album = first.album && first.album["#text"];
     const href = safeUrl(first.url);
@@ -428,7 +428,7 @@ function initWidget(root: HTMLElement): void {
     // to hand over to — and the next real track counts as a first paint again
     cancelSwap();
     textShown = false;
-    if (failed && !tileMode) setLabel("unavailable", "error");
+    if (failed && !tileMode) setLabel("Unavailable", "error");
     else setLabel("", "");
     setLine(els.title, text);
     setLine(els.artist, "");
@@ -457,7 +457,7 @@ function initWidget(root: HTMLElement): void {
 
     const info = el("span", "lastfm-history-info");
     const when = scrobbleTime(t);
-    info.appendChild(line("span", "lastfm-history-title", t.name || "unknown track"));
+    info.appendChild(line("span", "lastfm-history-title", t.name || "Unknown track"));
     info.appendChild(line("span", "lastfm-history-artist", trackArtist(t)));
     if (when) info.appendChild(when);
     card.appendChild(info);
@@ -506,7 +506,7 @@ function initWidget(root: HTMLElement): void {
     list.textContent = "";
     list.removeAttribute("aria-busy");
     if (!rest.length) {
-      list.appendChild(line("p", "lastfm-status", "nothing else scrobbled yet."));
+      list.appendChild(line("p", "lastfm-status", "Nothing else scrobbled yet."));
       return;
     }
     rest.forEach((t) => list.appendChild(historyCard(t)));
@@ -526,7 +526,7 @@ function initWidget(root: HTMLElement): void {
 
   function render(tracks: LfmTrack[] | null | undefined): void {
     if (!tracks || !tracks.length) {
-      if (!rendered) renderNotice("nothing scrobbled yet.");
+      if (!rendered) renderNotice("Nothing scrobbled yet.");
       rendered = true;
       return;
     }
@@ -571,7 +571,7 @@ function initWidget(root: HTMLElement): void {
       })
       .catch(() => {
         if (!rendered) fromCache();
-        if (!rendered) renderNotice("couldn't reach last.fm.", true);
+        if (!rendered) renderNotice("Could not reach last.fm.", true);
       });
   }
 

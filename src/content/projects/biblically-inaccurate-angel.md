@@ -2,7 +2,7 @@
 title: biblically inaccurate angel
 status: archive
 article: true
-description: fully 3D printed rocket designed and built in 72 hours. flew twice in 24 hours to prove rapid reusability is possible (take that, spacex :p).
+description: Fully 3D printed rocket designed and built in 72 hours. Flew twice in 24 hours to prove rapid reusability is possible (take that, SpaceX :p).
 date: 2022-07-09
 ---
 

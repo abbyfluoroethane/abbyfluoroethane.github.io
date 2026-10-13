@@ -31,10 +31,10 @@ const safeUrl = (w?: string) => {
       <label>Website (optional)<input type="url" name="website" maxlength="200" /></label>
       <label>Message <textarea name="message" required maxlength="1000" rows="3"></textarea></label>
       <div class="cf-turnstile" data-sitekey={site.guestbookTurnstileSitekey} data-theme="auto"></div>
-      <Button type="submit">sign the guestbook</Button>
+      <Button type="submit">Sign the guestbook</Button>
     </form>
   </Fragment>
-    <h2 class="entries-head">entries</h2>
+    <h2 class="entries-head">Entries</h2>
     <ul class="entries">
       {entries.map((entry) => {
         const url = safeUrl(entry.website);
@@ -120,7 +120,6 @@ const safeUrl = (w?: string) => {
   }
   .entry {
     padding: var(--space-4) 0;
-    border-top: 1px solid var(--line);
   }
   .entry h3,
   .entry p {

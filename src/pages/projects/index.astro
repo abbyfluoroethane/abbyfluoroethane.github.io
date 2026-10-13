@@ -22,8 +22,8 @@ const years = (p: Project) =>
   {loud?.data.stat && (
     <div class="loud-tile">
       <span class="overline">{loud.data.stat.overline ?? loud.data.title}</span>
-      <span class="numeral">{loud.data.stat.value}<small>{loud.data.stat.unit}</small></span>
-      <span class="small">
+      <span class="numeral">{loud.data.stat.value} <small>{loud.data.stat.unit}</small></span>
+      <span class="label">
         {href(loud) ? <a href={href(loud)}>{loud.data.stat.label}</a> : loud.data.stat.label}
       </span>
     </div>
@@ -42,10 +42,10 @@ const years = (p: Project) =>
               <p class="card-desc">{p.data.description}</p>
               <p class="card-meta">
                 {p.data.status === 'active'
-                  ? <span class="status ok">active</span>
-                  : <span class="status">archived</span>}
+                  ? <span class="status ok">Active</span>
+                  : <span class="status">Archived</span>}
                 {p.data.external_url && (
-                  <a class="card-link" href={p.data.external_url}>{p.data.url_text ?? 'external link'} ↗</a>
+                  <a class="card-link" href={p.data.external_url}>{p.data.url_text || 'External link'} ↗</a>
                 )}
               </p>
             </li>
