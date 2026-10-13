@@ -207,7 +207,8 @@
   --space-12: 48px; /* large section gap */
   --space-16: 64px; /* one tile */
   /* The page silhouette. One left edge: everything aligns to it. */
-  --page-margin: 120px; /* desktop; phones use --space-8 */
+  --page-margin: 120px; /* desktop */
+  --phone-margin: var(--space-4); /* 16px side margin on phones */
   --header-baseline: 100px; /* title baseline from the top */
   --content-top: 140px; /* content region from the top */
   --radius: 0;
