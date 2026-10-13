@@ -8,12 +8,12 @@
 
 <style>
   /* Metro dense packing: `dense` lets a square fill the gap that a wide or
-     large tile leaves. The tile sizes are the site's old Metro ones (150px)
-     moved onto the 4px grid: square 152, wide 312×152, large 312×312, with
-     the 8px tile gutter. auto-fill drops to fewer columns as the viewport
-     narrows, up to 4 columns. Empty cells are fine; no filler tiles. */
+     large tile leaves. Square --tile-1 (152px), wide 312×152, large --tile-2
+     (312px), with the 8px tile gutter. auto-fill drops to fewer columns as
+     the viewport narrows, up to 4 columns. Empty cells are fine; no filler
+     tiles. */
   .tile-grid {
-    --tile-unit: 152px;
+    --tile-unit: var(--tile-1);
     display: grid;
     grid-auto-flow: dense;
     grid-template-columns: repeat(auto-fill, var(--tile-unit));
@@ -22,9 +22,10 @@
     max-width: calc(4 * var(--tile-unit) + 3 * var(--tile-gap));
   }
   /* Phone: three columns that run out to the screen edges, the Windows
-     Phone Start screen. The field leaves the 32px page margin and keeps
-     one 8px tile gap to the glass on each side. Text keeps the margin. */
-  @media (max-width: 767px) {
+     Phone Start screen. Layout exemption 2 of the style guide: below 600px
+     the field leaves the 32px page margin and keeps one 8px tile gap to the
+     glass on each side. Text keeps the margin. */
+  @media (max-width: 599px) {
     .tile-grid {
       --tile-unit: calc((100vw - 4 * var(--tile-gap)) / 3);
       grid-template-columns: repeat(3, var(--tile-unit));

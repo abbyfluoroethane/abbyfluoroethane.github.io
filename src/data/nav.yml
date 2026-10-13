@@ -2,8 +2,9 @@
 # subpages follows it too.
 #
 # fields:
-#   name   — the tile's overline: its name, set in mono uppercase at the top
-#            left (required). A url that leaves the site gets a ↗ after it.
+#   name   — the tile's overline: its name, lowercase by hand, set in mono
+#            uppercase (required). A navigation tile puts it bottom left, a
+#            live tile top left. A url that leaves the site gets a ↗ after it.
 #   url    — where the tile links (required)
 #   size   — square (1×1, 152px), wide (2×1, 312×152) or large (2×2,
 #            312×312). default square.
@@ -35,7 +36,7 @@
   fill: mantle
   navbar: true
 
-- name: resume
+- name: résumé
   url: /resume/
   fill: mantle
   navbar: true

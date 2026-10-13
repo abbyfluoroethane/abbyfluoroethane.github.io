@@ -1,5 +1,5 @@
 ---
-title: "Op-Ed: Tribe's use of AI imagery sets dangerous precedent"
+title: "op-ed: tribe's use of AI imagery sets dangerous precedent"
 date: 2025-04-21
 ---
 

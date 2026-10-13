@@ -8,7 +8,7 @@ date: 2025-07-08
 stat:
   value: "2000"
   unit: N
-  label: bipropellant engine, 400 psi chamber
+  label: Bipropellant engine, 400 psi chamber
   overline: ALEx-1 · hot fire plan
 ---
 

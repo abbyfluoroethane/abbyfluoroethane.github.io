@@ -80,7 +80,7 @@ const recentEntries = (await getGuestbook()).slice(0, 3);
             </TileLive>
           </Tile>
         );
-        return <Tile {...tile} external={s.url.startsWith('http')} />;
+        return <Tile {...tile} nav external={s.url.startsWith('http')} />;
       })}
     </TileGrid>
   </div>
@@ -118,7 +118,7 @@ const recentEntries = (await getGuestbook()).slice(0, 3);
   .blog-desc {
     --tile-lines: 2;
   }
-  @media (max-width: 767px) {
+  @media (max-width: 599px) {
     .blog-desc {
       --tile-lines: 1;
     }

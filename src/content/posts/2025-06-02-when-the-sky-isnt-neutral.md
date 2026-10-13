@@ -1,5 +1,5 @@
 ---
-title: When the sky isn't neutral
+title: when the sky isn't neutral
 date: 2025-06-02
 ---
 
