@@ -24,7 +24,6 @@ interface CaptionEls {
   album?: HTMLElement;
   when?: HTMLElement;
   coverLink?: HTMLAnchorElement;
-  more?: HTMLAnchorElement;
 }
 
 // matches .art-layer's opacity transition in LastfmWidget.astro — the outgoing cover
@@ -283,7 +282,7 @@ function initWidget(root: HTMLElement): void {
   let swapId = 0;
 
   function fadeCaption(out: boolean): void {
-    [els.label, els.title, els.artist, els.album, els.when, els.more].forEach((n) => {
+    [els.label, els.title, els.artist, els.album, els.when].forEach((n) => {
       if (n) n.classList.toggle("is-swapping", out);
     });
   }
@@ -339,17 +338,16 @@ function initWidget(root: HTMLElement): void {
     const artist = els.artist = el("p", "lastfm-track-artist lastfm-swap");
     const album = els.album = el("p", "lastfm-track-album lastfm-swap");
     const when = els.when = el("p", "data lastfm-when lastfm-swap");
-    const more = els.more = el("a", "lastfm-more lastfm-swap");
-    more.textContent = "Open on last.fm \u2197";
+    // the cover is the one link to the track; the aside already links the
+    // last.fm profile, so there is no separate "open on last.fm" link
     root.appendChild(label);
     root.appendChild(coverLink);
-    [title, artist, album, when, more].forEach((n) => root.appendChild(n));
+    [title, artist, album, when].forEach((n) => root.appendChild(n));
     setBar(label, "45%");
     setBar(title, "80%");
     setBar(artist, "55%");
     setBar(album, "40%");
     when.hidden = true;
-    more.hidden = true;
   }
 
   // on the music page the state is a status: a square plus the label, never
@@ -366,7 +364,7 @@ function initWidget(root: HTMLElement): void {
   }
 
   function setCoverLink(href: string): void {
-    [els.coverLink, els.more].forEach((a) => {
+    [els.coverLink].forEach((a) => {
       if (!a) return;
       if (href) {
         a.href = href;
@@ -380,7 +378,6 @@ function initWidget(root: HTMLElement): void {
         a.removeAttribute("rel");
       }
     });
-    if (els.more) els.more.hidden = !href;
   }
 
   function renderNow(first: LfmTrack): void {
