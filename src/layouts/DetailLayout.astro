@@ -9,7 +9,8 @@ import { inlineMarkdown } from '../lib/inlineMarkdown';
 
 export interface Props {
   title: string;
-  /** Kept for callers; the header shows the item title with the back link. */
+  /** The category ("blog", "projects"): the hero above the nav. The item
+      title goes below the nav. */
   appName?: string;
   back: { href: string; label: string };
   /** Posts: the publish date, for the article meta tag. */
@@ -27,6 +28,7 @@ export interface Props {
 }
 const {
   title,
+  appName,
   back,
   publishedTime,
   subtitle,
@@ -52,7 +54,7 @@ const items = contents.map((h) => ({
   num: h.depth === numbered ? ++n : undefined,
 }));
 ---
-<Base {title} {description} {mathjax} {back} ogType="article" {publishedTime}>
+<Base {title} {appName} {description} {mathjax} {back} ogType="article" {publishedTime}>
   <div class="post-page">
     <aside class="rail">
       <div class="rail-top">
