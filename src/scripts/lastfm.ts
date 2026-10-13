@@ -324,10 +324,6 @@ function initWidget(root: HTMLElement): void {
     if (tileEl) {
       stack = makeStack("tile-art");
       tileEl.insertBefore(stack, tileEl.firstChild);
-      progressBar = el("span", "tile-progress");
-      progressBar.setAttribute("aria-hidden", "true");
-      progressBar.hidden = true;
-      tileEl.appendChild(progressBar);
     }
   }
 
@@ -354,13 +350,13 @@ function initWidget(root: HTMLElement): void {
     when.hidden = true;
   }
 
-  // on the music page the state is a status: a square plus the label, never
-  // colour alone. "last played" is plain overline text, it has no state.
+  // the state is a status: a square plus the label, never colour alone.
+  // "last played" is plain overline text, it has no state. the home tile
+  // and the music page show it the same way.
   function setLabel(text: string, kind: "ok" | "error" | ""): void {
     const node = els.label;
     if (!node) return;
     setLine(node, text);
-    if (tileMode) return;
     node.classList.toggle("status", !!kind);
     node.classList.toggle("ok", kind === "ok");
     node.classList.toggle("error", kind === "error");
@@ -437,8 +433,6 @@ function initWidget(root: HTMLElement): void {
     setLine(els.when, "");
     setCoverLink("");
     setArt(stack, "");
-    progressKey = null;
-    hideProgress();
     // a message is as settled as a track — nothing else is on its way
     root.removeAttribute("aria-busy");
     clearHistory();
@@ -515,101 +509,6 @@ function initWidget(root: HTMLElement): void {
     rest.forEach((t) => list.appendChild(historyCard(t)));
   }
 
-  /* ---- song progress (home tile) ----
-     last.fm reports what is playing, not where in the song you are, so the
-     bar works from two signals and hides when it has neither:
-     1. exact: a scrobble goes in once half the song has played, and its
-        timestamp is when the song started. once the now-playing song also
-        shows up as the latest scrobble, the bar uses that start.
-     2. close: when the song changes while the page is open, it started
-        within one 30s poll of that moment, so the bar starts from the middle
-        of that window and switches to 1 when the scrobble lands.
-     the previous song's start plus its length is not used: a pause, a gap
-     or a skipped song that never scrobbled puts that guess too early, and
-     the bar runs ahead of the music. */
-
-  let progressBar: HTMLElement | null = null;
-  let progressTimer: number | null = null;
-  let progressKey: string | null = null;
-  let progressSeenLive = 0;
-  const lengths = new Map<string, Promise<number>>();
-
-  function trackKey(t: LfmTrack): string {
-    return trackArtist(t) + "\u001f" + (t.name || "");
-  }
-
-  // track length in ms from track.getInfo, 0 when last.fm doesn't know it
-  function trackLength(t: LfmTrack): Promise<number> {
-    const k = trackKey(t);
-    let p = lengths.get(k);
-    if (!p) {
-      const url = "https://ws.audioscrobbler.com/2.0/?method=track.getInfo"
-        + "&artist=" + encodeURIComponent(trackArtist(t))
-        + "&track=" + encodeURIComponent(t.name || "")
-        + "&api_key=" + encodeURIComponent(key) + "&format=json";
-      p = fetch(url)
-        .then((r) => r.json() as Promise<{ track?: { duration?: string } }>)
-        .then((d) => parseInt((d && d.track && d.track.duration) || "0", 10) || 0)
-        .catch(() => 0);
-      lengths.set(k, p);
-    }
-    return p;
-  }
-
-  function hideProgress(): void {
-    if (progressTimer) {
-      clearInterval(progressTimer);
-      progressTimer = null;
-    }
-    if (progressBar) progressBar.hidden = true;
-  }
-
-  function showProgress(start: number, length: number): void {
-    const bar = progressBar;
-    if (!bar) return;
-    const tick = (): void => {
-      const done = Math.min(1, Math.max(0, (Date.now() - start) / length));
-      bar.style.setProperty("--progress", (done * 100).toFixed(2) + "%");
-    };
-    hideProgress();
-    tick();
-    bar.hidden = false;
-    progressTimer = window.setInterval(tick, 1000);
-  }
-
-  let progressExact = false;
-
-  function updateProgress(tracks: LfmTrack[]): void {
-    if (!progressBar) return;
-    const first = tracks[0];
-    if (!(first["@attr"] && first["@attr"].nowplaying === "true")) {
-      progressKey = null;
-      hideProgress();
-      return;
-    }
-    const k = trackKey(first);
-    const scrobbled = tracks[1] && trackKey(tracks[1]) === k && tracks[1].date && tracks[1].date.uts
-      ? parseInt(tracks[1].date.uts, 10) * 1000 : 0;
-    if (k === progressKey && (progressExact || !scrobbled)) return; // nothing new
-    if (k !== progressKey) {
-      // a change seen while the page is open: the song started within the
-      // last poll interval, so take the middle of it
-      progressSeenLive = progressKey !== null ? Date.now() - 15000 : 0;
-      progressKey = k;
-      progressExact = false;
-    }
-    trackLength(first).then((length) => {
-      if (k !== progressKey) return; // a newer song landed meanwhile
-      const start = scrobbled || progressSeenLive;
-      if (!length || !start || Date.now() - start > length + 10000) {
-        hideProgress();
-        return;
-      }
-      progressExact = !!scrobbled;
-      showProgress(start, length);
-    });
-  }
-
   /* ---- data ---- */
 
   // the poll runs every 30s but the answer usually hasn't changed. rebuilding
@@ -665,10 +564,6 @@ function initWidget(root: HTMLElement): void {
         if (!tracks) throw new Error("no track data");
         if (!Array.isArray(tracks)) tracks = [tracks];
         render(tracks);
-        // fresh payloads only, and every one of them: a cached payload is
-        // from an earlier visit, and an unchanged one can still carry the
-        // scrobble that pins the song's start
-        updateProgress(tracks);
         localStorage.setItem(cacheKey, JSON.stringify({ tracks, at: Date.now() }));
       })
       .catch(() => {

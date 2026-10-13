@@ -48,15 +48,18 @@ const { strip = false, cycle = false } = Astro.props;
   }
 
   /* Music: pinned to the bottom, straight on the tinted cover (Tile.astro
-     sets the veil). The lastfm.ts label and album lines stay out; title and
-     artist stay. */
+     sets the veil): the state line, the title and the artist. */
   .tile-live.strip {
     position: absolute;
     inset: auto 0 0 0;
     margin: 0;
     padding: var(--space-2) var(--space-3);
   }
-  .tile-live.strip :global(.tile-live-label),
+  /* The state line ("Now playing" with its status square, or the
+     "last played" overline) sits above the title. The album stays out. */
+  .tile-live.strip :global(.tile-live-label) {
+    margin: 0 0 var(--space-1);
+  }
   .tile-live.strip :global(.tile-live-album) {
     display: none;
   }
