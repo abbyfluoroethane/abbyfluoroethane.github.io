@@ -1,21 +1,20 @@
 # Third-party notices
 
-This site ships artwork from these projects.
+This site ships fonts and artwork from these projects.
 
-## Metro UI CSS 3.0.18 icons
+## IBM Plex
 
-`src/components/Icon.astro` holds glyph outlines copied from the Metro UI CSS
-3.0.18 icon font (`fonts/metro.svg`).
+`src/assets/fonts/` holds IBM Plex Sans 3.005 (@ibm/plex-sans 1.1.0), IBM Plex
+Serif 3.006 (@ibm/plex-serif 2.0.0) and IBM Plex Mono 2.005 (@ibm/plex-mono
+2.5.0), as IBM ships them.
 
-The MIT License (MIT). Copyright (c) 2012-2020 Serhii Pimenov.
-<https://github.com/olton/metroui/blob/master/LICENSE>
+SIL Open Font License 1.1. Copyright © 2017 IBM Corp. with Reserved Font Name
+"Plex". The full license is in `licenses/IBM-Plex-OFL.txt`.
 
-## WinJS 3.0.0 back button
+## Phosphor Icons
 
-`src/components/BackButton.astro` uses the back button geometry from WinJS
-3.0.0 `css/ui-dark.css` (`.win-backbutton`) and the arrow glyph U+E0D5 from
-WinJS 3.0.0 `fonts/Symbols.ttf`.
+`src/components/phosphor.ts` holds icon outlines from Phosphor Icons 2.1.1
+(@phosphor-icons/core), as shipped.
 
-Copyright (c) Microsoft Open Technologies, Inc. Licensed under the Apache
-License, Version 2.0. <https://www.apache.org/licenses/LICENSE-2.0>
-Source: <https://cdn.jsdelivr.net/npm/winjs@3.0.0/>
+The MIT License. Copyright (c) 2023 Phosphor Icons. The full license is in
+`licenses/Phosphor-MIT.txt`.
