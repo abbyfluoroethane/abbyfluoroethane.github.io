@@ -1,6 +1,6 @@
 ---
-// Projects as a panorama, like the blog: an "active" and an "archive" column
-// under a giant faded label, like the Zune panorama's section titles.
+// Projects: one loud tile (the first project with a stat), then "active" and
+// "archive" lists as rows. The rest of the view is base.
 import type { CollectionEntry } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import { getProjects } from '../../lib/collections';
@@ -8,6 +8,7 @@ import { getProjects } from '../../lib/collections';
 type Project = CollectionEntry<'projects'>;
 
 const projects = await getProjects();
+const loud = projects.find((p) => p.data.stat);
 const columns = [
   { id: 'active', projects: projects.filter((p) => p.data.status === 'active') },
   { id: 'archive', projects: projects.filter((p) => p.data.status === 'archive') },
@@ -18,19 +19,33 @@ const years = (p: Project) =>
   p.data.status === 'active' ? `${p.data.date.getUTCFullYear()} – present` : `${p.data.date.getUTCFullYear()}`;
 ---
 <Base title="projects">
+  {loud?.data.stat && (
+    <div class="loud-tile">
+      <span class="overline">{loud.data.stat.overline ?? loud.data.title}</span>
+      <span class="numeral">{loud.data.stat.value}<small>{loud.data.stat.unit}</small></span>
+      <span class="small">
+        {href(loud) ? <a href={href(loud)}>{loud.data.stat.label}</a> : loud.data.stat.label}
+      </span>
+    </div>
+  )}
   <div class="columns">
     {columns.map(({ id, projects }) => (
       <section aria-labelledby={id}>
-        <h2 id={id} class="label">{id}</h2>
+        <h2 id={id} class="overline muted">{id}</h2>
         <ul>
           {projects.map((p) => (
-            <li>
-              <h3>{href(p) ? <a href={href(p)}>{p.data.title}</a> : p.data.title}</h3>
-              <p class="desc">{p.data.description}</p>
-              <p class="caption">
-                <span>{years(p)}</span>
+            <li class="card">
+              <div class="card-head">
+                <h3 class="card-title">{href(p) ? <a href={href(p)}>{p.data.title}</a> : p.data.title}</h3>
+                <p class="card-date">{years(p)}</p>
+              </div>
+              <p class="card-desc">{p.data.description}</p>
+              <p class="card-meta">
+                {p.data.status === 'active'
+                  ? <span class="status ok">active</span>
+                  : <span class="status">archived</span>}
                 {p.data.external_url && (
-                  <a href={p.data.external_url}>{p.data.url_text ?? 'external link'} →</a>
+                  <a class="card-link" href={p.data.external_url}>{p.data.url_text ?? 'external link'} ↗</a>
                 )}
               </p>
             </li>
@@ -42,32 +57,35 @@ const years = (p: Project) =>
 </Base>
 
 <style>
-  h3 a {
-    color: var(--ctp-text);
-  }
-  h3 a:hover {
-    color: var(--ctp-pink);
-    text-decoration: none;
-  }
-  .caption {
+  /* The loud tile: raised, a 6px energy bar across the top edge. 2 x 2 tile
+     units at least. Text stays --text on raised. */
+  .loud-tile {
+    position: relative;
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    column-gap: var(--space-4);
-    margin: 0;
-    font-size: var(--type-caption);
-    line-height: var(--type-caption-leading);
-    color: var(--ctp-subtext0);
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--space-2);
+    box-sizing: border-box;
+    width: fit-content;
+    min-width: calc(2 * var(--tile-unit) + var(--tile-gap));
+    min-height: calc(2 * var(--tile-unit) + var(--tile-gap));
+    margin: 0 0 var(--space-12);
+    padding: var(--space-3) var(--space-4) var(--space-3);
+    padding-top: calc(var(--bar-edge) + var(--space-3));
+    background: var(--raised);
+    color: var(--text);
   }
-  /* Links: a full touch target each. */
-  .caption a {
-    display: inline-flex;
-    align-items: center;
-    min-height: var(--touch-target);
-    font-weight: var(--type-title-weight);
+  .loud-tile::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: var(--bar-edge);
+    background: var(--energy-bar);
+  }
+  .loud-tile .numeral {
+    font-size: 4.5rem; /* 72px: the low end of the numeral range */
   }
 
-  /* Phone and tablet: the columns stack. Desktop: side by side. */
   .columns {
     display: grid;
     gap: var(--space-12) var(--space-16);
@@ -77,25 +95,8 @@ const years = (p: Project) =>
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
-  .columns section {
-    container-type: inline-size; /* the label sizes to its column */
-  }
-  .label {
-    /* A decoration size outside the ramp, like the blog's year numerals.
-       "archive" in Selawik Light is about 3.6em wide, so 26cqi fits. */
+  h2 {
     margin: 0 0 var(--space-4);
-    overflow: hidden;
-    white-space: nowrap;
-    font-size: min(clamp(4rem, 9vw, 7rem), 26cqi); /* 64-112px */
-    font-weight: 300;
-    line-height: 1;
-    letter-spacing: -0.04em;
-    color: var(--ctp-surface1);
-  }
-  @media (prefers-color-scheme: dark) {
-    .label {
-      color: var(--ctp-surface0);
-    }
   }
   ul {
     margin: 0;
@@ -106,11 +107,9 @@ const years = (p: Project) =>
     max-width: none;
     margin-bottom: var(--space-6);
   }
-  h3 {
-    margin: 0;
-  }
-  .desc {
-    margin: var(--space-1) 0 0;
-    color: var(--ctp-subtext1);
+  /* A link next to the stretched title link stays clickable. */
+  .card-link {
+    position: relative;
+    z-index: 1;
   }
 </style>

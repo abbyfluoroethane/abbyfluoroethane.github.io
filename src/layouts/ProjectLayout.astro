@@ -23,34 +23,24 @@ const year = date.getUTCFullYear();
   back={{ href: '/projects/', label: 'back to projects' }}
 >
   <Fragment slot="meta">
-    <p class="year">{year}</p>
+    <p class="overline muted">{status === 'active' ? `${year} – present` : year}</p>
     <p class="rail-caption">
-      <span class={`status-pill status-${status}`}>{status}</span>
-      {status === 'active' && <span> · ongoing</span>}
+      {status === 'active'
+        ? <span class="status ok">active</span>
+        : <span class="status">archived</span>}
     </p>
     {external_url && (
-      <p class="link"><Button href={external_url}>{url_text ?? 'external link'}</Button></p>
+      <p class="link"><Button href={external_url}>{url_text ?? 'external link'} ↗</Button></p>
     )}
   </Fragment>
   <slot />
 </DetailLayout>
 
 <style>
-  /* The start year, at the size of the day number on a post. */
-  .year {
+  .overline {
     margin: 0;
-    font-size: var(--type-title-lg);
-    font-weight: var(--type-title-lg-weight);
-    line-height: var(--type-header-leading);
-    letter-spacing: -0.03em;
   }
   .link {
     margin: var(--space-3) 0 0;
-  }
-  @media (min-width: 768px) {
-    .year {
-      font-size: var(--type-header);
-      font-weight: var(--type-header-weight);
-    }
   }
 </style>

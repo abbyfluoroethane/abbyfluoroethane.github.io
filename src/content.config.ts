@@ -46,6 +46,16 @@ const projects = defineCollection({
       .optional()
       .transform((v) => v || undefined),
     url_text: z.string().optional(),
+    // One headline figure. The projects page shows the first project that has one
+    // as its loud tile.
+    stat: z
+      .object({
+        value: z.string(),
+        unit: z.string(),
+        label: z.string(),
+        overline: z.string().optional(),
+      })
+      .optional(),
   }),
 });
 
@@ -56,9 +66,8 @@ const nav = defineCollection({
     order: z.number(),
     name: z.string(),
     url: z.string(),
-    icon: z.string(),
     size: z.enum(['square', 'wide', 'large']).default('square'),
-    color: z.string().default('pink'),
+    fill: z.enum(['raised', 'mantle']).default('raised'),
     navbar: z.boolean().default(true),
   }),
 });
