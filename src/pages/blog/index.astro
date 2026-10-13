@@ -22,7 +22,7 @@ const summaryOf = (post: typeof latest) =>
   post.data.summary ?? truncateSentences(excerpt(post.body), 28);
 ---
 <Base title="blog">
-  <article class="hero">
+  <article class="latest">
     <a class="row" href={`/blog/${latest.id}/`}>
       <p class="data muted">
         <time datetime={formatDate(latest.data.date)}>{formatDate(latest.data.date)}</time>
@@ -107,22 +107,22 @@ const summaryOf = (post: typeof latest) =>
     text-transform: lowercase;
   }
 
-  /* The hero sits on the same left edge as the page: the padding of the row
+  /* The latest post sits on the same left edge as the page: the padding of the row
      is pulled back, so the text lines up with the title above. */
-  .hero {
+  .latest {
     margin: var(--space-8) calc(-1 * var(--space-4)) var(--space-12);
   }
-  .hero .row {
+  .latest .row {
     padding: var(--space-4);
   }
-  .hero .title {
+  .latest .title {
     max-width: 14em;
     margin: var(--space-2) 0 var(--space-3);
   }
-  .hero .summary {
+  .latest .summary {
     max-width: 52ch;
   }
-  .hero p.data {
+  .latest p.data {
     margin: 0;
   }
 
