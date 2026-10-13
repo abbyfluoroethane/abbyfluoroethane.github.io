@@ -1,6 +1,6 @@
 ---
-// Projects: one loud tile (the first project with a stat), then "active" and
-// "archive" lists as rows. The rest of the view is base.
+// Projects: "active" and "archive" lists as rows. No loud element; the
+// view is base.
 import type { CollectionEntry } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import { getProjects } from '../../lib/collections';
@@ -8,7 +8,6 @@ import { getProjects } from '../../lib/collections';
 type Project = CollectionEntry<'projects'>;
 
 const projects = await getProjects();
-const loud = projects.find((p) => p.data.stat);
 const columns = [
   { id: 'active', projects: projects.filter((p) => p.data.status === 'active') },
   { id: 'archive', projects: projects.filter((p) => p.data.status === 'archive') },
@@ -19,15 +18,6 @@ const years = (p: Project) =>
   p.data.status === 'active' ? `${p.data.date.getUTCFullYear()} – present` : `${p.data.date.getUTCFullYear()}`;
 ---
 <Base title="projects">
-  {loud?.data.stat && (
-    <div class="loud-tile">
-      <span class="overline">{loud.data.stat.overline ?? loud.data.title}</span>
-      <span class="numeral">{loud.data.stat.value} <small>{loud.data.stat.unit}</small></span>
-      <span class="small">
-        {href(loud) ? <a href={href(loud)}>{loud.data.stat.label}</a> : loud.data.stat.label}
-      </span>
-    </div>
-  )}
   <div class="columns">
     {columns.map(({ id, projects }) => (
       <section aria-labelledby={id}>
@@ -57,33 +47,6 @@ const years = (p: Project) =>
 </Base>
 
 <style>
-  /* The loud tile: raised, a 6px energy bar across the top edge. A 2×2
-     tile (--tile-2) at least, so the numeral is 96px. Text stays --text on
-     raised. */
-  .loud-tile {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: var(--space-2);
-    box-sizing: border-box;
-    width: fit-content;
-    min-width: var(--tile-2);
-    min-height: var(--tile-2);
-    margin: 0 0 var(--space-12);
-    padding: var(--space-3) var(--space-4) var(--space-3);
-    padding-top: calc(var(--bar-edge) + var(--space-3));
-    background: var(--raised);
-    color: var(--text);
-  }
-  .loud-tile::before {
-    content: '';
-    position: absolute;
-    inset: 0 0 auto 0;
-    height: var(--bar-edge);
-    background: var(--energy-bar);
-  }
-
   .columns {
     display: grid;
     gap: var(--space-12) var(--space-16);
