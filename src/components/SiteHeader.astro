@@ -69,11 +69,23 @@ const Tag = plainTitle ? 'p' : 'h1';
     margin: 0;
   }
   .overline-row a {
+    position: relative;
     display: inline-flex;
     align-items: center;
-    min-height: var(--touch-target);
     color: var(--muted);
     text-decoration: none;
+  }
+  /* The row is one 16px line on every page, links or not. A pseudo-element
+     gives each link a 40px touch target without making the row taller. */
+  .overline-row :global(.header-back) {
+    position: relative;
+    min-height: 0;
+  }
+  .overline-row a::after,
+  .overline-row :global(.header-back)::after {
+    content: '';
+    position: absolute;
+    inset: calc((var(--overline-size) * var(--overline-leading) - var(--touch-target)) / 2) 0;
   }
   .overline-row a:hover {
     color: var(--text);
@@ -154,12 +166,6 @@ const Tag = plainTitle ? 'p' : 'h1';
   .overline-row {
     margin-bottom: var(--space-2);
   }
-  /* The links keep a 40px touch target, but the extra height overhangs the
-     16px row, so every page has the same spacing above and below it. */
-  .overline-row a,
-  .overline-row :global(.header-back) {
-    margin-block: calc((var(--overline-size) * var(--overline-leading) - var(--touch-target)) / 2);
-  }
 
   /* Desktop: the title baseline sits --header-baseline (100px) from the top.
      Plex Sans: unitsPerEm 1000, ascender 1025, descender 275, so the content
@@ -185,25 +191,19 @@ const Tag = plainTitle ? 'p' : 'h1';
         )
       );
     }
+    /* Detail pages: the same 32px floor as the hubs, so the overline sits
+       at the same height on every page. */
     header.detail {
-      padding-top: calc(
-        var(--header-baseline) - var(--overline-line) - var(--space-1)
-        - (var(--title-size) * ((var(--title-leading) - 1.3) / 2 + 1.025))
+      padding-top: max(
+        var(--space-8),
+        calc(
+          var(--header-baseline) - var(--overline-line) - var(--space-1)
+          - (var(--title-size) * ((var(--title-leading) - 1.3) / 2 + 1.025))
+        )
       );
     }
     .overline-row {
       margin-bottom: var(--space-1);
-    }
-    /* The overline row is 16px tall on desktop: the touch target is for phones. */
-    .overline-row a {
-      min-height: 0;
-    }
-    .overline-row :global(.header-back) {
-      min-height: 0;
-    }
-    .overline-row a,
-    .overline-row :global(.header-back) {
-      margin-block: 0;
     }
     /* No nav on the home page: leave a group gap under the hero. */
     header.home {
