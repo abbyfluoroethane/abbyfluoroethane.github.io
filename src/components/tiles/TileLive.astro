@@ -3,7 +3,7 @@
 // page (slot) or from src/scripts/lastfm.ts, so they are styled with :global
 // under this scoped parent. Text is always the text token, full opacity.
 interface Props {
-  /** Pin to the bottom of the tile on a solid strip (the music tile). */
+  /** Pin to the bottom of the tile, over the tinted cover (the music tile). */
   strip?: boolean;
   /** Items in a .tile-cycle-viewport take turns; src/scripts/home.ts drives it. */
   cycle?: boolean;
@@ -47,14 +47,14 @@ const { strip = false, cycle = false } = Astro.props;
     display: block;
   }
 
-  /* Music: a solid strip pinned to the bottom, over the cover. The
-     lastfm.ts label and album lines stay out; title and artist stay. */
+  /* Music: pinned to the bottom, straight on the tinted cover (Tile.astro
+     sets the veil). The lastfm.ts label and album lines stay out; title and
+     artist stay. */
   .tile-live.strip {
     position: absolute;
     inset: auto 0 0 0;
     margin: 0;
     padding: var(--space-2) var(--space-3);
-    background-color: var(--raised);
   }
   .tile-live.strip :global(.tile-live-label),
   .tile-live.strip :global(.tile-live-album) {
