@@ -7,22 +7,25 @@
 </script>
 
 <style>
-  /* Metro dense packing on the 64 + 8px pitch: `dense` lets a 2×1 fill the
-     gap that a 2×2 leaves. Desktop is 8 units wide: 8 × 64 + 7 × 8 = 568px.
-     Empty cells are fine; no filler tiles. */
+  /* Metro dense packing: `dense` lets a square fill the gap that a wide or
+     large tile leaves. The tile sizes are the site's old Metro ones (150px)
+     moved onto the 4px grid: square 152, wide 312×152, large 312×312, with
+     the 8px tile gutter. auto-fill drops to fewer columns as the viewport
+     narrows, up to 4 columns. Empty cells are fine; no filler tiles. */
   .tile-grid {
+    --tile-unit: 152px;
     display: grid;
     grid-auto-flow: dense;
-    grid-template-columns: repeat(8, var(--tile-unit));
+    grid-template-columns: repeat(auto-fill, var(--tile-unit));
     grid-auto-rows: var(--tile-unit);
     gap: var(--tile-gap);
+    max-width: calc(4 * var(--tile-unit) + 3 * var(--tile-gap));
   }
-  /* Phone: 4 units fill the width inside the 32px gutters, so the unit
-     scales up from 64px. 1:1 and 2:1 ratios stay. */
+  /* Phone: three columns that fill the width inside the 32px gutters. */
   @media (max-width: 767px) {
     .tile-grid {
-      --tile-unit: calc((100vw - 2 * var(--space-8) - 3 * var(--tile-gap)) / 4);
-      grid-template-columns: repeat(4, var(--tile-unit));
+      --tile-unit: calc((100vw - 2 * var(--space-8) - 2 * var(--tile-gap)) / 3);
+      grid-template-columns: repeat(3, var(--tile-unit));
     }
   }
 </style>

@@ -5,16 +5,20 @@
 interface Props {
   /** Pin to the bottom of the tile on a solid strip (the music tile). */
   strip?: boolean;
+  /** Items in a .tile-cycle-viewport take turns; src/scripts/home.ts drives it. */
+  cycle?: boolean;
 }
-const { strip = false } = Astro.props;
+const { strip = false, cycle = false } = Astro.props;
 ---
-<div class:list={['tile-live', { strip }]}><slot /></div>
+<div class:list={['tile-live', { strip, 'tile-cycle': cycle }]}><slot /></div>
 
 <style>
   .tile-live {
     position: relative;
     z-index: 1;
     min-width: 0;
+    min-height: 0;
+    overflow: hidden;
     margin-top: var(--space-1);
     color: var(--text);
   }
@@ -70,5 +74,42 @@ const { strip = false } = Astro.props;
   }
   .tile-live :global(.lastfm-widget-tile) {
     margin: 0;
+  }
+  .tile-live :global(.tile-live-years) {
+    margin: 0 0 var(--space-1);
+  }
+
+  /* Cycle: the viewport clips the items. An item rests below it, slides up
+     into view when active and up and out when leaving (home.ts). The
+     transition sits on the two moving states only, so an item that finishes
+     leaving snaps back below without sliding down. */
+  .tile-live.tile-cycle {
+    flex: 1;
+  }
+  .tile-live :global(.tile-cycle-viewport) {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+  .tile-live :global(.tile-cycle-item) {
+    position: absolute;
+    inset: 0;
+    transform: translateY(100%);
+  }
+  .tile-live :global(.tile-cycle-item.is-active),
+  .tile-live :global(.tile-cycle-item.is-leaving) {
+    transition: transform 0.55s var(--ease-metro);
+  }
+  .tile-live :global(.tile-cycle-item.is-active) {
+    transform: translateY(0);
+  }
+  .tile-live :global(.tile-cycle-item.is-leaving) {
+    transform: translateY(-100%);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .tile-live :global(.tile-cycle-item.is-active),
+    .tile-live :global(.tile-cycle-item.is-leaving) {
+      transition: none;
+    }
   }
 </style>

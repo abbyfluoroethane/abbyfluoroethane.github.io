@@ -82,6 +82,7 @@ const { size = 'square', fill = 'raised', href, label, loud = false, external = 
   .tile-label {
     position: relative;
     z-index: 2;
+    flex: none; /* the body clips first, never the overline */
     display: block;
     white-space: nowrap;
     overflow: hidden;
