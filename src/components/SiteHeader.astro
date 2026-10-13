@@ -2,7 +2,9 @@
 // The one site header. Base.astro renders it on every page, the 404
 // included. The Metro header: an overline over a big lowercase title, then
 // the nav as a row of overline links. Hub pages use the hero (it may run off the right
-// edge); detail pages (`back` set) use the title style and wrap. The home
+// edge). Detail pages (`back` set) show their category ("blog",
+// "projects") as the hero, and the item's own title below the nav in the
+// title style. The home
 // page shows the site name as the overline, its greeting as the hero, and
 // no nav.
 import { site } from '../site';
@@ -25,7 +27,8 @@ const isHome = path === '/';
 const isCurrent = (url: string) =>
   path === url || (['/blog/', '/projects/'].includes(url) && path.startsWith(url));
 const nav = (await getNav()).filter((s) => s.navbar);
-const Tag = plainTitle ? 'p' : 'h1';
+// A detail page's h1 is the item title below the nav, so its hero is a <p>.
+const Tag = plainTitle || back ? 'p' : 'h1';
 ---
 <header class:list={{ home: !title, detail: !!back }}>
   {title ? (
@@ -34,7 +37,7 @@ const Tag = plainTitle ? 'p' : 'h1';
         <a href="/">{site.title}</a>
         {back && <BackButton class="header-back" href={back.href} label={back.label} />}
       </p>
-      <Tag class:list={['page-title', back ? 'title' : 'hero']}>{appName ?? title}</Tag>
+      <Tag class="page-title hero">{appName ?? title}</Tag>
     </>
   ) : (
     <>
@@ -51,10 +54,12 @@ const Tag = plainTitle ? 'p' : 'h1';
     </nav>
   )}
 </header>
+{back && title && <h1 class="detail-title title">{title}</h1>}
 
 <style>
   .overline-row,
   .page-title,
+  .detail-title,
   nav {
     animation: metro-enter 0.7s var(--ease-metro) backwards;
   }
@@ -103,9 +108,11 @@ const Tag = plainTitle ? 'p' : 'h1';
       white-space: nowrap;
     }
   }
-  /* A detail title wraps. */
-  .title {
+  /* The detail item title: below the nav, title style, wraps. 24px above
+     the page content, the same gap as between the nav and the title. */
+  .detail-title {
     max-width: 20em;
+    margin: 0 0 var(--space-6);
   }
 
   /* Nav: type as navigation. Overline links in one row. Phones: one line that
@@ -186,6 +193,7 @@ const Tag = plainTitle ? 'p' : 'h1';
   @media (prefers-reduced-motion: reduce) {
     .overline-row,
     .page-title,
+    .detail-title,
     nav {
       animation: none;
     }
