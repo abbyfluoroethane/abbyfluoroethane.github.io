@@ -374,8 +374,12 @@ a:hover {
 }
 
 /* ---- warn banner: the status-warn fill with its on-warn label ----
-   Shown in a <noscript> where a feature needs JavaScript. */
+   Shown in a <noscript> where a feature needs JavaScript. The Phosphor
+   warning icon takes the label color and sits on the first line. */
 .js-warn {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
   margin: 0;
   padding: var(--space-2) var(--space-3);
   background: var(--status-warn);
@@ -383,6 +387,10 @@ a:hover {
   font-size: var(--small-size);
   font-weight: 600;
   line-height: var(--small-leading);
+}
+.js-warn .icon {
+  flex: none;
+  margin-top: 2px; /* centers the 16px icon on the 20px first line */
 }
 
 /* ---- the Metro page-enter animation ---- */
