@@ -1,12 +1,17 @@
 ---
 // One Start screen tile. A navigation tile is an overline only, bottom left.
 // A content or live tile holds an overline (top left), then slot content.
-// Never an icon alone. Fills are raised and mantle only. The loud tile (at
-// most one per view) is raised with a 6px energy bar across its top edge,
-// then an overline, a numeral, a label and an optional live block.
+// Every tile is raised. An optional Phosphor icon sits top right, sized in
+// proportion to the tile, beside the overline, so it is never an icon alone.
+// The loud tile (at most one per view) adds a 6px energy bar across its top
+// edge, then an overline, a numeral, a label and an optional live block.
+import Icon from '../Icon.astro';
+import type { IconName } from '../Icon.astro';
+
 interface Props {
   size?: 'square' | 'wide' | 'large';
-  fill?: 'raised' | 'mantle';
+  /** Phosphor icon, top right. Decorative: the overline names the tile. */
+  icon?: IconName;
   href: string;
   /** The overline text. */
   label: string;
@@ -18,18 +23,18 @@ interface Props {
   external?: boolean;
   /** Slot content is live: src/scripts/lastfm.ts looks for `.tile-live-tile`. */
   live?: boolean;
-  /** Album art fills the tile; the overline sits on a solid strip. */
+  /** Album art fills the tile under a tint; the text sits on the art. */
   art?: boolean;
 }
-const { size = 'square', fill = 'raised', href, label, nav = false, loud = false, external = false, live = false, art = false } = Astro.props;
+const { size = 'square', icon, href, label, nav = false, loud = false, external = false, live = false, art = false } = Astro.props;
 ---
 <a
   class:list={['tile', { 'tile-live-tile': live, 'tile-nav': nav, loud, 'has-strip': art }]}
   data-size={size}
-  data-fill={loud ? 'raised' : fill}
   href={href}
   {...external ? { rel: 'noopener' } : {}}
 >
+  {icon && <Icon name={icon} class="tile-icon" />}
   <span class="overline tile-label">{label}{external && <span aria-hidden="true"> ↗</span>}{external && <span class="sr-only"> (external site)</span>}</span>
   <slot />
 </a>
@@ -50,12 +55,29 @@ const { size = 'square', fill = 'raised', href, label, nav = false, loud = false
     overflow: hidden;
     transition: transform 0.1s ease;
     animation: metro-enter 0.7s var(--ease-metro) backwards; /* delay set by home.ts */
+    /* The icon is 16% of the tile's height, from the grid unit TileGrid
+       sets: 24px on a 152px tile, 50px on a 312px one, and in proportion
+       on a phone. */
+    --tile-icon: calc(var(--tile-unit) * 0.16);
+  }
+  .tile[data-size='large'] {
+    --tile-icon: calc((2 * var(--tile-unit) + var(--tile-gap)) * 0.16);
+  }
+  /* Top right, on the overline's top edge, above the album art and tint. */
+  .tile :global(.tile-icon) {
+    position: absolute;
+    top: var(--space-2);
+    right: var(--space-3);
+    z-index: 2;
+    width: var(--tile-icon);
+    height: var(--tile-icon);
+    pointer-events: none;
+  }
+  .tile.loud :global(.tile-icon) {
+    top: calc(var(--bar-edge) + var(--space-3));
   }
   .tile-nav {
     justify-content: flex-end;
-  }
-  .tile[data-fill='mantle'] {
-    --tile-fill: var(--mantle);
   }
   .tile[data-size='wide'] {
     grid-column: span 2;
@@ -93,6 +115,11 @@ const { size = 'square', fill = 'raised', href, label, nav = false, loud = false
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    margin-right: calc(var(--tile-icon) + var(--space-2));
+  }
+  /* A navigation tile's overline sits bottom left, clear of the icon. */
+  .tile-nav .tile-label {
+    margin-right: 0;
   }
 
   /* The loud tile: a bar on the top edge, decoration only. */
