@@ -4,15 +4,15 @@ import PageColumns from '../components/PageColumns.astro';
 import LastfmWidget from '../components/LastfmWidget.astro';
 import { site } from '../site';
 ---
-<Base title="music" description="a live look at what i've been listening to, pulled from last.fm.">
+<Base title="music" description="A live look at what I've been listening to, pulled from last.fm.">
 <PageColumns prose={false}>
   <Fragment slot="aside">
     <p class="overline muted lastfm-source">live from <a href={`https://www.last.fm/user/${site.lastfm.username}`} target="_blank" rel="noopener">last.fm ↗</a></p>
     <LastfmWidget id="lastfm-now" count={11} historyId="lastfm-history" />
   </Fragment>
-  <h2>history</h2>
+  <h2>History</h2>
   <div class="lastfm-list" id="lastfm-history">
-    <p class="lastfm-status">loading…</p>
+    <p class="lastfm-status">Loading…</p>
   </div>
 </PageColumns>
 </Base>

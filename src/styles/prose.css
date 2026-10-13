@@ -4,8 +4,8 @@
    Headings, paragraph rhythm, links, lists, blockquote and hr come from the
    page typography in global.css (h1/h2 heading, h3 subheading, h4/h5 body 600,
    h6 overline). This file adds what markdown output needs beyond that.
-   No borders, shadows or radii: surfaces are mantle fills, dividers are 1px
-   --line. */
+   No borders, lines, shadows or radii: surfaces are mantle fills, and space
+   separates blocks. */
 
 /* Blog long-form: Plex Serif at 17/28, for body text only. Headings, tables,
    code and footnotes stay in Plex Sans and Plex Mono. */
@@ -98,33 +98,10 @@
   overflow-wrap: normal;
 }
 
-/* Syntax highlighting (Shiki). Astro runs it with catppuccin-latte and
-   catppuccin-mocha and no default colour, so every token span carries both
-   as custom properties and the stylesheet picks one. Mocha is the default,
-   Latte replaces it in a light scheme, as in global.css. The <pre> above
-   supplies the background, so Shiki's own theme background is never used. */
-.prose pre.astro-code,
-.prose pre.astro-code span {
-  color: var(--shiki-dark, var(--text));
-  font-style: var(--shiki-dark-font-style);
-  font-weight: var(--shiki-dark-font-weight);
-  text-decoration: var(--shiki-dark-text-decoration);
-}
-@media (prefers-color-scheme: light) {
-  .prose pre.astro-code,
-  .prose pre.astro-code span {
-    color: var(--shiki-light, var(--text));
-    font-style: var(--shiki-light-font-style);
-    font-weight: var(--shiki-light-font-weight);
-    text-decoration: var(--shiki-light-text-decoration);
-  }
-}
-
-/* ---- keyboard keys: mantle fill and the 1px control edge ---- */
+/* ---- keyboard keys: raised fill, no edge (a key is not a form control) ---- */
 .prose kbd {
   padding: 0 var(--space-1);
-  background: var(--mantle);
-  border: 1px solid var(--control-border);
+  background: var(--raised);
   font-family: var(--font-mono);
   font-size: var(--data-size);
   font-weight: 500;
@@ -139,9 +116,7 @@
   padding: 0 var(--space-1);
 }
 .prose section.footnotes {
-  margin-top: var(--space-8);
-  padding-top: var(--space-4);
-  border-top: 1px solid var(--line);
+  margin-top: var(--space-12);
   font-size: var(--small-size);
   line-height: var(--small-leading);
 }
@@ -165,8 +140,8 @@
    display: block lets a table that is too wide for the column scroll inside
    itself. As a table box it has no scroll container and pushes the whole page
    sideways. GFM writes column alignment as an inline style on each cell, which
-   still wins over text-align here. The header row is a label; rows are
-   separated by a 1px line; numbers line up. */
+   still wins over text-align here. The header row is a label; body rows
+   alternate base and mantle, with no lines; numbers line up. */
 .prose table {
   display: block;
   overflow-x: auto;
@@ -179,13 +154,11 @@
 .prose th,
 .prose td {
   padding: var(--space-2) var(--space-3);
-  border-bottom: 1px solid var(--line);
   text-align: left;
   vertical-align: top;
 }
-.prose th:first-child,
-.prose td:first-child {
-  padding-left: 0;
+.prose tbody tr:nth-child(odd) {
+  background: var(--mantle);
 }
 .prose thead th {
   font-size: var(--label-size);
@@ -193,9 +166,6 @@
   line-height: var(--label-leading);
   color: var(--muted);
   white-space: nowrap;
-}
-.prose tbody tr:last-child td {
-  border-bottom: 0;
 }
 
 /* ---- images: square, no frame ---- */
