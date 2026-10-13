@@ -21,14 +21,14 @@
   size: large
   navbar: true
 
-- name: projects
-  url: /projects/
-  size: large
-  navbar: true
-
 - name: blog
   url: /blog/
   size: wide
+  navbar: true
+
+- name: projects
+  url: /projects/
+  size: large
   navbar: true
 
 - name: about
