@@ -3,8 +3,9 @@ import '../styles/global.css';
 import '../styles/prose.css';
 import '../styles/cards.css';
 import SiteHeader from '../components/SiteHeader.astro';
-import selawkLight from '../assets/fonts/selawkl.woff2?url';
-import selawkRegular from '../assets/fonts/selawk.woff2?url';
+import plexLight from '../assets/fonts/IBMPlexSans-Light.woff2?url';
+import plexRegular from '../assets/fonts/IBMPlexSans-Regular.woff2?url';
+import plexMono from '../assets/fonts/IBMPlexMono-Medium.woff2?url';
 import { site } from '../site';
 import { formatXmlDate } from '../lib/format';
 
@@ -69,14 +70,15 @@ const ogImage = abs(image ?? '/assets/favicon/konata-512.png');
   <meta name="twitter:image" content={ogImage}>
   <link rel="alternate" type="application/rss+xml" href={abs('/feed.xml')} title={site.title}>
   <link rel="sitemap" href="/sitemap-index.xml">
+  <meta name="theme-color" content="#1e1e2e">
   <meta name="theme-color" media="(prefers-color-scheme: light)" content="#eff1f5">
-  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1e1e2e">
   <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/konata-16.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/konata-32.png">
   <link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon/konata-192.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">
-  <link rel="preload" href={selawkLight} as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href={selawkRegular} as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href={plexLight} as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href={plexRegular} as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href={plexMono} as="font" type="font/woff2" crossorigin>
   {mathjax && <script is:inline defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js" integrity="sha384-M5jmNxKC9EVnuqeMwRHvFuYUE8Hhp0TgBruj/GZRkYtiMrCRgH7yvv5KY+Owi7TW" crossorigin="anonymous"></script>}
 </head>
 <body>
