@@ -2,7 +2,8 @@
 // The Metro header: an overline over a big lowercase title, then the nav as
 // a row of overline links. Hub pages use the hero (it may run off the right
 // edge); detail pages (`back` set) use the title style and wrap. The home
-// page shows the site name as the hero and no nav.
+// page shows the site name as the overline, its greeting as the hero, and
+// no nav.
 import { site } from '../site';
 import { getNav } from '../lib/collections';
 import BackButton from './BackButton.astro';
@@ -35,7 +36,10 @@ const Tag = plainTitle ? 'p' : 'h1';
       <Tag class:list={['page-title', back ? 'title' : 'hero']}>{appName ?? title}</Tag>
     </>
   ) : (
-    <p class="page-title hero">{site.title}</p>
+    <>
+      <p class="overline-row overline">{site.title}</p>
+      <h1 class="page-title hero">{appName ?? site.title}</h1>
+    </>
   )}
   {!isHome && (
     <nav aria-label="Site">
@@ -80,8 +84,11 @@ const Tag = plainTitle ? 'p' : 'h1';
     margin: 0;
   }
   /* A hub hero runs off the right edge; the shell clips it. */
-  .hero {
-    white-space: nowrap;
+  /* Phones wrap the hero, so no words are lost. */
+  @media (min-width: 768px) {
+    .hero {
+      white-space: nowrap;
+    }
   }
   /* A detail title wraps. */
   .title {
@@ -158,8 +165,10 @@ const Tag = plainTitle ? 'p' : 'h1';
       --overline-line: calc(var(--overline-size) * var(--overline-leading));
       min-height: var(--content-top);
       box-sizing: border-box;
+      /* Style guide: large titles may start lower. Keep 32px above the
+         overline, so the hero baseline lands at 132px, not 100px. */
       padding-top: max(
-        0px,
+        var(--space-8),
         calc(
           var(--header-baseline) - var(--overline-line) - var(--space-1)
           - (var(--hero-size) * ((var(--hero-leading) - 1.3) / 2 + 1.025))
@@ -182,13 +191,9 @@ const Tag = plainTitle ? 'p' : 'h1';
     .overline-row :global(.header-back) {
       min-height: 0;
     }
-    /* The home page has no overline: the hero baseline alone sets the top. */
+    /* No nav on the home page: leave a group gap under the hero. */
     header.home {
-      padding-top: calc(
-        var(--header-baseline)
-        - (var(--hero-size) * ((var(--hero-leading) - 1.3) / 2 + 1.025))
-      );
-      padding-bottom: 0;
+      padding-bottom: var(--space-8);
     }
     nav {
       flex-wrap: wrap;

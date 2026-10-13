@@ -12,10 +12,9 @@ const activeProjects = (await getProjects()).filter((p) => p.data.status === 'ac
 const latestEntry = (await getGuestbook())[0];
 ---
 
-<Base>
+<Base appName="haii, i'm abby :3">
   <div class="home-layout">
     <div class="home-intro">
-      <h1 class="title home-heading">haii, i'm abby :3</h1>
       <p class="muted">welcome to my little corner of the internet. i build things that go to space, break things that stay on earth, and occasionally muse about my thoughts.</p>
     </div>
 
@@ -78,10 +77,6 @@ const latestEntry = (await getGuestbook())[0];
       grid-template-columns: minmax(320px, 420px) calc(8 * var(--tile-unit) + 7 * var(--tile-gap));
       align-items: start;
     }
-  }
-  /* The greeting is a title-style line: quiet voice, Light. */
-  .home-heading {
-    margin: 0 0 var(--space-4);
   }
   .home-intro p {
     margin: 0;
