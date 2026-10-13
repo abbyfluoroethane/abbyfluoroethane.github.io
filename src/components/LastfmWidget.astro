@@ -1,5 +1,6 @@
 ---
 import { site } from '../site';
+import Icon from './Icon.astro';
 interface Props {
   id?: string;
   count?: number;
@@ -13,7 +14,7 @@ const { id: lfmId = 'lastfm', count = 1, tile = false, historyId } = Astro.props
   {/* Without JavaScript nothing ever loads: say so, and hide the
       "Loading…" lines that would otherwise wait forever. */}
   <noscript>
-    <p class="js-warn">! This feature requires JavaScript to function.</p>
+    <p class="js-warn"><Icon name="warning" weight="bold" size={16} />This feature requires JavaScript to function.</p>
     <style is:inline>.lastfm-loading { display: none; }</style>
   </noscript>
 </div>
