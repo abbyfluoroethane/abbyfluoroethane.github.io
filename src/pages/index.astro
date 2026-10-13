@@ -14,7 +14,6 @@ const latestPostDesc = latestPost
   ? truncateWords(latestPost.data.summary ?? excerpt(latestPost.body), 20, '')
   : '';
 const projects = await getProjects();
-const activeProjects = projects.filter((p) => p.data.status === 'active').length;
 // Oldest featured project first, so the cycle starts with the longest-running
 // one. Only active projects are featured.
 const featuredProjects = projects
@@ -49,11 +48,9 @@ const recentEntries = (await getGuestbook()).slice(0, 3);
             <TileLive strip><LastfmWidget id="lastfm-tile" count={1} tile={true} /></TileLive>
           </Tile>
         );
-        // The one loud tile of the view: the numeral, then the featured
-        // projects taking turns.
+        // The featured projects taking turns.
         if (s.name === 'projects') return (
-          <Tile {...tile} loud live>
-            <p class="numeral tile-numeral">{activeProjects} <small>active</small></p>
+          <Tile {...tile} live>
             <TileLive cycle>
               <div class="tile-cycle-viewport">
                 {featuredProjects.map((p, i) => (
@@ -109,11 +106,6 @@ const recentEntries = (await getGuestbook()).slice(0, 3);
   }
   .home-intro p {
     margin: 0;
-  }
-  /* The loud tile: a 96px numeral with its unit at 38%. */
-  .tile-numeral {
-    margin: var(--space-2) 0 var(--space-3);
-    white-space: nowrap;
   }
   /* Wide tiles on a phone are short: one line of description fits. */
   .blog-desc {
