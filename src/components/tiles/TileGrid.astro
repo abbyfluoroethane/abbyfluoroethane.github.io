@@ -21,11 +21,15 @@
     gap: var(--tile-gap);
     max-width: calc(4 * var(--tile-unit) + 3 * var(--tile-gap));
   }
-  /* Phone: three columns that fill the width inside the 32px gutters. */
+  /* Phone: three columns that run out to the screen edges, the Windows
+     Phone Start screen. The field leaves the 32px page margin and keeps
+     one 8px tile gap to the glass on each side. Text keeps the margin. */
   @media (max-width: 767px) {
     .tile-grid {
-      --tile-unit: calc((100vw - 2 * var(--space-8) - 2 * var(--tile-gap)) / 3);
+      --tile-unit: calc((100vw - 4 * var(--tile-gap)) / 3);
       grid-template-columns: repeat(3, var(--tile-unit));
+      max-width: none;
+      margin-inline: calc(var(--tile-gap) - var(--space-8));
     }
   }
 </style>
