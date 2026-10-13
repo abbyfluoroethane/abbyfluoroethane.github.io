@@ -67,7 +67,8 @@ const nav = defineCollection({
     name: z.string(),
     url: z.string(),
     size: z.enum(['square', 'wide', 'large']).default('square'),
-    fill: z.enum(['raised', 'mantle']).default('raised'),
+    /** A Phosphor icon name from src/components/phosphor.ts. */
+    icon: z.string().optional(),
     navbar: z.boolean().default(true),
   }),
 });

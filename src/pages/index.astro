@@ -6,6 +6,7 @@ import Tile from '../components/tiles/Tile.astro';
 import TileGrid from '../components/tiles/TileGrid.astro';
 import TileLive from '../components/tiles/TileLive.astro';
 import { excerpt, truncateWords } from '../lib/format';
+import type { IconName } from '../components/Icon.astro';
 
 const nav = await getNav();
 const latestPost = (await getPosts())[0];
@@ -30,7 +31,7 @@ const recentEntries = (await getGuestbook()).slice(0, 3);
 
     <TileGrid>
       {nav.map((s) => {
-        const tile = { size: s.size, fill: s.fill, href: s.url, label: s.name };
+        const tile = { size: s.size, icon: s.icon as IconName | undefined, href: s.url, label: s.name };
         if (s.name === 'blog') return (
           <Tile {...tile} live>
             <TileLive>
