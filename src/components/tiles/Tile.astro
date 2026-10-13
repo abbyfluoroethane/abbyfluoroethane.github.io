@@ -1,8 +1,10 @@
 ---
 // One Start screen tile. A navigation tile is an overline only, bottom left.
 // A content or live tile holds an overline (top left), then slot content.
-// Every tile is raised. An optional Phosphor icon sits top right, sized in
-// proportion to the tile, beside the overline, so it is never an icon alone.
+// Every tile is raised. A navigation tile may carry a Phosphor icon top
+// right, sized in proportion to the tile. An external navigation tile shows
+// its ↗ there instead. The overline always names the tile, so the icon is
+// never alone.
 // The loud tile (at most one per view) adds a 6px energy bar across its top
 // edge, then an overline, a numeral, a label and an optional live block.
 import Icon from '../Icon.astro';
@@ -19,7 +21,8 @@ interface Props {
   nav?: boolean;
   /** The one loud tile of the view: energy bar on the top edge. */
   loud?: boolean;
-  /** The link leaves the site: the overline gets a ↗. */
+  /** The link leaves the site: a ↗, top right on a navigation tile, after
+      the overline otherwise. */
   external?: boolean;
   /** Slot content is live: src/scripts/lastfm.ts looks for `.tile-live-tile`. */
   live?: boolean;
@@ -35,7 +38,8 @@ const { size = 'square', icon, href, label, nav = false, loud = false, external 
   {...external ? { rel: 'noopener' } : {}}
 >
   {icon && <Icon name={icon} class="tile-icon" />}
-  <span class="overline tile-label">{label}{external && <span aria-hidden="true"> ↗</span>}{external && <span class="sr-only"> (external site)</span>}</span>
+  {external && nav && <span class="tile-arrow" aria-hidden="true">↗</span>}
+  <span class="overline tile-label">{label}{external && !nav && <span aria-hidden="true"> ↗</span>}{external && <span class="sr-only"> (external site)</span>}</span>
   <slot />
 </a>
 
@@ -71,6 +75,19 @@ const { size = 'square', icon, href, label, nav = false, loud = false, external 
     z-index: 2;
     width: var(--tile-icon);
     height: var(--tile-icon);
+    pointer-events: none;
+  }
+  /* The ↗ of an external navigation tile: the Plex glyph at the icon size,
+     in the icon's place. */
+  .tile-arrow {
+    position: absolute;
+    top: var(--space-2);
+    right: var(--space-3);
+    z-index: 2;
+    font-family: var(--font-sans);
+    font-size: var(--tile-icon);
+    font-weight: 400;
+    line-height: 1;
     pointer-events: none;
   }
   .tile.loud :global(.tile-icon) {
@@ -115,11 +132,6 @@ const { size = 'square', icon, href, label, nav = false, loud = false, external 
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin-right: calc(var(--tile-icon) + var(--space-2));
-  }
-  /* A navigation tile's overline sits bottom left, clear of the icon. */
-  .tile-nav .tile-label {
-    margin-right: 0;
   }
 
   /* The loud tile: a bar on the top edge, decoration only. */
@@ -155,7 +167,9 @@ const { size = 'square', icon, href, label, nav = false, loud = false, external 
     background-color: var(--tile-fill);
     color: var(--text);
   }
-  .tile-live-tile :global(.tile-art)::after {
+  /* Only over a loaded cover: with no art the tile keeps the plain raised
+     fill of the other tiles. */
+  .tile-live-tile :global(.tile-art:has(.art-layer.is-loaded))::after {
     content: '';
     position: absolute;
     inset: 0;
