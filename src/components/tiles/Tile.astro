@@ -108,15 +108,18 @@ const { size = 'square', fill = 'raised', href, label, nav = false, loud = false
   }
 
   /* Tile with album art (the music tile). The art is inserted by
-     src/scripts/lastfm.ts as `.tile-art`, behind everything. The overline
-     sits on a solid strip of the tile fill so it never depends on the
-     cover; hover shows on that strip and the art stays. */
+     src/scripts/lastfm.ts as `.tile-art` and fills the whole tile, behind
+     everything. A flat veil of the base color tints the cover so the
+     overline and caption read on it. 70% keeps text at about 4:1 or better
+     on a white cover, and higher on most covers. Hover deepens the veil to
+     the hover color. Tokens only, so Latte gets a light veil. */
   .tile.has-strip {
-    padding: 0;
+    --art-veil: color-mix(in srgb, var(--base) 70%, transparent);
   }
-  .tile.has-strip .tile-label {
-    padding: var(--space-2) var(--space-3);
-    background-color: var(--tile-fill);
+  .tile.has-strip:hover,
+  .tile.has-strip:active {
+    --tile-fill: var(--raised);
+    --art-veil: color-mix(in srgb, var(--hover) 80%, transparent);
   }
   .tile-live-tile :global(.tile-art) {
     position: absolute;
@@ -125,14 +128,12 @@ const { size = 'square', fill = 'raised', href, label, nav = false, loud = false
     background-color: var(--tile-fill);
     color: var(--text);
   }
-  .tile.has-strip:hover,
-  .tile.has-strip:active {
-    --tile-fill: var(--raised);
-  }
-  .tile.has-strip:hover .tile-label,
-  .tile.has-strip:active .tile-label,
-  .tile.has-strip:hover :global(.tile-live),
-  .tile.has-strip:active :global(.tile-live) {
-    background-color: var(--hover);
+  .tile-live-tile :global(.tile-art)::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    background-color: var(--art-veil);
+    pointer-events: none;
   }
 </style>
