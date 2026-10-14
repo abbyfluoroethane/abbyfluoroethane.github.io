@@ -102,6 +102,31 @@ const ogImage = abs(image ?? '/og-image.png');
       padding: 0 var(--space-16) var(--space-16) var(--page-margin);
     }
   }
+  /* Wide windows: scale the whole page, the way browser zoom does, so
+     type, tiles, icons and spacing grow together and the layout keeps its
+     proportions. The steps hold the page near its 1280–1400px design width:
+     1500px shows it at 1.15×, 1700px at 1.3×, 2000px at 1.5×, 2500px at
+     1.8×. zoom changes layout size, so text stays sharp. */
+  @media (min-width: 1500px) {
+    .page-shell {
+      zoom: 1.15;
+    }
+  }
+  @media (min-width: 1700px) {
+    .page-shell {
+      zoom: 1.3;
+    }
+  }
+  @media (min-width: 2000px) {
+    .page-shell {
+      zoom: 1.5;
+    }
+  }
+  @media (min-width: 2500px) {
+    .page-shell {
+      zoom: 1.8;
+    }
+  }
 
   /* Page content slides in after the header. The home tile grid runs its
      own per-row stagger, so it opts out. */
