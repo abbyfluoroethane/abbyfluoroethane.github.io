@@ -116,11 +116,14 @@ const Tag = plainTitle || back ? 'p' : 'h1';
   }
 
   /* Nav: type as navigation. Overline links in one row. Phones: one line that
-     scrolls, with items bleeding off the right edge (the Metro cue). */
+     scrolls, with items bleeding off the right edge (the Metro cue).
+     24px under the title: the hero's tight leading lets its descenders hang
+     about 13px below its line box, and the link hover fill starts 12px
+     above the link text. 24px keeps the fill clear of the descenders. */
   nav {
     display: flex;
     flex-wrap: nowrap;
-    margin: var(--space-2) calc(-1 * var(--space-8)) var(--space-6) calc(-1 * var(--space-2));
+    margin: var(--space-6) calc(-1 * var(--space-8)) var(--space-6) calc(-1 * var(--space-2));
     padding-right: var(--space-8);
     overflow-x: auto;
     scrollbar-width: none;
