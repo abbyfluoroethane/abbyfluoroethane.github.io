@@ -22,9 +22,10 @@ const featuredProjects = projects
 const recentEntries = (await getGuestbook()).slice(0, 3);
 ---
 
-<Base appName="haii, i'm abby">
+<Base appName="home">
   <div class="home-layout">
     <div class="home-intro">
+      <h2 class="heading">haiii, i'm abby</h2>
       <p class="muted">Welcome to my little corner of the internet. I build things that go to space, break things that stay on earth, and occasionally muse about my thoughts.</p>
     </div>
 
@@ -103,6 +104,9 @@ const recentEntries = (await getGuestbook()).slice(0, 3);
       grid-template-columns: minmax(320px, 420px) max-content;
       align-items: start;
     }
+  }
+  .home-intro h2 {
+    margin: 0 0 var(--space-2);
   }
   .home-intro p {
     margin: 0;
