@@ -69,6 +69,8 @@ const nav = defineCollection({
     size: z.enum(['square', 'wide', 'large']).default('square'),
     /** A Phosphor icon name from src/components/phosphor.ts. */
     icon: z.string().optional(),
+    /** A Catppuccin Latte accent. See LATTE in Tile.astro. */
+    color: z.string().default('pink'),
     navbar: z.boolean().default(true),
   }),
 });

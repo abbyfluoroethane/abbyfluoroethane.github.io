@@ -76,6 +76,17 @@
   --enter-offset: 80px;
 }
 
+/* Plex Mono SemiBold, for the tile labels. fonts.css is generated and
+   ships only 400 and 500, so the extra weight is declared here. IBM's
+   complete woff2 from @ibm/plex-mono 2.5.0, unchanged, like the others. */
+@font-face {
+  font-family: "IBM Plex Mono";
+  src: url("/fonts/IBMPlexMono-SemiBold.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* ---- reset ---- */
 *,
 *::before,

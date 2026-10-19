@@ -1,7 +1,8 @@
 ---
 // One Start screen tile. A navigation tile is an overline only, bottom left.
 // A content or live tile holds an overline (top left), then slot content.
-// Every tile is raised. A navigation tile may carry a Phosphor icon top
+// Every tile is filled with a Catppuccin Latte accent, in both themes, with
+// light text on it. A navigation tile may carry a Phosphor icon top
 // right, sized in proportion to the tile. An external navigation tile shows
 // its ↗ there instead. The overline always names the tile, so the icon is
 // never alone.
@@ -12,6 +13,8 @@ import type { IconName } from '../Icon.astro';
 
 interface Props {
   size?: 'square' | 'wide' | 'large';
+  /** A Catppuccin Latte accent name (LATTE below). */
+  color?: string;
   /** Phosphor icon, top right. Decorative: the overline names the tile. */
   icon?: IconName;
   href: string;
@@ -29,12 +32,33 @@ interface Props {
   /** Album art fills the tile under a tint; the text sits on the art. */
   art?: boolean;
 }
-const { size = 'square', icon, href, label, nav = false, loud = false, external = false, live = false, art = false } = Astro.props;
+const { size = 'square', color = 'pink', icon, href, label, nav = false, loud = false, external = false, live = false, art = false } = Astro.props;
+
+// The Latte accents. They stay Latte in Mocha too, so the light text on a
+// tile has the same contrast in both themes.
+const LATTE: Record<string, string> = {
+  rosewater: '#dc8a78',
+  flamingo: '#dd7878',
+  pink: '#ea76cb',
+  mauve: '#8839ef',
+  red: '#d20f39',
+  maroon: '#e64553',
+  peach: '#fe640b',
+  yellow: '#df8e1d',
+  green: '#40a02b',
+  teal: '#179299',
+  sky: '#04a5e5',
+  sapphire: '#209fb5',
+  blue: '#1e66f5',
+  lavender: '#7287fd',
+};
+const accent = LATTE[color] ?? LATTE.pink;
 ---
 <a
   class:list={['tile', { 'tile-live-tile': live, 'tile-nav': nav, loud, 'has-strip': art }]}
   data-size={size}
   href={href}
+  style={`--tile-color: ${accent}`}
   {...external ? { rel: 'noopener' } : {}}
 >
   {icon && <Icon name={icon} class="tile-icon" />}
@@ -45,7 +69,15 @@ const { size = 'square', icon, href, label, nav = false, loud = false, external 
 
 <style>
   .tile {
-    --tile-fill: var(--raised);
+    --tile-fill: var(--tile-color);
+    /* Hover and pressed: the accent darkened toward Mocha crust. */
+    --tile-hover: color-mix(in srgb, var(--tile-color) 85%, #11111b);
+    /* Text on an accent is Latte base in both themes. Everything inside a
+       tile reads --text and --muted, so both are set here. The skeleton
+       reads --raised: a light wash of the accent. */
+    --text: #eff1f5;
+    --muted: #eff1f5;
+    --raised: color-mix(in srgb, #eff1f5 25%, var(--tile-color));
     position: relative;
     display: flex;
     flex-direction: column;
@@ -107,7 +139,7 @@ const { size = 'square', icon, href, label, nav = false, loud = false, external 
   /* Hover and pressed: the same fill. The tilt stays from the Metro base. */
   .tile:hover,
   .tile:active {
-    --tile-fill: var(--hover);
+    --tile-fill: var(--tile-hover);
     text-decoration: none;
   }
   .tile:active {
@@ -126,6 +158,7 @@ const { size = 'square', icon, href, label, nav = false, loud = false, external 
 
   .tile-label {
     position: relative;
+    font-weight: 600; /* heavier than the 500 overline, to hold on the accent */
     z-index: 2;
     flex: none; /* the body clips first, never the overline */
     display: block;
@@ -148,17 +181,17 @@ const { size = 'square', icon, href, label, nav = false, loud = false, external 
 
   /* Tile with album art (the music tile). The art is inserted by
      src/scripts/lastfm.ts as `.tile-art` and fills the whole tile, behind
-     everything. A flat veil of the base color tints the cover so the
-     overline and caption read on it. 70% keeps text at about 4:1 or better
-     on a white cover, and higher on most covers. Hover deepens the veil to
-     the hover color. Tokens only, so Latte gets a light veil. */
+     everything. A flat veil of Mocha crust darkens the cover so the light
+     overline and caption read on it, in both themes. 60% keeps the text at
+     about 4.5:1 on a white cover. Hover deepens the veil. With no cover the
+     tile shows its accent. */
   .tile.has-strip {
-    --art-veil: color-mix(in srgb, var(--base) 70%, transparent);
+    --art-veil: color-mix(in srgb, #11111b 60%, transparent);
   }
   .tile.has-strip:hover,
   .tile.has-strip:active {
-    --tile-fill: var(--raised);
-    --art-veil: color-mix(in srgb, var(--hover) 80%, transparent);
+    --tile-fill: var(--tile-color);
+    --art-veil: color-mix(in srgb, #11111b 70%, transparent);
   }
   .tile-live-tile :global(.tile-art) {
     position: absolute;
@@ -167,7 +200,7 @@ const { size = 'square', icon, href, label, nav = false, loud = false, external 
     background-color: var(--tile-fill);
     color: var(--text);
   }
-  /* Only over a loaded cover: with no art the tile keeps the plain raised
+  /* Only over a loaded cover: with no art the tile keeps the plain accent
      fill of the other tiles. */
   .tile-live-tile :global(.tile-art:has(.art-layer.is-loaded))::after {
     content: '';

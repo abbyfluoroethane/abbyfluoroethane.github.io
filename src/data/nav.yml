@@ -12,6 +12,10 @@
 #            and sized in proportion to the tile. Navigation tiles only
 #            (no content); an external link shows ↗ there instead. Every
 #            tile is raised.
+#   color  — the tile's fill, a Catppuccin Latte accent: rosewater,
+#            flamingo, pink (default), mauve, red, maroon, peach, yellow,
+#            green, teal, sky, sapphire, blue or lavender. Latte in both
+#            themes, with light text on it.
 #   navbar — whether the entry also appears in the nav bar shown on
 #            subpages. omit it and the entry is included, so a new tile
 #            can't drop out of the nav by accident; set it to false for
@@ -20,39 +24,47 @@
 - name: music
   url: /music/
   size: large
+  color: red
   navbar: true
 
 - name: blog
   url: /blog/
   size: wide
+  color: lavender
   navbar: true
 
 - name: projects
   url: /projects/
   size: large
+  color: pink
   navbar: true
 
 - name: about
   url: /about/
   icon: user
+  color: sky
   navbar: true
 
 - name: résumé
   url: /resume/
   icon: identification-card
+  color: yellow
   navbar: true
 
 - name: gallery
   url: /gallery/
   icon: images
+  color: mauve
   navbar: true
 
 - name: guestbook
   url: /guestbook/
   size: wide
+  color: green
   navbar: true
 
 # external
 - name: foid.space
   url: https://foid.space
+  color: teal
   navbar: false

@@ -31,7 +31,7 @@ const recentEntries = (await getGuestbook()).slice(0, 3);
 
     <TileGrid>
       {nav.map((s) => {
-        const tile = { size: s.size, icon: s.icon as IconName | undefined, href: s.url, label: s.name };
+        const tile = { size: s.size, color: s.color, icon: s.icon as IconName | undefined, href: s.url, label: s.name };
         if (s.name === 'blog') return (
           <Tile {...tile} live>
             <TileLive>
