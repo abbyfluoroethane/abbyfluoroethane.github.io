@@ -113,9 +113,19 @@ const { id: lfmId = 'lastfm', count = 1, tile = false, historyId } = Astro.props
     letter-spacing: 0.08em;
     text-transform: uppercase;
   }
-  /* The home tile has its own fill and its own caption: no label there. */
+  /* The home tile has its own fill and its own caption: no label there, the
+     last.fm mark instead, in the tile's text colour. A mask, not an <img>,
+     so the one file takes that colour. Browsers without mask support get
+     the plain tile. */
   .tile-art .art-fallback::after {
     content: none;
+  }
+  @supports (mask-image: none) or (-webkit-mask-image: none) {
+    .tile-art .art-fallback {
+      -webkit-mask: url("../assets/images/lastfm.svg") center / 42% no-repeat;
+      mask: url("../assets/images/lastfm.svg") center / 42% no-repeat;
+      background-color: currentColor;
+    }
   }
   .art-stack.is-artless .art-fallback {
     opacity: var(--art-fallback-opacity);
