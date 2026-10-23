@@ -2,9 +2,12 @@ import { getCollection } from 'astro:content';
 
 // getCollection does not guarantee an order, so every list sorts here.
 
-/** All posts, newest first. */
+/** Published posts, newest first. A post dated after the build is embargoed:
+    the daily scheduled deploy publishes it on its date. */
 export const getPosts = async () =>
-  (await getCollection('posts')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+  (await getCollection('posts', (post) => post.data.date.valueOf() <= Date.now())).sort(
+    (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+  );
 
 /** All projects, newest first. */
 export const getProjects = async () =>

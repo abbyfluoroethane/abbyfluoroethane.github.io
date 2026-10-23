@@ -1,7 +1,8 @@
 import rss from '@astrojs/rss';
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
-import { getCollection, render } from 'astro:content';
+import { render } from 'astro:content';
 import type { APIContext } from 'astro';
+import { getPosts } from '../lib/collections';
 import { site } from '../site';
 
 // Make root-relative URLs absolute so they work inside feed readers.
@@ -23,9 +24,7 @@ const absolutize = (html: string, base: string) =>
 
 export async function GET(context: APIContext) {
   const base = context.site?.href ?? site.url + '/';
-  const posts = (await getCollection('posts'))
-    .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-    .slice(0, 10);
+  const posts = (await getPosts()).slice(0, 10);
 
   // Render each post with the real pipeline so images get their built URLs.
   const container = await AstroContainer.create();

@@ -7,6 +7,9 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [metro-rebuild]
+  # Rebuild daily so embargoed posts publish on their date.
+  schedule:
+    - cron: '0 6 * * *'
   workflow_dispatch:
 
 permissions:

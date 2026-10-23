@@ -26,8 +26,11 @@ const posts = defineCollection({
   }),
   schema: z.object({
     title: z.string(),
+    // A date in the future embargoes the post until that day. See getPosts.
     date: z.coerce.date(),
     summary: z.string().optional(),
+    subtitle: z.string().optional(),
+    attribution: z.string().optional(),
   }),
 });
 
