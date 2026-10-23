@@ -1,8 +1,16 @@
 ---
 title: "October Windows Event: An Insider turned Mac user's take"
 date: 2026-10-23
-subtitle: "Yes, I was sad that Windows 11 Mobile wasn't unveiled. No, I didn't have any hope left."
 ---
+
+## *Yes, I was sad that Windows 11 Mobile wasn't unveiled. No, I didn't have any hope left.*
+
+<figure>
+
+![A hand holds up a Windows Insider Program event badge that reads "Abby Bigaouette" and "10-07", in front of a stage with Windows and NVIDIA logos on the screen](../../assets/images/windows-event/badge.jpg)
+
+<figcaption>THe gold star on my badge made me feel very special.</figcaption>
+</figure>
 
 So I got invited to a Windows media event. Why? I have no clue! I can only imagine this was a perk of reminiscing about Windows Phone with a few Microsoft employees at the San Francisco Windows Insider event back in July. Thanks for putting in the good word, friends. Tile gang till I die <3
 
@@ -32,15 +40,22 @@ Not everything landed. The Surface Laptop Ultra got an involuntary "my god, it's
 
 Listen, I’m not even *that* much of an AI hater. I burn hella tokens in Claude Code, the same model is going to proofread this before it goes live (hii claude!!), and I’m generally very optimistic about the future of the technology — especially with local models and hybrid workflows. But come on man, “AI in the flow of human ambition???” What is that even supposed to mean! Alas, the buzzwords didn’t stop me from enjoying the many demos available to play around with after the buzzslop deluge ended.
 
-### I wanna **~~fuck~~** touch **~~my~~** your **computer**[^1]
+### I wanna **~~fuck~~** touch **~~my~~** your computer[^1]
 
-Once the keynote wrapped, the floor opened up for demos, and the Surface Laptop Ultra was the obvious main character. It's a brick, but a gorgeous one: just under four and a half pounds of aluminum with a 15-inch mini-LED panel that gets scary bright, plus the new magnetic USB-C port where Surface Connect used to live. The real party trick is the trackpad. It's the biggest one Microsoft has ever put on a Surface, it's fully haptic, and it talks back to you as you use Windows itself. Hover over a close button, snap a window, or drag a file into a folder and you get a little bump under your finger. It’s very similar to the haptic feedback in my MX Master 4, which I do enjoy.
+Once the keynote wrapped, the floor opened up for demos, and the Surface Laptop Ultra was the obvious main character. It's a brick, but a gorgeous one: just under four and a half pounds of aluminum with a 15-inch mini-LED panel that gets kind of painfully bright in a dim room, and a new magnetic USB-C port now replaces Surface Connect. The real party trick, in my opinion, is the trackpad. It's the biggest one Microsoft has ever put on a Surface, it's fully haptic, and it talks back to you as you use Windows itself. Hover over a close button, snap a window, or drag a file into a folder and you get a little bump under your finger. It’s very similar to the haptic feedback in my MX Master 4, which I do enjoy.
 
 The gaming demos were the other surprise, because this thing runs on an ARM chip. Microsoft had *Gears of War: E-Day* running at 120 fps (with DLSS 4.5 and frame generation doing a lot of the heavy lifting, *a lot*), and Fortnite and Pragmata were running through emulation without any obvious hiccups. All that for a cool $2,600 starting price, which is about where my wallet started screaming for mercy.
 
 Another demo of note was hosted by a few GitHub engineers. It was a real world, unscripted demo of the dynamic workflows using MAI Code 1.1. Obviously, a model small enough to fit in 128GB of RAM with room to spare for all the other processes on the machine isn’t going to be the most accurate or capable, but it’s fast and seemed good enough for simple tasks to be handed off with little supervision. After some prodding, it seems like we may soon see an open weight release of an MAI Code model, but that didn’t come from an official spokesperson.
 
 The least popular demo booth may actually be my favorite of them all. There was no AI, no video games, no DLSS, and not even Windows! It was a booth showing off the stunning industrial design of Surface Laptop Ultra, yet another absolute banger from the Surface hardware team. Seeing that they still have the chops after all these years really makes me wish there was more Surface Duo hardware released.
+
+<figure>
+
+![A Surface Laptop Ultra taken apart and hung piece by piece from wires inside a display booth: the chassis, battery, fan, logic board, keyboard, trackpad and display](../../assets/images/windows-event/surface-laptop-ultra-teardown.jpg)
+
+<figcaption>The Surface Laptop Ultra teardown booth, with every part hung on wires. No AI, no games, just pure unadulturated engineering.</figcaption>
+</figure>
 
 ### The life of an esoteric hardware hoarder
 
@@ -51,6 +66,13 @@ The plan was to boot Windows 10X on the Surface Duo on the way to the event. I g
 A canceled operating system crashing at an event about the future of Windows felt about right.
 
 The Duo still picked up the slack even while running Android. Austin and a few others noticed it while I was using it to talk to friends about the hardware demos we were checking out. It turns out a dual-screen phone Microsoft unceremoniously killed nearly half a decade ago still catches some attention in a sea of hybrid-AI-local-codegen-laptops.
+
+<figure>
+
+![A hand holds a light blue Surface Duo, unfolded with its back facing out, in front of the Surface Laptop Ultra demo booth and a crowd of attendees and camera operators](../../assets/images/windows-event/surface-duo.jpg)
+
+<figcaption>My Surface Duo, crashing the Surface Laptop Ultra booth.</figcaption>
+</figure>
 
 A bit later on, I got to talk with James McGuire, the Windows Insider Program lead, and a few others about the Duo and the 950. For the few of you who also care too much about this stuff: fear not, I spent more time than is polite demanding a revival of Duo, Windows 10X, and Windows Phone to any Microsoft employee willing to give me the bandwidth. Maybe one day it’ll pay off, you never know.
 
@@ -84,4 +106,4 @@ So, am I crawling back to Windows? Not yet. Ask me again when stock Windows does
 
 I do have a fear (for my MacBook Neo, at least) that Microsoft might *finally* be turning over a new leaf with Windows. Time will tell if this stays true, but I’m patient. Don’t disappoint me guys.
 
-[^1]: Ninajirachi - Fuck My Computer
+[^1]: [Ninajirachi - Fuck My Computer on YouTube](https://www.youtube.com/watch?v=HWl1Tu9oZmY)

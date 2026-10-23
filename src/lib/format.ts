@@ -49,3 +49,26 @@ export function truncateSentences(text: string, n: number): string {
 /** Reading time in whole minutes, at 230 words a minute. */
 export const readingMinutes = (body = '') =>
   Math.max(1, Math.round(body.split(/\s+/).filter(Boolean).length / 230));
+
+type Heading = { depth: number; slug: string; text: string };
+
+/** Headings from render() with the markdown source of each heading as its
+ * text, so the contents keep emphasis and strikethrough. render() gives plain
+ * text, which also keeps footnote numbers ("computer1"). The source drops
+ * footnote references and comments. The headings match the source in order
+ * (fenced code skipped); if the counts differ, the headings stay as they are. */
+export function withSourceHeadings(headings: Heading[], body = ''): Heading[] {
+  const source: string[] = [];
+  let fence = false;
+  for (const line of body.split('\n')) {
+    if (/^\s*(```|~~~)/.test(line)) fence = !fence;
+    const match = !fence && /^#{1,6}\s+(.*?)\s*#*\s*$/.exec(line);
+    if (match) {
+      source.push(match[1].replace(/<!--.*?-->/g, '').replace(/\[\^[^\]]+\]/g, '').trim());
+    }
+  }
+  const isFootnotes = (h: Heading) => h.slug === 'footnotes' || h.slug === 'footnote-label';
+  if (headings.filter((h) => !isFootnotes(h)).length !== source.length) return headings;
+  let i = 0;
+  return headings.map((h) => (isFootnotes(h) ? h : { ...h, text: source[i++] }));
+}
