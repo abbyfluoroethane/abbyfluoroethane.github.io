@@ -106,4 +106,6 @@ So, am I crawling back to Windows? Not yet. Ask me again when stock Windows does
 
 I do have a fear (for my MacBook Neo, at least) that Microsoft might *finally* be turning over a new leaf with Windows. Time will tell if this stays true, but I’m patient. Don’t disappoint me guys.
 
+As a final remark, I'd like to express my sincere gratitude to James and the Windows Insider Program team for the invite and opportunity to be one of the first people to see the future of Windows. The past two events have been great, and I look forward to what the future holds!
+
 [^1]: [Ninajirachi - Fuck My Computer on YouTube](https://www.youtube.com/watch?v=HWl1Tu9oZmY)
