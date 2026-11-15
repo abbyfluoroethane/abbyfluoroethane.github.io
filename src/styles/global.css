@@ -3,11 +3,13 @@
    Markdown output, which no component owns, is styled in prose.css.
 
    Source: abby bigaouette design system version 1.1 and style guide
-   revision 2.0. Fonts and color tokens come from the package files
-   fonts.css and tokens.css, which Base.astro loads first. Do not edit them
-   by hand. The page structure is the Metro one the site already had:
+   revision 2.0, now in the fluorokit package. Fonts come from fonts.css.
+   Colors, spacing, the type scale and motion (--fk-*) come from fluorokit's
+   structure.css and its ink theme. The type classes (.fk-title,
+   .fk-overline ...), .fk-status, .fk-sr-only and the fk-enter keyframes come
+   from its base.css. Base.astro loads them all before this file. The page structure is the Metro one the site already had:
    a small overline over a large lowercase title, type as navigation, tiles,
-   one left edge. Every color is a Catppuccin Mocha or Latte token.
+   one left edge. Every color is a token of the theme.
 
    Rules that the CSS cannot enforce, so each component must:
    - Radius 0. No outlines, shadows or gradients, except the energy bar,
@@ -28,63 +30,12 @@
      1200px  home intro beside the tiles, wider post columns */
 
 :root {
-  /* ---- type ----
-     Font stacks come from tokens.css. */
-  /* The thirteen styles of the scale. Size, line height, weight and letter
-     spacing go together: use the classes below, or all four variables.
-     Hero and title step down on phones so the first word stays whole. */
-  --hero-size: clamp(3.5rem, 11vw, 6rem); /* 56-96px */
-  --hero-leading: 0.917; /* 88 / 96 */
-  --title-size: clamp(2.5rem, 6vw, 3.5rem); /* 40-56px */
-  --title-leading: 1.071; /* 60 / 56 */
-  --headline-size: 2.5rem; /* 40px */
-  --headline-leading: 0.9; /* 36 / 40 */
-  --display-size: 2.5rem; /* 40px */
-  --display-leading: 1.1; /* 44 / 40 */
-  --heading-size: 1.5rem; /* 24px */
-  --heading-leading: 1.333; /* 32 / 24 */
-  --subheading-size: 1.125rem; /* 18px */
-  --subheading-leading: 1.333; /* 24 / 18 */
-  --body-size: 1rem; /* 16px */
-  --body-leading: 1.5; /* 24 / 16 */
-  --small-size: 0.875rem; /* 14px */
-  --small-leading: 1.429; /* 20 / 14 */
-  --label-size: 0.75rem; /* 12px */
-  --label-leading: 1.333; /* 16 / 12 */
-  --numeral-size: 6rem; /* 96px, 72 to 144 */
-  --numeral-leading: 0.875; /* 84 / 96 */
-  --overline-size: 0.75rem; /* 12px */
-  --overline-leading: 1.333;
-  --data-size: 0.875rem; /* 14px, data and code */
-  --data-leading: 1.429;
-  /* Plex Serif: blog long-form only. */
+  /* Plex Serif: blog long-form only. The rest of the type scale is in
+     fluorokit. */
   --serif-title-size: 2rem; /* 32px */
   --serif-title-leading: 1.25; /* 40 / 32 */
   --serif-body-size: 1.0625rem; /* 17px */
   --serif-body-leading: 1.647; /* 28 / 17 */
-
-  /* Spacing (--space-*), --page-margin, --tile-1, --tile-2, --radius,
-     --bar-edge and --bar-field come from tokens.css. */
-  --energy-bar: linear-gradient(90deg, var(--bar-start), var(--bar-end));
-  /* Tiles: 1×1 is --tile-1 (152px), 2×2 is --tile-2 (312px). */
-  --tile-gap: var(--space-2);
-  /* Smallest touch target. */
-  --touch-target: 40px;
-
-  /* ---- motion: the Metro page-enter ---- */
-  --ease-metro: cubic-bezier(0.1, 0.9, 0.2, 1);
-  --enter-offset: 80px;
-}
-
-/* Plex Mono SemiBold, for the tile labels. fonts.css is generated and
-   ships only 400 and 500, so the extra weight is declared here. IBM's
-   complete woff2 from @ibm/plex-mono 2.5.0, unchanged, like the others. */
-@font-face {
-  font-family: "IBM Plex Mono";
-  src: url("/fonts/IBMPlexMono-SemiBold.woff2") format("woff2");
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
 }
 
 /* ---- reset ---- */
@@ -139,247 +90,139 @@ table {
 
 /* ---- base typography ---- */
 html {
-  background: var(--base);
+  background: var(--fk-base);
 }
 body {
-  font-family: var(--font-sans);
-  font-size: var(--body-size);
+  font-family: var(--fk-font-sans);
+  font-size: var(--fk-body-size);
   font-weight: 400;
-  line-height: var(--body-leading);
-  background-color: var(--base);
-  color: var(--text);
+  line-height: var(--fk-body-leading);
+  background-color: var(--fk-base);
+  color: var(--fk-text);
   overflow-wrap: break-word; /* a bare URL must not push the page sideways */
   -webkit-font-smoothing: antialiased;
 }
 /* Headings in content are sentence case reading styles. Page titles use the
-   .title and .hero classes instead. */
+   .fk-title and .fk-hero classes instead. */
 h1, h2, h3, h4, h5, h6 {
-  margin: var(--space-8) 0 var(--space-2);
+  margin: var(--fk-space-8) 0 var(--fk-space-2);
 }
 h1,
 h2 {
-  font-size: var(--heading-size);
+  font-size: var(--fk-heading-size);
   font-weight: 600;
-  line-height: var(--heading-leading);
+  line-height: var(--fk-heading-leading);
   letter-spacing: -0.01em;
 }
 h1 {
   margin-top: 0;
 }
 h3 {
-  font-size: var(--subheading-size);
+  font-size: var(--fk-subheading-size);
   font-weight: 600;
-  line-height: var(--subheading-leading);
+  line-height: var(--fk-subheading-leading);
 }
 h4,
 h5 {
-  margin: var(--space-6) 0 var(--space-1);
-  font-size: var(--body-size);
+  margin: var(--fk-space-6) 0 var(--fk-space-1);
+  font-size: var(--fk-body-size);
   font-weight: 600;
-  line-height: var(--body-leading);
+  line-height: var(--fk-body-leading);
 }
-/* h6 is an overline. */
+/* h6 is an overline: see the h6 rule below. */
 h6 {
-  margin: var(--space-6) 0 var(--space-1);
-  font-family: var(--font-mono);
-  font-size: var(--overline-size);
-  font-weight: 500;
-  line-height: var(--overline-leading);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--muted);
+  margin: var(--fk-space-6) 0 var(--fk-space-1);
+  color: var(--fk-muted);
 }
 p,
 li {
   max-width: 66ch;
 }
 p {
-  margin: 0 0 var(--space-4);
+  margin: 0 0 var(--fk-space-4);
 }
 ol,
 ul {
-  margin: 0 0 var(--space-4);
-  padding-left: var(--space-6);
+  margin: 0 0 var(--fk-space-4);
+  padding-left: var(--fk-space-6);
 }
 li ol,
 li ul {
   margin-bottom: 0;
 }
 dt { font-weight: 600; }
-dd { margin: 0 0 var(--space-2) var(--space-4); }
+dd { margin: 0 0 var(--fk-space-2) var(--fk-space-4); }
 
 code,
 kbd,
 samp,
 pre {
-  font-family: var(--font-mono);
-  font-size: var(--data-size);
+  font-family: var(--fk-font-mono);
+  font-size: var(--fk-data-size);
 }
 /* A quote is a recessed area: mantle fill, no rule. */
 blockquote {
-  margin: var(--space-6) 0;
-  padding: var(--space-4);
-  background: var(--mantle);
-  color: var(--text);
+  margin: var(--fk-space-6) 0;
+  padding: var(--fk-space-4);
+  background: var(--fk-mantle);
+  color: var(--fk-text);
 }
 blockquote > :last-child {
   margin-bottom: 0;
 }
 /* The browser default is yellow, which is not a token. */
 mark {
-  background: var(--raised);
-  color: var(--text);
+  background: var(--fk-raised);
+  color: var(--fk-text);
 }
 abbr {
-  text-decoration: underline dotted var(--overlay);
+  text-decoration: underline dotted var(--fk-overlay);
   cursor: help;
 }
 /* A break is space, not a drawn line. */
 hr {
   height: 0;
-  margin: var(--space-12) 0;
+  margin: var(--fk-space-12) 0;
   border: 0;
 }
 
 /* Links: the text token with a 2px accent underline. No visited style. */
 a {
-  color: var(--text);
+  color: var(--fk-text);
   text-decoration: underline;
-  text-decoration-color: var(--link-underline);
+  text-decoration-color: var(--fk-link-underline);
   text-decoration-thickness: 2px;
   text-underline-offset: 0.2em;
 }
 a:hover {
-  background-color: var(--hover);
+  background-color: var(--fk-hover);
 }
 
 ::selection {
-  background: var(--hover);
-  color: var(--text);
+  background: var(--fk-hover);
+  color: var(--fk-text);
 }
 :focus-visible {
-  outline: 2px solid var(--focus);
+  outline: 2px solid var(--fk-focus);
   outline-offset: 2px;
 }
 
-/* ---- shared type classes: the scale ---- */
-.hero {
-  font-size: var(--hero-size);
-  font-weight: 300;
-  line-height: var(--hero-leading);
-  letter-spacing: -0.03em;
-}
-.title {
-  font-size: var(--title-size);
-  font-weight: 300;
-  line-height: var(--title-leading);
-  letter-spacing: -0.02em;
-}
-.headline {
-  font-size: var(--headline-size);
-  font-weight: 700;
-  line-height: var(--headline-leading);
-  letter-spacing: -0.03em;
-  text-transform: uppercase;
-}
-.display {
-  font-size: var(--display-size);
-  font-weight: 600;
-  line-height: var(--display-leading);
-  letter-spacing: -0.02em;
-}
-.heading {
-  font-size: var(--heading-size);
-  font-weight: 600;
-  line-height: var(--heading-leading);
-  letter-spacing: -0.01em;
-}
-.subheading {
-  font-size: var(--subheading-size);
-  font-weight: 600;
-  line-height: var(--subheading-leading);
-}
-.small {
-  font-size: var(--small-size);
-  font-weight: 400;
-  line-height: var(--small-leading);
-}
-.label {
-  font-size: var(--label-size);
-  font-weight: 600;
-  line-height: var(--label-leading);
-}
-/* One big number. The unit goes in a <small> at about 40%, after a space. */
-.numeral {
-  font-size: var(--numeral-size);
-  font-weight: 700;
-  line-height: var(--numeral-leading);
-  letter-spacing: -0.04em;
-  font-variant-numeric: tabular-nums;
-}
-.numeral small {
-  font-size: 0.38em;
-  font-weight: 600;
-  letter-spacing: 0;
-}
-.overline {
-  font-family: var(--font-mono);
-  font-size: var(--overline-size);
+/* h6 is an overline. These are the declarations of .fk-overline. */
+h6 {
+  font-family: var(--fk-font-mono);
+  font-size: var(--fk-overline-size);
   font-weight: 500;
-  line-height: var(--overline-leading);
+  line-height: var(--fk-overline-leading);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
-/* Measured values, units, IDs, hostnames, dates. */
-.data {
-  font-family: var(--font-mono);
-  font-size: var(--data-size);
-  font-weight: 500;
-  line-height: var(--data-leading);
-  font-variant-numeric: tabular-nums;
-}
-.muted {
-  color: var(--muted);
-}
 
-/* ---- energy bar ----
-   Peach to pink, left to right. At most 8% of a view. Never text, never
-   behind text. */
-.energy-bar {
-  display: block;
-  height: var(--bar-field);
-  background: var(--energy-bar);
-}
-.energy-bar.edge {
-  width: var(--space-16);
-  height: var(--bar-edge);
-}
-
-/* ---- status: a square plus a label. The label carries the state ---- */
-.status {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  font-size: var(--label-size);
-  font-weight: 600;
-  line-height: var(--label-leading);
-}
-.status::before {
-  content: "";
-  flex: none;
-  width: 8px;
-  height: 8px;
-  background: var(--status-color, var(--overlay));
-}
-.status.ok { --status-color: var(--status-ok); }
-.status.warn { --status-color: var(--status-warn); }
-.status.error { --status-color: var(--status-error); }
-.status.info { --status-color: var(--status-info); }
+/* ---- status in print: an outline square, because print drops fills ---- */
 @media print {
-  .status::before {
+  .fk-status::before {
     width: 0;
     height: 0;
-    border: 4px solid var(--status-color, var(--overlay));
+    border: 4px solid var(--fk-status-color, var(--fk-overlay));
     background: none;
   }
 }
@@ -390,41 +233,16 @@ a:hover {
 .js-warn {
   display: flex;
   align-items: flex-start;
-  gap: var(--space-2);
+  gap: var(--fk-space-2);
   margin: 0;
-  padding: var(--space-2) var(--space-3);
-  background: var(--status-warn);
-  color: var(--on-warn);
-  font-size: var(--small-size);
+  padding: var(--fk-space-2) var(--fk-space-3);
+  background: var(--fk-status-warn);
+  color: var(--fk-on-warn);
+  font-size: var(--fk-small-size);
   font-weight: 600;
-  line-height: var(--small-leading);
+  line-height: var(--fk-small-leading);
 }
 .js-warn .icon {
   flex: none;
   margin-top: 2px; /* centers the 16px icon on the 20px first line */
-}
-
-/* ---- the Metro page-enter animation ---- */
-@keyframes metro-enter {
-  from {
-    opacity: 0;
-    transform: translateX(var(--enter-offset));
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-/* ---- utilities ---- */
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
 }

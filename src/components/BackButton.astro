@@ -1,40 +1,38 @@
 ---
 // A plain text back link: the Plex arrow glyph, then the label, in overline
-// style. With iconOnly, the glyph stands alone and the label is the aria-label.
+// style.
 interface Props {
   href: string;
-  /** The word after the arrow, also the accessible name when iconOnly. */
+  /** The words after the arrow. */
   label: string;
-  /** Show only the arrow glyph. */
-  iconOnly?: boolean;
   class?: string;
 }
-const { href, label, iconOnly = false, class: className } = Astro.props;
+const { href, label, class: className } = Astro.props;
 ---
-<a class:list={['back', 'overline', className]} {href} aria-label={iconOnly ? label : undefined}>
+<a class:list={['back', 'fk-overline', className]} {href}>
   <span class="glyph" aria-hidden="true">←</span>
-  {!iconOnly && <span>{label}</span>}
+  <span>{label}</span>
 </a>
 
 <style>
   .back {
     display: inline-flex;
     align-items: center;
-    gap: var(--space-2);
-    min-height: var(--touch-target);
-    color: var(--muted);
+    gap: var(--fk-space-2);
+    min-height: var(--fk-touch-target);
+    color: var(--fk-muted);
     text-decoration: none;
   }
   .back:hover {
-    color: var(--text);
+    color: var(--fk-text);
     text-decoration: none;
   }
   /* The arrow is set larger than the overline, but on the overline's line
      height, so a header row with a back link is as tall as one without. */
   .glyph {
-    font-family: var(--font-sans);
-    font-size: var(--body-size);
-    line-height: calc(var(--overline-size) * var(--overline-leading));
+    font-family: var(--fk-font-sans);
+    font-size: var(--fk-body-size);
+    line-height: calc(var(--fk-overline-size) * var(--fk-overline-leading));
     letter-spacing: 0;
   }
 </style>

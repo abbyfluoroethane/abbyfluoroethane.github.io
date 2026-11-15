@@ -1,19 +1,22 @@
 ---
-// The package files first (design system 1.1): fonts, then tokens.
+// Fonts first, then fluorokit (design system 1.1): structure, the ink
+// theme and the shared classes.
 import '../styles/fonts.css';
-import '../styles/tokens.css';
+import 'fluorokit/structure.css';
+import 'fluorokit/themes/ink.css';
+import 'fluorokit/base.css';
 import '../styles/global.css';
 import '../styles/prose.css';
 import '../styles/cards.css';
 import SiteHeader from '../components/SiteHeader.astro';
 import { site } from '../site';
+import { getNav } from '../lib/collections';
+import { enterDirectionScript } from 'fluorokit/enter';
 import { formatXmlDate } from '../lib/format';
 
 export interface Props {
   title?: string;
   description?: string;
-  /** Share image, as a root-relative or absolute URL. */
-  image?: string;
   /** Header label. Defaults to the title. */
   appName?: string;
   /** Render the header label as a paragraph, for a page whose own h1 is the content title. */
@@ -35,7 +38,6 @@ export interface Props {
 const {
   title,
   description = site.description,
-  image,
   appName,
   plainTitle = false,
   back,
@@ -52,7 +54,10 @@ const abs = (p: string) => new URL(p, Astro.site).href;
 // Titles are lowercase by hand, so the tab and og:title read
 // "projects · abby bigaouette".
 const fullTitle = title ? `${title} · ${site.title}` : site.title;
-const ogImage = abs(image ?? '/og-image.png');
+const ogImage = abs('/og-image.png');
+// The pages in nav order: home, then each nav bar entry on this site. A page
+// slides in from the side it lies on, seen from the page before it.
+const navPaths = ['/', ...(await getNav()).filter((s) => s.navbar && s.url.startsWith('/')).map((s) => s.url)];
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -60,6 +65,8 @@ const ogImage = abs(image ?? '/og-image.png');
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{fullTitle}</title>
+  {/* Before the first paint, so the page-enter starts on the right side. */}
+  <script is:inline set:html={enterDirectionScript(navPaths)} />
   <meta name="description" content={description}>
   {noindex ? <meta name="robots" content="noindex"> : <link rel="canonical" href={abs(path)}>}
   <meta property="og:type" content={ogType}>
@@ -79,8 +86,8 @@ const ogImage = abs(image ?? '/og-image.png');
     <meta name="theme-color" content={themeColor}>
   ) : (
     <>
-      <meta name="theme-color" content="#1e1e2e">
-      <meta name="theme-color" media="(prefers-color-scheme: light)" content="#eff1f5">
+      <meta name="theme-color" content="#10131d">
+      <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f5f6f8">
     </>
   )}
   {/* The ab monogram from the brand package (logos/). The SVG switches
@@ -98,9 +105,10 @@ const ogImage = abs(image ?? '/og-image.png');
   {bare ? (
     <slot />
   ) : (
+    <a class="skip-link" href="#main">Skip to content</a>
     <div class="page-shell">
       <SiteHeader {title} {appName} {back} {plainTitle} />
-      <main>
+      <main id="main" tabindex="-1">
         <slot />
       </main>
     </div>
@@ -109,16 +117,37 @@ const ogImage = abs(image ?? '/og-image.png');
 </html>
 
 <style>
+  /* The first stop for a keyboard: jumps over the header and nav. Off
+     screen until it takes focus. */
+  .skip-link {
+    position: absolute;
+    top: var(--fk-space-2);
+    left: var(--fk-space-2);
+    z-index: 10;
+    padding: var(--fk-space-2) var(--fk-space-4);
+    background: var(--fk-raised);
+    color: var(--fk-text);
+    font-weight: 600;
+    text-decoration: none;
+    transform: translateY(-200%);
+  }
+  .skip-link:focus {
+    transform: none;
+  }
+  main:focus {
+    outline: none;
+  }
+
   /* One left edge: --space-8 on phones, --page-margin on desktop. The shell
      clips sideways so a hub hero can run off the right edge without a
      horizontal scrollbar. */
   .page-shell {
-    padding: 0 var(--space-8) var(--space-16);
+    padding: 0 var(--fk-space-8) var(--fk-space-16);
     overflow-x: clip;
   }
   @media (min-width: 768px) {
     .page-shell {
-      padding: 0 var(--space-16) var(--space-16) var(--page-margin);
+      padding: 0 var(--fk-space-16) var(--fk-space-16) var(--fk-page-margin);
     }
   }
   /* Wide windows: scale the whole page, the way browser zoom does, so
@@ -146,7 +175,7 @@ const ogImage = abs(image ?? '/og-image.png');
   /* Page content slides in after the header. The home tile grid runs its
      own per-row stagger, so it opts out. */
   main > :global(*:not(.tile-grid)) {
-    animation: metro-enter 0.7s var(--ease-metro) 120ms backwards;
+    animation: fk-enter var(--fk-enter-duration) var(--fk-ease-metro) 120ms backwards;
   }
   @media (prefers-reduced-motion: reduce) {
     main > :global(*) {

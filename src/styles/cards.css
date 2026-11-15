@@ -6,22 +6,15 @@
    cannot reach runtime elements, so the primitive lives here and components
    only add what is specific to them. */
 
-.card-grid {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-6);
-  margin: var(--space-4) 0 var(--space-8);
-}
-
 /* No fill at rest. The padding is cancelled by the negative margin so the
    text sits where it would without a box, and the hover fill can grow around
    it without anything moving. */
 .card {
   position: relative;
   display: block;
-  margin: calc(-1 * var(--space-1)) calc(-1 * var(--space-2));
-  padding: var(--space-1) var(--space-2);
-  color: var(--text);
+  margin: calc(-1 * var(--fk-space-1)) calc(-1 * var(--fk-space-2));
+  padding: var(--fk-space-1) var(--fk-space-2);
+  color: var(--fk-text);
   text-decoration: none;
 }
 
@@ -30,31 +23,31 @@
    text stays --text (muted text is only for base). */
 a.card:hover,
 .card:has(.card-title a:hover) {
-  background: var(--hover);
+  background: var(--fk-hover);
 }
 a.card:hover .card-desc,
 .card:has(.card-title a:hover) .card-desc,
 a.card:hover .card-date,
 .card:has(.card-title a:hover) .card-date {
-  color: var(--text);
+  color: var(--fk-text);
 }
 
 .card-head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: var(--space-4);
+  gap: var(--fk-space-4);
 }
 
 .card-title {
   margin: 0;
-  font-size: var(--subheading-size);
+  font-size: var(--fk-subheading-size);
   font-weight: 600;
-  line-height: var(--subheading-leading);
+  line-height: var(--fk-subheading-leading);
 }
 
 .card-title a {
-  color: var(--text);
+  color: var(--fk-text);
   text-decoration: none;
 }
 .card-title a:hover {
@@ -71,20 +64,20 @@ a.card:hover .card-date,
 /* Dates and years are data: Mono. */
 .card-date {
   margin: 0;
-  color: var(--muted);
-  font-family: var(--font-mono);
-  font-size: var(--data-size);
+  color: var(--fk-muted);
+  font-family: var(--fk-font-mono);
+  font-size: var(--fk-data-size);
   font-weight: 500;
-  line-height: var(--data-leading);
+  line-height: var(--fk-data-leading);
   font-variant-numeric: tabular-nums;
 }
 
 .card-desc {
-  margin: var(--space-1) 0 0;
+  margin: var(--fk-space-1) 0 0;
   max-width: 62ch;
-  color: var(--muted);
-  font-size: var(--body-size);
-  line-height: var(--body-leading);
+  color: var(--fk-muted);
+  font-size: var(--fk-body-size);
+  line-height: var(--fk-body-leading);
 }
 
 /* Status and links on one line. Each link is a 40px-tall target; the row is
@@ -93,9 +86,9 @@ a.card:hover .card-date,
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  min-height: var(--touch-target); /* rows without a link keep the same rhythm */
-  column-gap: var(--space-4);
-  font-size: var(--body-size);
+  min-height: var(--fk-touch-target); /* rows without a link keep the same rhythm */
+  column-gap: var(--fk-space-4);
+  font-size: var(--fk-body-size);
 }
 
 /* Text with the global 2px accent underline. Put " ↗" (leaves the site) or
@@ -103,33 +96,6 @@ a.card:hover .card-date,
 .card-link {
   display: inline-flex;
   align-items: center;
-  min-height: var(--touch-target);
+  min-height: var(--fk-touch-target);
   font-weight: 600;
-}
-
-/* Status: a square plus the label, same look as .status. The state is in the
-   words, the square only repeats it. */
-.status-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: 0;
-  background: none;
-  color: var(--text);
-  font-size: var(--label-size);
-  font-weight: 600;
-  line-height: var(--label-leading);
-}
-.status-pill::before {
-  content: "";
-  flex: none;
-  width: 8px;
-  height: 8px;
-  background: var(--status-color, var(--overlay));
-}
-.status-pill.status-active {
-  --status-color: var(--status-ok);
-}
-.status-pill.status-archive {
-  --status-color: var(--overlay);
 }

@@ -24,11 +24,11 @@ const summaryOf = (post: typeof latest) =>
 <Base title="blog">
   <article class="latest">
     <a class="row" href={`/blog/${latest.id}/`}>
-      <p class="overline muted">
+      <p class="fk-overline fk-muted">
         <time datetime={formatDate(latest.data.date)}>{formatDate(latest.data.date)}</time>
         · {formatMinutes(readingMinutes(latest.body))}
       </p>
-      <h2 class="title">{latest.data.title}</h2>
+      <h2 class="fk-title">{latest.data.title}</h2>
       <p class="summary">{summaryOf(latest)}</p>
     </a>
   </article>
@@ -36,12 +36,12 @@ const summaryOf = (post: typeof latest) =>
   <div class="years">
     {columns.map(({ year, posts }) => (
       <section aria-labelledby={`year-${year}`}>
-        <h2 id={`year-${year}`} class="overline">{year}</h2>
+        <h2 id={`year-${year}`} class="fk-overline">{year}</h2>
         <ul>
           {posts.map((post) => (
             <li>
               <a class="row" href={`/blog/${post.id}/`}>
-                <time class="data muted" datetime={formatDate(post.data.date)}>{formatDate(post.data.date)}</time>
+                <time class="fk-data fk-muted" datetime={formatDate(post.data.date)}>{formatDate(post.data.date)}</time>
                 <span class="name">{post.data.title}</span>
                 <span class="summary">{summaryOf(post)}</span>
               </a>
@@ -54,12 +54,12 @@ const summaryOf = (post: typeof latest) =>
 
   {archive.length > 0 && (
     <section class="archive" aria-labelledby="archive">
-      <h2 id="archive" class="overline">archive</h2>
+      <h2 id="archive" class="fk-overline">archive</h2>
       <ul>
         {archive.map((post) => (
           <li>
             <a class="row" href={`/blog/${post.id}/`}>
-              <time class="data muted" datetime={formatDate(post.data.date)}>{formatDate(post.data.date)}</time>
+              <time class="fk-data fk-muted" datetime={formatDate(post.data.date)}>{formatDate(post.data.date)}</time>
               <span class="name">{post.data.title}</span>
               <span class="summary">{summaryOf(post)}</span>
             </a>
@@ -75,55 +75,55 @@ const summaryOf = (post: typeof latest) =>
      text stays text color on hover, and muted parts switch to it. */
   .row {
     display: block;
-    padding: var(--space-3) var(--space-4);
+    padding: var(--fk-space-3) var(--fk-space-4);
     text-decoration: none;
-    color: var(--text);
+    color: var(--fk-text);
   }
   .row:hover {
-    background-color: var(--hover);
+    background-color: var(--fk-hover);
   }
-  .row:hover .muted,
-  .row:hover .overline,
+  .row:hover .fk-muted,
+  .row:hover .fk-overline,
   .row:hover .summary,
   .row:hover time {
-    color: var(--text);
+    color: var(--fk-text);
   }
   .summary {
     display: block;
     max-width: 66ch;
-    margin: var(--space-1) 0 0;
-    font-size: var(--body-size);
-    line-height: var(--body-leading);
-    color: var(--muted);
+    margin: var(--fk-space-1) 0 0;
+    font-size: var(--fk-body-size);
+    line-height: var(--fk-body-leading);
+    color: var(--fk-muted);
   }
   .row > time {
     display: block;
   }
   .name {
     display: block;
-    margin-top: var(--space-1);
-    font-size: var(--subheading-size);
+    margin-top: var(--fk-space-1);
+    font-size: var(--fk-subheading-size);
     font-weight: 600;
-    line-height: var(--subheading-leading);
+    line-height: var(--fk-subheading-leading);
   }
 
   /* The latest post sits on the same left edge as the page: the padding of the row
      is pulled back on the sides and the top, so the text lines up with the
      title and starts 24px under the nav, as on every other page. */
   .latest {
-    margin: calc(-1 * var(--space-4)) calc(-1 * var(--space-4)) var(--space-12);
+    margin: calc(-1 * var(--fk-space-4)) calc(-1 * var(--fk-space-4)) var(--fk-space-12);
   }
   .latest .row {
-    padding: var(--space-4);
+    padding: var(--fk-space-4);
   }
-  .latest .title {
+  .latest .fk-title {
     max-width: 14em;
-    margin: var(--space-2) 0 var(--space-3);
+    margin: var(--fk-space-2) 0 var(--fk-space-3);
   }
   .latest .summary {
     max-width: 52ch;
   }
-  .latest p.overline {
+  .latest p.fk-overline {
     margin: 0;
   }
 
@@ -131,8 +131,8 @@ const summaryOf = (post: typeof latest) =>
      columns side by side. */
   .years {
     display: grid;
-    gap: var(--space-12) var(--space-8);
-    margin-inline: calc(-1 * var(--space-4));
+    gap: var(--fk-space-12) var(--fk-space-8);
+    margin-inline: calc(-1 * var(--fk-space-4));
   }
   @media (min-width: 1000px) {
     .years {
@@ -141,9 +141,9 @@ const summaryOf = (post: typeof latest) =>
   }
   .years h2,
   .archive h2 {
-    margin: 0 0 var(--space-2);
-    padding: 0 var(--space-4);
-    color: var(--muted);
+    margin: 0 0 var(--fk-space-2);
+    padding: 0 var(--fk-space-4);
+    color: var(--fk-muted);
   }
   ul {
     margin: 0;
@@ -156,6 +156,6 @@ const summaryOf = (post: typeof latest) =>
   }
 
   .archive {
-    margin: var(--space-12) calc(-1 * var(--space-4)) 0;
+    margin: var(--fk-space-12) calc(-1 * var(--fk-space-4)) 0;
   }
 </style>

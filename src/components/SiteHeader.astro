@@ -33,35 +33,35 @@ const Tag = plainTitle || back ? 'p' : 'h1';
 <header class:list={{ home: !title, detail: !!back }}>
   {title ? (
     <>
-      <p class="overline-row overline">
+      <p class="overline-row fk-overline">
         <a href="/">{site.title}</a>
         {back && <BackButton class="header-back" href={back.href} label={back.label} />}
       </p>
-      <Tag class="page-title hero">{appName ?? title}</Tag>
+      <Tag class="page-title fk-hero">{appName ?? title}</Tag>
     </>
   ) : (
     <>
-      <p class="overline-row overline">{site.title}</p>
-      <h1 class="page-title hero">{appName ?? site.title}</h1>
+      <p class="overline-row fk-overline">{site.title}</p>
+      <h1 class="page-title fk-hero">{appName ?? site.title}</h1>
     </>
   )}
   {!isHome && (
     <nav aria-label="Site">
-      <a href="/">home</a>
+      <a class="fk-overline" href="/">home</a>
       {nav.map((s) => (
-        <a href={s.url} aria-current={isCurrent(s.url) ? 'page' : undefined}>{s.name}</a>
+        <a class="fk-overline" href={s.url} aria-current={isCurrent(s.url) ? 'page' : undefined}>{s.name}</a>
       ))}
     </nav>
   )}
 </header>
-{back && title && <h1 class="detail-title title">{title}</h1>}
+{back && title && <h1 class="detail-title fk-title">{title}</h1>}
 
 <style>
   .overline-row,
   .page-title,
   .detail-title,
   nav {
-    animation: metro-enter 0.7s var(--ease-metro) backwards;
+    animation: fk-enter var(--fk-enter-duration) var(--fk-ease-metro) backwards;
   }
   nav {
     animation-delay: 60ms;
@@ -71,14 +71,14 @@ const Tag = plainTitle || back ? 'p' : 'h1';
   .overline-row {
     display: flex;
     align-items: center;
-    gap: var(--space-4);
+    gap: var(--fk-space-4);
     margin: 0;
   }
   .overline-row a {
     position: relative;
     display: inline-flex;
     align-items: center;
-    color: var(--muted);
+    color: var(--fk-muted);
     text-decoration: none;
   }
   /* The row is one 16px line on every page, links or not. A pseudo-element
@@ -91,10 +91,10 @@ const Tag = plainTitle || back ? 'p' : 'h1';
   .overline-row :global(.header-back)::after {
     content: '';
     position: absolute;
-    inset: calc((var(--overline-size) * var(--overline-leading) - var(--touch-target)) / 2) 0;
+    inset: calc((var(--fk-overline-size) * var(--fk-overline-leading) - var(--fk-touch-target)) / 2) 0;
   }
   .overline-row a:hover {
-    color: var(--text);
+    color: var(--fk-text);
     text-decoration: none;
   }
 
@@ -104,7 +104,7 @@ const Tag = plainTitle || back ? 'p' : 'h1';
   /* A hub hero runs off the right edge; the shell clips it. */
   /* Phones wrap the hero, so no words are lost. */
   @media (min-width: 768px) {
-    .hero {
+    .fk-hero {
       white-space: nowrap;
     }
   }
@@ -112,7 +112,7 @@ const Tag = plainTitle || back ? 'p' : 'h1';
      the page content, the same gap as between the nav and the title. */
   .detail-title {
     max-width: 20em;
-    margin: 0 0 var(--space-6);
+    margin: 0 0 var(--fk-space-6);
   }
 
   /* Nav: type as navigation. Overline links in one row. Phones: one line that
@@ -123,8 +123,8 @@ const Tag = plainTitle || back ? 'p' : 'h1';
   nav {
     display: flex;
     flex-wrap: nowrap;
-    margin: var(--space-6) calc(-1 * var(--space-8)) var(--space-6) calc(-1 * var(--space-2));
-    padding-right: var(--space-8);
+    margin: var(--fk-space-6) calc(-1 * var(--fk-space-8)) var(--fk-space-6) calc(-1 * var(--fk-space-2));
+    padding-right: var(--fk-space-8);
     overflow-x: auto;
     scrollbar-width: none;
   }
@@ -136,37 +136,31 @@ const Tag = plainTitle || back ? 'p' : 'h1';
     flex: 0 0 auto;
     display: inline-flex;
     align-items: center;
-    min-height: var(--touch-target);
-    padding: 0 var(--space-2);
-    font-family: var(--font-mono);
-    font-size: var(--overline-size);
-    font-weight: 500;
-    line-height: var(--overline-leading);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    min-height: var(--fk-touch-target);
+    padding: 0 var(--fk-space-2);
     text-decoration: none;
-    color: var(--muted);
+    color: var(--fk-muted);
   }
   nav a:hover {
-    background-color: var(--hover);
-    color: var(--text);
+    background-color: var(--fk-hover);
+    color: var(--fk-text);
     text-decoration: none;
   }
   nav a[aria-current='page'] {
-    color: var(--text);
+    color: var(--fk-text);
   }
   nav a[aria-current='page']::after {
     content: '';
     position: absolute;
-    left: var(--space-2);
-    right: var(--space-2);
-    bottom: var(--space-1);
+    left: var(--fk-space-2);
+    right: var(--fk-space-2);
+    bottom: var(--fk-space-1);
     height: 2px;
-    background: var(--accent);
+    background: var(--fk-accent);
   }
 
   header.home {
-    padding-bottom: var(--space-4);
+    padding-bottom: var(--fk-space-4);
   }
 
   /* One spacing rule for every page and every width: 32px above the
@@ -174,16 +168,16 @@ const Tag = plainTitle || back ? 'p' : 'h1';
      the title. Hub, detail and home headers differ only in the title style
      and the nav. */
   header {
-    padding-top: var(--space-8);
+    padding-top: var(--fk-space-8);
   }
   .overline-row {
-    margin-bottom: var(--space-2);
+    margin-bottom: var(--fk-space-2);
   }
 
   @media (min-width: 768px) {
     /* No nav on the home page: leave a group gap under the hero. */
     header.home {
-      padding-bottom: var(--space-8);
+      padding-bottom: var(--fk-space-8);
     }
     nav {
       flex-wrap: wrap;

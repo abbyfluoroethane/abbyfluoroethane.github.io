@@ -23,11 +23,11 @@ const year = date.getUTCFullYear();
   back={{ href: '/projects/', label: 'back to projects' }}
 >
   <Fragment slot="meta">
-    <p class="overline muted">{status === 'active' ? `${year} – present` : year}</p>
+    <p class="fk-overline fk-muted">{status === 'active' ? `${year} – present` : year}</p>
     <p class="rail-caption">
       {status === 'active'
-        ? <span class="status ok">Active</span>
-        : <span class="status">Archived</span>}
+        ? <span class="fk-status ok">Active</span>
+        : <span class="fk-status">Archived</span>}
     </p>
     {external_url && (
       <p class="link"><Button href={external_url}>{url_text || 'External link'} ↗</Button></p>
@@ -37,10 +37,10 @@ const year = date.getUTCFullYear();
 </DetailLayout>
 
 <style>
-  .overline {
+  .fk-overline {
     margin: 0;
   }
   .link {
-    margin: var(--space-3) 0 0;
+    margin: var(--fk-space-3) 0 0;
   }
 </style>

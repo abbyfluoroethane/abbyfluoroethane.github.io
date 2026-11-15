@@ -8,7 +8,10 @@ const photos = (await getCollection('gallery')).sort((a, b) => a.data.order - b.
 
 // Photos sharing a caption form one group, in file order. The group heading
 // carries the caption, so the tiles carry only the alt text. The first row is
-// above the fold, so it loads eagerly. The link opens a large version.
+// above the fold, so it loads eagerly. The link opens a large version in a
+// new tab, and says so. Photos of one group often share their alt text, so
+// each one also gets its place in the group ("photo 2 of 4") to tell them
+// apart.
 const groups: { name: string; items: { image: ImageMetadata; full: string; alt: string; loading: 'eager' | 'lazy' }[] }[] = [];
 let n = 0;
 for (const { data } of photos) {
@@ -29,12 +32,13 @@ for (const { data } of photos) {
 <Base title="gallery">
   {groups.map((group, g) => (
     <section class="gallery-group" aria-labelledby={`group-${g}`}>
-      <p class="overline muted">{String(g + 1).padStart(2, '0')} · {group.items.length} {group.items.length === 1 ? 'photo' : 'photos'}</p>
-      <h2 class="heading" id={`group-${g}`}>{group.name}</h2>
+      <p class="fk-overline fk-muted">{String(g + 1).padStart(2, '0')} · {group.items.length} {group.items.length === 1 ? 'photo' : 'photos'}</p>
+      <h2 class="fk-heading" id={`group-${g}`}>{group.name}</h2>
       <div class="gallery-grid">
-        {group.items.map((item) => (
+        {group.items.map((item, i) => (
           <a class="gallery-item" href={item.full} target="_blank" rel="noopener">
-            <Image src={item.image} alt={item.alt} widths={[400, 800]} sizes="(min-width: 768px) 25vw, 50vw" loading={item.loading} />
+            <Image src={item.image} alt={group.items.length > 1 ? `${item.alt}, photo ${i + 1} of ${group.items.length}` : item.alt} widths={[400, 800]} sizes="(min-width: 768px) 25vw, 50vw" loading={item.loading} />
+            <span class="fk-sr-only"> (opens full size in a new tab)</span>
           </a>
         ))}
       </div>
@@ -44,7 +48,7 @@ for (const { data } of photos) {
 
 <style>
   .gallery-group {
-    margin-top: var(--space-8);
+    margin-top: var(--fk-space-8);
   }
   /* The first group starts 24px under the nav, as on every other page. */
   .gallery-group:first-child {
@@ -58,17 +62,18 @@ for (const { data } of photos) {
     display: grid;
     /* 180px is the smallest square that still shows a photo clearly. */
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: var(--tile-gap);
-    margin-top: var(--space-4);
+    gap: var(--fk-tile-gap);
+    margin-top: var(--fk-space-4);
   }
   .gallery-item {
+    position: relative; /* holds the visually hidden new-tab note */
     display: block;
     aspect-ratio: 1 / 1;
-    background: var(--mantle);
+    background: var(--fk-mantle);
   }
   /* Hover and press fill, as on the home tiles. */
   .gallery-item:hover {
-    background: var(--hover);
+    background: var(--fk-hover);
   }
   .gallery-item img {
     display: block;

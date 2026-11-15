@@ -13,13 +13,13 @@
      the viewport narrows, up to 4 columns. Empty cells are fine; no filler
      tiles. */
   .tile-grid {
-    --tile-unit: var(--tile-1);
+    --tile-unit: var(--fk-tile-1);
     display: grid;
     grid-auto-flow: dense;
     grid-template-columns: repeat(auto-fill, var(--tile-unit));
     grid-auto-rows: var(--tile-unit);
-    gap: var(--tile-gap);
-    max-width: calc(4 * var(--tile-unit) + 3 * var(--tile-gap));
+    gap: var(--fk-tile-gap);
+    max-width: calc(4 * var(--tile-unit) + 3 * var(--fk-tile-gap));
   }
   /* Phone: three columns that run out to the screen edges, the Windows
      Phone Start screen. Layout exemption 2 of the style guide: below 600px
@@ -27,10 +27,10 @@
      glass on each side. Text keeps the margin. */
   @media (max-width: 599px) {
     .tile-grid {
-      --tile-unit: calc((100vw - 4 * var(--tile-gap)) / 3);
+      --tile-unit: calc((100vw - 4 * var(--fk-tile-gap)) / 3);
       grid-template-columns: repeat(3, var(--tile-unit));
       max-width: none;
-      margin-inline: calc(var(--tile-gap) - var(--space-8));
+      margin-inline: calc(var(--fk-tile-gap) - var(--fk-space-8));
     }
   }
 </style>

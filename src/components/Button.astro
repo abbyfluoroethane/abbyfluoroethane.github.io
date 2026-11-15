@@ -24,39 +24,39 @@ const Tag = href ? 'a' : 'button';
   .btn {
     display: inline-flex;
     align-items: center;
-    gap: var(--space-2);
-    min-height: var(--touch-target);
-    padding: 0 var(--space-4);
+    gap: var(--fk-space-2);
+    min-height: var(--fk-touch-target);
+    padding: 0 var(--fk-space-4);
     border: 1px solid transparent;
     border-radius: 0;
-    background: var(--raised);
-    color: var(--text);
+    background: var(--fk-raised);
+    color: var(--fk-text);
     font-family: inherit;
-    font-size: var(--body-size);
+    font-size: var(--fk-body-size);
     font-weight: 600;
-    line-height: var(--body-leading);
+    line-height: var(--fk-body-leading);
     text-decoration: none;
     text-transform: none;
     cursor: pointer;
   }
   .btn.outline {
     background: transparent;
-    border-color: var(--control-border);
+    border-color: var(--fk-control-border);
   }
   .btn:hover,
   .btn:active {
-    background: var(--hover);
+    background: var(--fk-hover);
     text-decoration: none;
   }
   .btn:focus-visible {
-    outline: 2px solid var(--focus);
+    outline: 2px solid var(--fk-focus);
     outline-offset: 2px;
   }
   .btn:disabled,
   .btn[aria-disabled='true'] {
     background: transparent;
-    border-color: var(--line);
-    color: var(--disabled);
+    border-color: var(--fk-line);
+    color: var(--fk-disabled);
     cursor: not-allowed;
     pointer-events: none;
   }

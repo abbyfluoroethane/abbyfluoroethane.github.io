@@ -7,7 +7,7 @@ import { site } from '../site';
 <Base title="music" description="A live look at what I've been listening to, pulled from last.fm.">
 <PageColumns prose={false}>
   <Fragment slot="aside">
-    <p class="overline muted lastfm-source">live from <a href={`https://www.last.fm/user/${site.lastfm.username}`} target="_blank" rel="noopener">last.fm ↗</a></p>
+    <p class="fk-overline fk-muted lastfm-source">live from <a href={`https://www.last.fm/user/${site.lastfm.username}`} target="_blank" rel="noopener">last.fm ↗</a></p>
     <LastfmWidget id="lastfm-now" count={11} historyId="lastfm-history" />
   </Fragment>
   <h2>History</h2>
@@ -19,39 +19,39 @@ import { site } from '../site';
 
 <style>
   .lastfm-source {
-    margin: 0 0 var(--space-3);
+    margin: 0 0 var(--fk-space-3);
   }
   .lastfm-list {
     display: flex;
     flex-direction: column;
-    gap: var(--space-1);
-    margin: var(--space-4) 0 var(--space-8);
+    gap: var(--fk-space-1);
+    margin: var(--fk-space-4) 0 var(--fk-space-8);
   }
   /* The rows are built at runtime by lastfm.ts, so they are reached with
      :global() under this scoped container. The row itself is the link. */
   .lastfm-list :global(.lastfm-status) {
     margin: 0;
-    font-size: var(--small-size);
-    line-height: var(--small-leading);
-    color: var(--muted);
+    font-size: var(--fk-small-size);
+    line-height: var(--fk-small-leading);
+    color: var(--fk-muted);
   }
   .lastfm-list :global(.lastfm-history-card) {
     display: flex;
     align-items: center;
-    gap: var(--space-4);
-    min-height: var(--touch-target);
-    margin: 0 calc(-1 * var(--space-2));
-    padding: var(--space-1) var(--space-2);
-    color: var(--text);
+    gap: var(--fk-space-4);
+    min-height: var(--fk-touch-target);
+    margin: 0 calc(-1 * var(--fk-space-2));
+    padding: var(--fk-space-1) var(--fk-space-2);
+    color: var(--fk-text);
     text-decoration: none;
   }
   .lastfm-list :global(a.lastfm-history-card:hover) {
-    background-color: var(--hover);
+    background-color: var(--fk-hover);
   }
   .lastfm-list :global(.lastfm-history-cover) {
     flex: 0 0 auto;
-    width: calc(var(--space-16) - var(--space-2)); /* 56px */
-    height: calc(var(--space-16) - var(--space-2));
+    width: calc(var(--fk-space-16) - var(--fk-space-2)); /* 56px */
+    height: calc(var(--fk-space-16) - var(--fk-space-2));
     --art-fallback-text: "n/a";
   }
   .lastfm-list :global(.lastfm-history-info) {
@@ -61,30 +61,30 @@ import { site } from '../site';
     min-width: 0;
   }
   .lastfm-list :global(.lastfm-history-skeleton .lastfm-history-info) {
-    gap: var(--space-1);
+    gap: var(--fk-space-1);
   }
   .lastfm-list :global(.lastfm-history-title) {
-    font-size: var(--body-size);
-    line-height: var(--body-leading);
+    font-size: var(--fk-body-size);
+    line-height: var(--fk-body-leading);
   }
   .lastfm-list :global(.lastfm-history-artist) {
-    font-size: var(--small-size);
-    line-height: var(--small-leading);
-    color: var(--muted);
+    font-size: var(--fk-small-size);
+    line-height: var(--fk-small-leading);
+    color: var(--fk-muted);
   }
   .lastfm-list :global(.lastfm-history-info .lastfm-when) {
-    color: var(--muted);
+    color: var(--fk-muted);
   }
   /* Muted text is for base only: on the hover fill it goes to text. */
   .lastfm-list :global(a.lastfm-history-card:hover .lastfm-history-artist),
   .lastfm-list :global(a.lastfm-history-card:hover .lastfm-when) {
-    color: var(--text);
+    color: var(--fk-text);
   }
   .lastfm-list :global(.lastfm-history-out) {
     flex: none;
-    color: var(--muted);
+    color: var(--fk-muted);
   }
   .lastfm-list :global(a.lastfm-history-card:hover .lastfm-history-out) {
-    color: var(--text);
+    color: var(--fk-text);
   }
 </style>

@@ -64,7 +64,7 @@ const items = contents.map((h) => ({
       </div>
       {items.length > 0 && (
         <details class="contents" open>
-          <summary>contents</summary>
+          <summary class="fk-overline">contents</summary>
           <ol>
             {items.map((h) => (
               <li class:list={{ sub: h.depth !== numbered && numbered === 2 }}>
@@ -91,37 +91,47 @@ const items = contents.map((h) => ({
   // Contents: open on a desktop (the rail shows it), closed on a phone. Mark
   // the section being read. Color changes only, so no motion to reduce.
   const details = document.querySelector<HTMLDetailsElement>('.contents');
-  if (details) {
+  const summary = details?.querySelector('summary');
+  if (details && summary) {
     const wide = matchMedia('(min-width: 1000px)');
+    // Desktop: the list is always open and its summary is a label, so it
+    // leaves the tab order. Phone: a closed disclosure the summary opens.
     const sync = () => {
       details.open = wide.matches;
+      summary.tabIndex = wide.matches ? -1 : 0;
     };
     sync();
     wide.addEventListener('change', sync);
+    // A click is also what Enter and Space send: the label does not toggle.
+    summary.addEventListener('click', (e) => {
+      if (wide.matches) e.preventDefault();
+    });
     // Phone: close the disclosure after a jump, so the text is in view.
     details.addEventListener('click', (e) => {
       if (!wide.matches && (e.target as HTMLElement).closest('li a')) details.open = false;
     });
 
-    const links = [...details.querySelectorAll<HTMLAnchorElement>('li a')];
-    const targets = links
-      .map((a) => document.getElementById(decodeURIComponent(a.hash.slice(1))))
-      .filter((el): el is HTMLElement => !!el);
+    // Each contents link with the heading it points to. A link whose heading
+    // is not on the page is left out, so the two stay in step.
+    const sections = [...details.querySelectorAll<HTMLAnchorElement>('li a')].flatMap((link) => {
+      const heading = document.getElementById(decodeURIComponent(link.hash.slice(1)));
+      return heading ? [{ link, heading }] : [];
+    });
     const mark = () => {
-      let current = 0;
-      targets.forEach((el, i) => {
-        if (el.getBoundingClientRect().top < innerHeight * 0.3) current = i;
+      const line = innerHeight * 0.3;
+      let current = -1;
+      sections.forEach(({ heading }, i) => {
+        if (heading.getBoundingClientRect().top < line) current = i;
       });
-      links.forEach((a, i) => {
-        if (i === current && targets[0].getBoundingClientRect().top < innerHeight * 0.3) {
-          a.setAttribute('aria-current', 'location');
-        } else {
-          a.removeAttribute('aria-current');
-        }
+      sections.forEach(({ link }, i) => {
+        if (i === current) link.setAttribute('aria-current', 'location');
+        else link.removeAttribute('aria-current');
       });
     };
-    addEventListener('scroll', mark, { passive: true });
-    mark();
+    if (sections.length) {
+      addEventListener('scroll', mark, { passive: true });
+      mark();
+    }
   }
 </script>
 
@@ -133,46 +143,40 @@ const items = contents.map((h) => ({
   .rail-top {
     display: flex;
     align-items: center;
-    gap: var(--space-3);
+    gap: var(--fk-space-3);
   }
   .rail-date {
     display: flex;
     align-items: center;
-    gap: var(--space-3);
+    gap: var(--fk-space-3);
   }
-  /* The meta line: small and muted. A post adds .data (mono, ISO date). */
+  /* The meta line: small and muted. A post adds .fk-data (mono, ISO date). */
   .rail-date :global(.rail-caption) {
     margin: 0;
-    font-size: var(--small-size);
-    line-height: var(--small-leading);
-    color: var(--muted);
+    font-size: var(--fk-small-size);
+    line-height: var(--fk-small-leading);
+    color: var(--fk-muted);
   }
   .rail-date :global(.rail-caption time) {
-    color: var(--text);
+    color: var(--fk-text);
   }
   .rail-date :global(.rail-caption span) {
     display: block;
   }
 
   .contents {
-    margin: var(--space-4) 0 0;
+    margin: var(--fk-space-4) 0 0;
   }
-  /* "contents" is an overline: the label of the list. */
+  /* "contents" is an overline (the class): the label of the list. */
   summary {
     display: flex;
     align-items: center;
-    min-height: var(--touch-target);
-    font-family: var(--font-mono);
-    font-size: var(--overline-size);
-    font-weight: 500;
-    line-height: var(--overline-leading);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--muted);
+    min-height: var(--fk-touch-target);
+    color: var(--fk-muted);
     cursor: pointer;
   }
   .contents ol {
-    margin: 0 0 var(--space-2);
+    margin: 0 0 var(--fk-space-2);
     padding: 0;
     list-style: none;
   }
@@ -182,80 +186,80 @@ const items = contents.map((h) => ({
   .contents a {
     position: relative;
     display: flex;
-    gap: var(--space-2);
-    padding: var(--space-1) var(--space-2);
-    min-height: var(--touch-target);
+    gap: var(--fk-space-2);
+    padding: var(--fk-space-1) var(--fk-space-2);
+    min-height: var(--fk-touch-target);
     align-items: center;
-    font-size: var(--small-size);
-    line-height: var(--small-leading);
+    font-size: var(--fk-small-size);
+    line-height: var(--fk-small-leading);
     text-decoration: none;
-    color: var(--muted);
+    color: var(--fk-muted);
   }
   /* Muted text is for base only: on the hover fill it is the text color. */
   .contents a:hover {
-    color: var(--text);
-    background-color: var(--hover);
+    color: var(--fk-text);
+    background-color: var(--fk-hover);
   }
   .contents a:hover .num {
-    color: var(--text);
+    color: var(--fk-text);
   }
   /* The section being read: text color, 600, accent marker. */
   .contents a[aria-current] {
-    color: var(--text);
+    color: var(--fk-text);
     font-weight: 600;
   }
   .contents a[aria-current]::before {
     content: "";
     position: absolute;
-    top: var(--space-1);
-    bottom: var(--space-1);
+    top: var(--fk-space-1);
+    bottom: var(--fk-space-1);
     left: 0;
     width: 2px;
-    background: var(--accent);
+    background: var(--fk-accent);
   }
   .contents li.sub a {
-    padding-left: var(--space-4);
+    padding-left: var(--fk-space-4);
   }
   .num {
     flex: 0 0 auto;
-    min-width: var(--space-4);
-    font-family: var(--font-mono);
-    font-size: var(--label-size);
+    min-width: var(--fk-space-4);
+    font-family: var(--fk-font-mono);
+    font-size: var(--fk-label-size);
     font-weight: 500;
     font-variant-numeric: tabular-nums;
-    color: var(--muted);
+    color: var(--fk-muted);
   }
 
   .post {
     display: flow-root; /* contain floated images */
     min-width: 0;
-    margin-top: var(--space-4);
+    margin-top: var(--fk-space-4);
   }
   .standfirst {
-    margin: 0 0 var(--space-4);
-    font-size: var(--body-size);
-    line-height: var(--body-leading);
-    color: var(--muted);
+    margin: 0 0 var(--fk-space-4);
+    font-size: var(--fk-body-size);
+    line-height: var(--fk-body-leading);
+    color: var(--fk-muted);
   }
   .attribution {
-    margin: 0 0 var(--space-6);
-    font-size: var(--small-size);
-    line-height: var(--small-leading);
-    color: var(--muted);
+    margin: 0 0 var(--fk-space-6);
+    font-size: var(--fk-small-size);
+    line-height: var(--fk-small-leading);
+    color: var(--fk-muted);
   }
 
   /* Desktop: the rail is 240px on the grid and sticks while the text scrolls. */
   @media (min-width: 1000px) {
     .post-page {
       display: grid;
-      grid-template-columns: calc(12 * var(--space-4)) minmax(0, 42rem);
-      column-gap: var(--space-12);
+      grid-template-columns: calc(12 * var(--fk-space-4)) minmax(0, 42rem);
+      column-gap: var(--fk-space-12);
       align-items: start;
     }
     .rail {
       position: sticky;
-      top: var(--space-4);
-      max-height: calc(100vh - var(--space-8));
+      top: var(--fk-space-4);
+      max-height: calc(100vh - var(--fk-space-8));
       overflow-y: auto;
       scrollbar-width: none;
     }
@@ -264,10 +268,10 @@ const items = contents.map((h) => ({
     }
     .rail-date {
       display: block;
-      margin-top: var(--space-6);
+      margin-top: var(--fk-space-6);
     }
     .rail-date :global(.rail-caption) {
-      margin-top: var(--space-1);
+      margin-top: var(--fk-space-1);
     }
     .rail-date :global(.rail-caption span) {
       display: inline;
@@ -276,11 +280,11 @@ const items = contents.map((h) => ({
       margin-top: 0;
     }
     .contents {
-      margin-top: var(--space-6);
+      margin-top: var(--fk-space-6);
     }
     summary {
       pointer-events: none; /* open on a desktop: a label, not a control */
-      min-height: var(--space-6);
+      min-height: var(--fk-space-6);
     }
     /* Section numbers hang in the gap between the rail and the text. */
     .post :global(.prose) {
@@ -296,16 +300,16 @@ const items = contents.map((h) => ({
       content: counter(section);
       position: absolute;
       right: 100%;
-      margin-right: var(--space-4);
-      font-family: var(--font-mono);
-      font-size: var(--label-size);
+      margin-right: var(--fk-space-4);
+      font-family: var(--fk-font-mono);
+      font-size: var(--fk-label-size);
       font-weight: 500;
       font-variant-numeric: tabular-nums;
-      line-height: calc(var(--heading-size) * var(--heading-leading));
-      color: var(--muted);
+      line-height: calc(var(--fk-heading-size) * var(--fk-heading-leading));
+      color: var(--fk-muted);
     }
     .post :global(.prose[data-numbered='3'] h3:not(#footnotes))::before {
-      line-height: calc(var(--subheading-size) * var(--subheading-leading));
+      line-height: calc(var(--fk-subheading-size) * var(--fk-subheading-leading));
     }
   }
 </style>

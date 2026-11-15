@@ -34,7 +34,7 @@ const { id: lfmId = 'lastfm', count = 1, tile = false, historyId } = Astro.props
      then the cover image), so they all show the same flat loading cue: a
      raised block whose opacity pulses. No sweep, no gradient. */
   .skeleton {
-    background-color: var(--raised);
+    background-color: var(--fk-raised);
   }
   /* The art skeleton is faded out by opacity once the cover lands, so it
      only pulses while its stack is loading and the pulse can't hold it up. */
@@ -69,11 +69,15 @@ const { id: lfmId = 'lastfm', count = 1, tile = false, historyId } = Astro.props
      overline label underneath for tracks with no art, and one <img> layer
      per cover so a new one can crossfade over whatever is showing. Square,
      no border, no shadow. */
+  :root {
+    /* The cover crossfade. lastfm.ts reads it for its timers. */
+    --art-fade: 600ms;
+  }
   .art-stack {
     position: relative;
     display: block;
     overflow: hidden;
-    background-color: var(--mantle);
+    background-color: var(--fk-mantle);
     --art-fallback-opacity: 1;
     --art-fallback-text: "no cover";
   }
@@ -86,8 +90,7 @@ const { id: lfmId = 'lastfm', count = 1, tile = false, historyId } = Astro.props
     margin: 0;
     object-fit: cover;
     opacity: 0;
-    /* ART_FADE in lastfm.ts matches this duration */
-    transition: opacity 0.6s ease;
+    transition: opacity var(--art-fade) ease;
   }
   .art-layer.is-loaded {
     opacity: 1;
@@ -102,16 +105,11 @@ const { id: lfmId = 'lastfm', count = 1, tile = false, historyId } = Astro.props
     opacity: 0;
     transition: opacity 0.5s ease;
     pointer-events: none;
-    color: var(--muted);
+    color: var(--fk-muted);
   }
+  /* lastfm.ts gives the fallback the .fk-overline class; the word inherits it. */
   .art-fallback::after {
     content: var(--art-fallback-text);
-    font-family: var(--font-mono);
-    font-size: var(--overline-size);
-    font-weight: 500;
-    line-height: var(--overline-leading);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
   }
   /* The home tile has its own fill and its own caption: no label there, the
      last.fm mark instead, in the tile's text colour. A mask, not an <img>,
@@ -166,28 +164,28 @@ const { id: lfmId = 'lastfm', count = 1, tile = false, historyId } = Astro.props
   /* ---- widget on the music page: state, square cover, title, artist/album ---- */
   /* The home tile positions its own widget (see .lastfm-widget-tile there). */
   .lastfm-widget:not(.lastfm-widget-tile) {
-    margin: 0 0 var(--space-6);
+    margin: 0 0 var(--fk-space-6);
   }
-  /* A slot with nothing to show is hidden; .status would otherwise win. */
+  /* A slot with nothing to show is hidden; .fk-status would otherwise win. */
   .lastfm-widget :global([hidden]) {
     display: none !important;
   }
   .lastfm-widget :global(.lastfm-status) {
-    margin: 0 0 var(--space-1);
-    font-size: var(--small-size);
-    line-height: var(--small-leading);
-    color: var(--muted);
+    margin: 0 0 var(--fk-space-1);
+    font-size: var(--fk-small-size);
+    line-height: var(--fk-small-leading);
+    color: var(--fk-muted);
   }
-  /* The state line: .status.ok "now playing", or an overline "last played". */
+  /* The state line: .fk-status.ok "now playing", or an overline "last played". */
   .lastfm-widget :global(.lastfm-label) {
-    margin: 0 0 var(--space-3);
+    margin: 0 0 var(--fk-space-3);
   }
-  .lastfm-widget :global(.lastfm-label.overline) {
-    color: var(--muted);
+  .lastfm-widget :global(.lastfm-label.fk-overline) {
+    color: var(--fk-muted);
   }
   .lastfm-widget :global(.lastfm-cover-link) {
     display: block;
-    margin: 0 0 var(--space-4);
+    margin: 0 0 var(--fk-space-4);
     text-decoration: none;
   }
   .lastfm-widget :global(.lastfm-cover-link:hover) {
@@ -195,32 +193,32 @@ const { id: lfmId = 'lastfm', count = 1, tile = false, historyId } = Astro.props
   }
   .lastfm-widget :global(.lastfm-cover) {
     width: 100%;
-    max-width: calc(8 * var(--space-16)); /* 512px: no taller than the page */
+    max-width: calc(8 * var(--fk-space-16)); /* 512px: no taller than the page */
     aspect-ratio: 1;
   }
   .lastfm-widget :global(.lastfm-track-title) {
-    margin: 0 0 var(--space-1);
-    font-size: var(--subheading-size);
+    margin: 0 0 var(--fk-space-1);
+    font-size: var(--fk-subheading-size);
     font-weight: 600;
-    line-height: var(--subheading-leading);
+    line-height: var(--fk-subheading-leading);
     letter-spacing: 0;
   }
   .lastfm-widget :global(.lastfm-track-artist) {
     margin: 0;
-    font-size: var(--body-size);
+    font-size: var(--fk-body-size);
     font-weight: 400;
-    line-height: var(--body-leading);
-    color: var(--muted);
+    line-height: var(--fk-body-leading);
+    color: var(--fk-muted);
   }
   .lastfm-widget :global(.lastfm-track-album) {
     margin: 0;
-    font-size: var(--small-size);
+    font-size: var(--fk-small-size);
     font-weight: 400;
-    line-height: var(--small-leading);
-    color: var(--muted);
+    line-height: var(--fk-small-leading);
+    color: var(--fk-muted);
   }
   .lastfm-widget :global(.lastfm-when) {
-    margin: var(--space-2) 0 0;
-    color: var(--muted);
+    margin: var(--fk-space-2) 0 0;
+    color: var(--fk-muted);
   }
 </style>

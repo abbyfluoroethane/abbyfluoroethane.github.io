@@ -2,6 +2,8 @@
 // (data-user, data-key, data-count, data-tile, data-history-id). Imported by
 // LastfmWidget.astro; Astro bundles it once however many widgets are present.
 
+import { cssMs } from "../lib/cssTime";
+
 interface LfmImage { "#text"?: string }
 interface LfmTrack {
   name?: string;
@@ -26,9 +28,12 @@ interface CaptionEls {
   coverLink?: HTMLAnchorElement;
 }
 
-// matches .art-layer's opacity transition in LastfmWidget.astro — the outgoing cover
-// is only detached once the incoming one has finished fading over it
-const ART_FADE = 600;
+// .art-layer's opacity transition, --art-fade in LastfmWidget.astro — the outgoing
+// cover is only detached once the incoming one has finished fading over it
+const ART_FADE = cssMs("--art-fade", 600);
+// a cached response older than this no longer says what is playing *now*:
+// its first track is shown as the last one played instead
+const NOW_PLAYING_TTL = 5 * 60 * 1000;
 // a cover request that never settles (dead cdn, offline mid-load) would
 // otherwise leave the tile loading for the rest of the session
 const ART_TIMEOUT = 8000;
@@ -92,7 +97,7 @@ function scrobbleTime(t: LfmTrack): HTMLElement | null {
   const at = isFinite(secs) ? new Date(secs * 1000) : null;
   const text = at ? isoLocal(at) : d["#text"];
   if (!text) return null;
-  const stamp = line("time", "data lastfm-when", text);
+  const stamp = line("time", "fk-data lastfm-when", text);
   if (at) stamp.setAttribute("datetime", at.toISOString());
   return stamp;
 }
@@ -132,7 +137,7 @@ function setLine(node: HTMLElement | undefined, text: string | undefined): void 
 
 function makeStack(cls: string): Stack {
   const stack: Stack = el("span", "art-stack is-loading " + cls);
-  const fallback = el("span", "art-fallback");
+  const fallback = el("span", "art-fallback fk-overline");
   fallback.setAttribute("aria-hidden", "true");
   const shimmer = el("span", "art-skeleton skeleton");
   shimmer.setAttribute("aria-hidden", "true");
@@ -337,7 +342,7 @@ function initWidget(root: HTMLElement): void {
     const title = els.title = el("h3", "lastfm-track-title lastfm-swap");
     const artist = els.artist = el("p", "lastfm-track-artist lastfm-swap");
     const album = els.album = el("p", "lastfm-track-album lastfm-swap");
-    const when = els.when = el("p", "data lastfm-when lastfm-swap");
+    const when = els.when = el("p", "fk-data lastfm-when lastfm-swap");
     // the cover is the one link to the track; the aside already links the
     // last.fm profile, so there is no separate "open on last.fm" link
     root.appendChild(label);
@@ -357,10 +362,10 @@ function initWidget(root: HTMLElement): void {
     const node = els.label;
     if (!node) return;
     setLine(node, text);
-    node.classList.toggle("status", !!kind);
+    node.classList.toggle("fk-status", !!kind);
     node.classList.toggle("ok", kind === "ok");
     node.classList.toggle("error", kind === "error");
-    node.classList.toggle("overline", !kind);
+    node.classList.toggle("fk-overline", !kind);
   }
 
   function setCoverLink(href: string): void {
@@ -546,11 +551,21 @@ function initWidget(root: HTMLElement): void {
     else buildHistorySkeleton();
   }
 
+  // the cache covers a slow or failed request, so it can be days old. a
+  // stale "now playing" would name a track that stopped long ago, so past
+  // NOW_PLAYING_TTL the flag is dropped and the track reads "last played".
   function fromCache(): void {
     try {
-      const cached = JSON.parse(localStorage.getItem(cacheKey) || "null") as { tracks?: LfmTrack[] } | null;
-      if (cached && cached.tracks) render(cached.tracks);
-    } catch (e) {}
+      const cached = JSON.parse(localStorage.getItem(cacheKey) || "null") as { tracks?: LfmTrack[]; at?: number } | null;
+      if (!cached || !Array.isArray(cached.tracks)) return;
+      const fresh = typeof cached.at === "number" && Date.now() - cached.at < NOW_PLAYING_TTL;
+      const tracks = fresh
+        ? cached.tracks
+        : cached.tracks.map((t) => ({ ...t, "@attr": undefined }));
+      render(tracks);
+    } catch {
+      // no storage, or a payload that is not ours: carry on without it
+    }
   }
 
   function refresh(): void {
@@ -564,7 +579,11 @@ function initWidget(root: HTMLElement): void {
         if (!tracks) throw new Error("no track data");
         if (!Array.isArray(tracks)) tracks = [tracks];
         render(tracks);
-        localStorage.setItem(cacheKey, JSON.stringify({ tracks, at: Date.now() }));
+        try {
+          localStorage.setItem(cacheKey, JSON.stringify({ tracks, at: Date.now() }));
+        } catch {
+          // storage full or blocked: the next visit just starts without a cache
+        }
       })
       .catch(() => {
         if (!rendered) fromCache();

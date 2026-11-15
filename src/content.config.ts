@@ -2,6 +2,11 @@ import { defineCollection } from 'astro:content';
 import { file, glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 import { parse } from 'yaml';
+import { phosphor } from './components/phosphor';
+import { parseGuestbook } from './lib/guestbook';
+import { TILE_COLORS } from './lib/palette';
+
+const ICON_NAMES = Object.keys(phosphor) as [keyof typeof phosphor, ...(keyof typeof phosphor)[]];
 
 // The YAML data files are plain lists without ids. This parser gives each
 // entry an id and keeps the list position in `order`, because a collection
@@ -49,16 +54,6 @@ const projects = defineCollection({
       .optional()
       .transform((v) => v || undefined),
     url_text: z.string().optional(),
-    // One headline figure. The projects page shows the first project that has one
-    // as its loud tile.
-    stat: z
-      .object({
-        value: z.string(),
-        unit: z.string(),
-        label: z.string(),
-        overline: z.string().optional(),
-      })
-      .optional(),
   }),
 });
 
@@ -71,9 +66,11 @@ const nav = defineCollection({
     url: z.string(),
     size: z.enum(['square', 'wide', 'large']).default('square'),
     /** A Phosphor icon name from src/components/phosphor.ts. */
-    icon: z.string().optional(),
-    /** A Catppuccin Latte accent. See LATTE in Tile.astro. */
-    color: z.string().default('pink'),
+    icon: z.enum(ICON_NAMES).optional(),
+    /** A Catppuccin Latte accent from src/lib/palette.ts. */
+    color: z.enum(TILE_COLORS).default('pink'),
+    /** The live content the home tile shows. See src/pages/index.astro. */
+    live: z.enum(['music', 'blog', 'projects', 'guestbook']).optional(),
     navbar: z.boolean().default(true),
   }),
 });
@@ -97,9 +94,13 @@ const gallery = defineCollection({
 });
 
 // The guestbook worker commits new entries to the end of _data/guestbook.yml.
-// Do not move or rename this file.
+// Do not move or rename this file. Visitors write it, so parseGuestbook
+// drops what it cannot show instead of failing the build.
 const guestbook = defineCollection({
-  loader: file('_data/guestbook.yml', { parser: listParser((_e, i) => String(i)) }),
+  loader: file('_data/guestbook.yml', {
+    parser: (text) =>
+      parseGuestbook(text).map((entry, index) => ({ ...entry, id: String(index), order: index })),
+  }),
   schema: z.object({
     order: z.number(),
     name: z.string(),

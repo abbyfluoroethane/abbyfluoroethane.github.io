@@ -21,7 +21,7 @@ const years = (p: Project) =>
   <div class="columns">
     {columns.map(({ id, projects }) => (
       <section aria-labelledby={id}>
-        <h2 id={id} class="overline muted">{id}</h2>
+        <h2 id={id} class="fk-overline fk-muted">{id}</h2>
         <ul>
           {projects.map((p) => (
             <li class="card">
@@ -32,8 +32,8 @@ const years = (p: Project) =>
               <p class="card-desc">{p.data.description}</p>
               <p class="card-meta">
                 {p.data.status === 'active'
-                  ? <span class="status ok">Active</span>
-                  : <span class="status">Archived</span>}
+                  ? <span class="fk-status ok">Active</span>
+                  : <span class="fk-status">Archived</span>}
                 {p.data.external_url && (
                   <a class="card-link" href={p.data.external_url}>{p.data.url_text || 'External link'} ↗</a>
                 )}
@@ -49,7 +49,7 @@ const years = (p: Project) =>
 <style>
   .columns {
     display: grid;
-    gap: var(--space-12) var(--space-16);
+    gap: var(--fk-space-12) var(--fk-space-16);
   }
   @media (min-width: 1000px) {
     .columns {
@@ -57,7 +57,7 @@ const years = (p: Project) =>
     }
   }
   h2 {
-    margin: 0 0 var(--space-4);
+    margin: 0 0 var(--fk-space-4);
   }
   ul {
     margin: 0;
@@ -66,7 +66,7 @@ const years = (p: Project) =>
   }
   li {
     max-width: none;
-    margin-bottom: var(--space-6);
+    margin-bottom: var(--fk-space-6);
   }
   /* A link next to the stretched title link stays clickable. */
   .card-link {
