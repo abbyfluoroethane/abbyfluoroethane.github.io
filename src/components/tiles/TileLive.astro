@@ -19,46 +19,38 @@ const { strip = false, cycle = false } = Astro.props;
     min-width: 0;
     min-height: 0;
     overflow: hidden;
-    margin-top: var(--space-1);
-    color: var(--text);
+    margin-top: var(--fk-space-1);
+    color: var(--fk-text);
   }
   .tile-live :global(p) {
     margin: 0;
   }
   .tile-live :global(.tile-live-title) {
-    font-size: var(--small-size);
+    font-size: var(--fk-small-size);
     font-weight: 600;
-    line-height: var(--small-leading);
+    line-height: var(--fk-small-leading);
   }
   .tile-live :global(.tile-live-desc) {
-    font-size: var(--small-size);
+    font-size: var(--fk-small-size);
     font-weight: 400;
-    line-height: var(--small-leading);
+    line-height: var(--fk-small-leading);
     display: -webkit-box;
     -webkit-line-clamp: var(--tile-lines, 1);
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
-  /* One line with an ellipsis (the blog tile). */
-  .tile-live :global(.is-oneline) {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: block;
-  }
-
   /* Music: pinned to the bottom, straight on the tinted cover (Tile.astro
      sets the veil): the state line, the title and the artist. */
   .tile-live.strip {
     position: absolute;
     inset: auto 0 0 0;
     margin: 0;
-    padding: var(--space-2) var(--space-3);
+    padding: var(--fk-space-2) var(--fk-space-3);
   }
   /* The state line ("Now playing" with its status square, or the
      "last played" overline) sits above the title. The album stays out. */
   .tile-live.strip :global(.tile-live-label) {
-    margin: 0 0 var(--space-1);
+    margin: 0 0 var(--fk-space-1);
   }
   .tile-live.strip :global(.tile-live-album) {
     display: none;
@@ -71,21 +63,25 @@ const { strip = false, cycle = false } = Astro.props;
     text-overflow: ellipsis;
   }
   .tile-live.strip :global(.tile-live-artist) {
-    font-size: var(--label-size);
+    font-size: var(--fk-label-size);
     font-weight: 400;
-    line-height: var(--label-leading);
+    line-height: var(--fk-label-leading);
   }
   .tile-live :global(.lastfm-widget-tile) {
     margin: 0;
   }
   .tile-live :global(.tile-live-years) {
-    margin: 0 0 var(--space-1);
+    margin: 0 0 var(--fk-space-1);
   }
 
   /* Cycle: the viewport clips the items. An item rests below it, slides up
      into view when active and up and out when leaving (home.ts). The
      transition sits on the two moving states only, so an item that finishes
-     leaving snaps back below without sliding down. */
+     leaving snaps back below without sliding down. home.ts reads the slide
+     time from --tile-cycle. */
+  :global(:root) {
+    --tile-cycle: 550ms;
+  }
   .tile-live.tile-cycle {
     flex: 1;
   }
@@ -101,7 +97,7 @@ const { strip = false, cycle = false } = Astro.props;
   }
   .tile-live :global(.tile-cycle-item.is-active),
   .tile-live :global(.tile-cycle-item.is-leaving) {
-    transition: transform 0.55s var(--ease-metro);
+    transition: transform var(--tile-cycle) var(--fk-ease-metro);
   }
   .tile-live :global(.tile-cycle-item.is-active) {
     transform: translateY(0);

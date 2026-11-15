@@ -6,7 +6,6 @@ import Tile from '../components/tiles/Tile.astro';
 import TileGrid from '../components/tiles/TileGrid.astro';
 import TileLive from '../components/tiles/TileLive.astro';
 import { excerpt, truncateWords } from '../lib/format';
-import type { IconName } from '../components/Icon.astro';
 
 const nav = await getNav();
 const latestPost = (await getPosts())[0];
@@ -25,14 +24,15 @@ const recentEntries = (await getGuestbook()).slice(0, 3);
 <Base appName="home">
   <div class="home-layout">
     <div class="home-intro">
-      <h2 class="heading">haiii, i'm abby :3</h2>
-      <p class="muted">Welcome to my little corner of the internet. I build things that go to space, break things that stay on earth, and occasionally muse about my thoughts.</p>
+      <h2 class="fk-heading">haiii, i'm abby :3</h2>
+      <p class="fk-muted">Welcome to my little corner of the internet. I build things that go to space, break things that stay on earth, and occasionally muse about my thoughts.</p>
     </div>
 
+    <div class="home-tiles">
     <TileGrid>
       {nav.map((s) => {
-        const tile = { size: s.size, color: s.color, icon: s.icon as IconName | undefined, href: s.url, label: s.name };
-        if (s.name === 'blog') return (
+        const tile = { size: s.size, color: s.color, icon: s.icon, href: s.url, label: s.name };
+        if (s.live === 'blog') return (
           <Tile {...tile} live>
             <TileLive>
               {latestPost && (
@@ -44,20 +44,22 @@ const recentEntries = (await getGuestbook()).slice(0, 3);
             </TileLive>
           </Tile>
         );
-        if (s.name === 'music') return (
+        if (s.live === 'music') return (
           <Tile {...tile} live art>
             <TileLive strip><LastfmWidget id="lastfm-tile" count={1} tile={true} /></TileLive>
           </Tile>
         );
-        // The featured projects taking turns.
-        if (s.name === 'projects') return (
+        // The featured projects taking turns. Only the item on show is
+        // exposed to assistive technology, so the tile link is named by its
+        // overline and the one item, not by every item in the cycle.
+        if (s.live === 'projects') return (
           <Tile {...tile} live>
             <TileLive cycle>
               <div class="tile-cycle-viewport">
                 {featuredProjects.map((p, i) => (
-                  <div class={`tile-cycle-item${i === 0 ? ' is-active' : ''}`}>
+                  <div class:list={['tile-cycle-item', { 'is-active': i === 0 }]} aria-hidden={i === 0 ? undefined : 'true'}>
                     <p class="tile-live-title">{p.data.title}</p>
-                    <p class="tile-live-years data">{p.data.date.getUTCFullYear()} – present</p>
+                    <p class="tile-live-years fk-data">{p.data.date.getUTCFullYear()} – present</p>
                     <p class="tile-live-desc" style="--tile-lines: 3">{p.data.description}</p>
                   </div>
                 ))}
@@ -65,12 +67,12 @@ const recentEntries = (await getGuestbook()).slice(0, 3);
             </TileLive>
           </Tile>
         );
-        if (s.name === 'guestbook') return (
+        if (s.live === 'guestbook') return (
           <Tile {...tile} live>
             <TileLive cycle>
               <div class="tile-cycle-viewport">
                 {recentEntries.map((e, i) => (
-                  <div class={`tile-cycle-item${i === 0 ? ' is-active' : ''}`}>
+                  <div class:list={['tile-cycle-item', { 'is-active': i === 0 }]} aria-hidden={i === 0 ? undefined : 'true'}>
                     <p class="tile-live-title">{e.name}</p>
                     <p class="tile-live-desc" style="--tile-lines: 4">{e.message}</p>
                   </div>
@@ -82,6 +84,10 @@ const recentEntries = (await getGuestbook()).slice(0, 3);
         return <Tile {...tile} nav external={s.url.startsWith('http')} />;
       })}
     </TileGrid>
+    {/* Stops the tiles that change by themselves. home.ts shows it only
+        when a cycle is running, and keeps the choice between visits. */}
+    <button class="tile-pause fk-overline" type="button" aria-pressed="false" hidden>pause tiles</button>
+    </div>
   </div>
 </Base>
 
@@ -92,11 +98,11 @@ const recentEntries = (await getGuestbook()).slice(0, 3);
   .home-layout {
     display: grid;
     grid-template-columns: 1fr;
-    gap: var(--space-8);
+    gap: var(--fk-space-8);
   }
   @media (min-width: 768px) {
     .home-layout {
-      gap: var(--space-16);
+      gap: var(--fk-space-16);
     }
   }
   @media (min-width: 1200px) {
@@ -105,8 +111,37 @@ const recentEntries = (await getGuestbook()).slice(0, 3);
       align-items: start;
     }
   }
+  /* The grid item must not stretch: the tile field sets its own width. */
+  .home-tiles {
+    min-width: 0;
+  }
+  /* A text control in the overline style, under the field. 40px tall. */
+  .tile-pause {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--fk-touch-target);
+    margin: var(--fk-space-2) 0 0 calc(-1 * var(--fk-space-2));
+    padding: 0 var(--fk-space-2);
+    border: 0;
+    background: none;
+    color: var(--fk-muted);
+  }
+  .tile-pause:hover,
+  .tile-pause[aria-pressed='true'] {
+    color: var(--fk-text);
+  }
+  .tile-pause:hover {
+    background-color: var(--fk-hover);
+  }
+  .tile-pause[aria-pressed='true']::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    margin-right: var(--fk-space-2);
+    background: var(--fk-accent);
+  }
   .home-intro h2 {
-    margin: 0 0 var(--space-2);
+    margin: 0 0 var(--fk-space-2);
   }
   .home-intro p {
     margin: 0;

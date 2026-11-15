@@ -16,6 +16,11 @@
 #            flamingo, pink (default), mauve, red, maroon, peach, yellow,
 #            green, teal, sky, sapphire, blue or lavender. Latte in both
 #            themes, with light text on it.
+#   live   — the live content the tile shows on the home page: music (the
+#            last.fm track), blog (the newest post), projects (the featured
+#            projects in turn) or guestbook (the newest entries in turn).
+#            omit it for a plain navigation tile. the name is free to change;
+#            this field, not the name, picks the content.
 #   navbar — whether the entry also appears in the nav bar shown on
 #            subpages. omit it and the entry is included, so a new tile
 #            can't drop out of the nav by accident; set it to false for
@@ -23,18 +28,21 @@
 
 - name: music
   url: /music/
+  live: music
   size: large
   color: red
   navbar: true
 
 - name: blog
   url: /blog/
+  live: blog
   size: wide
   color: lavender
   navbar: true
 
 - name: projects
   url: /projects/
+  live: projects
   size: large
   color: pink
   navbar: true
@@ -59,6 +67,7 @@
 
 - name: guestbook
   url: /guestbook/
+  live: guestbook
   size: wide
   color: green
   navbar: true

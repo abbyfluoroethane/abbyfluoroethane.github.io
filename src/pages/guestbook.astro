@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import Button from '../components/Button.astro';
+import Icon from '../components/Icon.astro';
 import PageColumns from '../components/PageColumns.astro';
 import { site } from '../site';
 import { getGuestbook } from '../lib/collections';
@@ -20,8 +21,13 @@ const safeUrl = (w?: string) => {
 <Base title="guestbook">
 <PageColumns prose={false}>
   <Fragment slot="aside">
-    <h2>sign the guestbook</h2>
+    <h2 class="fk-overline">sign the guestbook</h2>
     <p id="guestbook-form-status" class="guestbook-form-status" role="status" aria-live="polite"></p>
+    {/* The spam check (Turnstile) runs in the browser, so the form cannot
+        be sent without JavaScript: say so instead of failing after submit. */}
+    <noscript>
+      <p class="js-warn"><Icon name="warning" weight="bold" size={16} />Signing the guestbook requires JavaScript.</p>
+    </noscript>
     <form id="guestbook-form" class="guestbook-form" action={site.guestbookEndpoint} method="POST">
       <div class="guestbook-honeypot" aria-hidden="true">
         <label for="guestbook-url">leave this empty</label>
@@ -40,8 +46,8 @@ const safeUrl = (w?: string) => {
         const url = safeUrl(entry.website);
         return (
       <li class="entry">
-        <h3 class="subheading">{url ? <a href={url} rel="nofollow ugc noopener">{entry.name}</a> : entry.name}</h3>
-        <p class="data muted"><time datetime={entry.date}>{entry.date}</time></p>
+        <h3 class="fk-subheading">{url ? <a href={url} rel="nofollow ugc noopener">{entry.name}</a> : entry.name}</h3>
+        <p class="fk-data fk-muted"><time datetime={entry.date}>{entry.date}</time></p>
         <p class="entry-message">{entry.message}</p>
       </li>
         );
@@ -60,36 +66,36 @@ const safeUrl = (w?: string) => {
   .guestbook-form {
     display: flex;
     flex-direction: column;
-    gap: var(--space-4);
+    gap: var(--fk-space-4);
     max-width: 480px; /* off-grid: comfortable form width */
-    margin: var(--space-4) 0 var(--space-8);
+    margin: var(--fk-space-4) 0 var(--fk-space-8);
   }
   /* Label above the field: label style, sentence case. */
   .guestbook-form label {
     display: flex;
     flex-direction: column;
-    gap: var(--space-1);
-    font-size: var(--label-size);
+    gap: var(--fk-space-1);
+    font-size: var(--fk-label-size);
     font-weight: 600;
-    line-height: var(--label-leading);
-    color: var(--text);
+    line-height: var(--fk-label-leading);
+    color: var(--fk-text);
   }
   .guestbook-form input,
   .guestbook-form textarea {
-    min-height: var(--touch-target);
+    min-height: var(--fk-touch-target);
     font-family: inherit;
-    font-size: var(--body-size);
+    font-size: var(--fk-body-size);
     font-weight: 400;
-    line-height: var(--body-leading);
-    padding: var(--space-2) var(--space-3);
-    border: 1px solid var(--control-border);
+    line-height: var(--fk-body-leading);
+    padding: var(--fk-space-2) var(--fk-space-3);
+    border: 1px solid var(--fk-control-border);
     border-radius: 0;
-    background: var(--mantle);
-    color: var(--text);
+    background: var(--fk-mantle);
+    color: var(--fk-text);
   }
   .guestbook-form input:hover,
   .guestbook-form textarea:hover {
-    background: var(--hover);
+    background: var(--fk-hover);
   }
   .guestbook-form :global(.btn) {
     align-self: flex-start;
@@ -100,7 +106,10 @@ const safeUrl = (w?: string) => {
     display: none;
   }
   .guestbook-form-status {
-    margin: var(--space-2) 0 0;
+    margin: var(--fk-space-2) 0 0;
+  }
+  .post-meta :global(noscript .js-warn) {
+    margin-top: var(--fk-space-2);
   }
   /* Bots fill every field; people never see this one. Off-screen rather than
      display: none, which some bots skip. */
@@ -114,18 +123,18 @@ const safeUrl = (w?: string) => {
     margin-top: 0;
   }
   .entries {
-    margin: var(--space-4) 0 var(--space-8);
+    margin: var(--fk-space-4) 0 var(--fk-space-8);
     padding: 0;
     list-style: none;
   }
   .entry {
-    padding: var(--space-4) 0;
+    padding: var(--fk-space-4) 0;
   }
   .entry h3,
   .entry p {
     margin: 0;
   }
   .entry-message {
-    margin-top: var(--space-2);
+    margin-top: var(--fk-space-2);
   }
 </style>
