@@ -5,9 +5,6 @@
 /** "2026-07-22": the one date format of the UI (ISO 8601, in UTC). */
 export const formatDate = (date: Date) => date.toISOString().slice(0, 10);
 
-/** Kept for older callers. The UI has one date format, so it is the ISO one. */
-export const formatLongDate = formatDate;
-
 /** "5 min": a number, a space, the unit. */
 export const formatMinutes = (minutes: number) => `${minutes} min`;
 
