@@ -17,6 +17,6 @@ export const getProjects = async () =>
 export const getNav = async () =>
   (await getCollection('nav')).sort((a, b) => a.data.order - b.data.order).map((e) => e.data);
 
-/** Guestbook entries, newest first (the worker appends to the end of the file). */
+/** Guestbook entries, newest first (the loader gives them oldest first). */
 export const getGuestbook = async () =>
   (await getCollection('guestbook')).sort((a, b) => b.data.order - a.data.order).map((e) => e.data);

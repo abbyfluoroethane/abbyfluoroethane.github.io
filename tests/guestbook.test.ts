@@ -55,3 +55,18 @@ describe('parseGuestbook', () => {
     expect(rows.length).toBe(source.split('\n').filter((l) => l.startsWith('- ')).length);
   });
 });
+
+describe('combineGuestbook', () => {
+  it('reads each file and keeps the file order', async () => {
+    const { combineGuestbook } = await import('../src/lib/guestbook');
+    const rows = combineGuestbook(
+      [
+        '- name: "old"\n  date: "2026-01-01"\n  message: "first"\n',
+        '',
+        '- name: "new"\n  date: "2026-11-20"\n  message: "second"\n',
+      ],
+      quiet,
+    );
+    expect(rows.map((r) => r.name)).toEqual(['old', 'new']);
+  });
+});

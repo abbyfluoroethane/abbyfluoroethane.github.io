@@ -1,9 +1,10 @@
 import { defineCollection } from 'astro:content';
 import { file, glob } from 'astro/loaders';
 import { z } from 'astro/zod';
+import { readFile, readdir } from 'node:fs/promises';
 import { parse } from 'yaml';
 import { phosphor } from './components/phosphor';
-import { parseGuestbook } from './lib/guestbook';
+import { combineGuestbook } from './lib/guestbook';
 import { TILE_COLORS } from './lib/palette';
 
 const ICON_NAMES = Object.keys(phosphor) as [keyof typeof phosphor, ...(keyof typeof phosphor)[]];
@@ -93,14 +94,25 @@ const gallery = defineCollection({
     }),
 });
 
-// The guestbook worker commits new entries to the end of _data/guestbook.yml.
-// Do not move or rename this file. Visitors write it, so parseGuestbook
-// drops what it cannot show instead of failing the build.
+// Guestbook entries come from two places: _data/guestbook.yml holds the
+// entries from before review, and the worker's merged PRs add one file per
+// entry under _data/guestbook/. File names are UTC timestamps, so name order
+// is signing order. Visitors write these files, so combineGuestbook drops
+// what it cannot show instead of failing the build.
+const GUESTBOOK_DIR = '_data/guestbook';
 const guestbook = defineCollection({
-  loader: file('_data/guestbook.yml', {
-    parser: (text) =>
-      parseGuestbook(text).map((entry, index) => ({ ...entry, id: String(index), order: index })),
-  }),
+  loader: async () => {
+    const legacy = await readFile('_data/guestbook.yml', 'utf8').catch(() => '');
+    const names = (await readdir(GUESTBOOK_DIR).catch(() => [] as string[]))
+      .filter((n) => n.endsWith('.yml'))
+      .sort();
+    const files = await Promise.all(names.map((n) => readFile(`${GUESTBOOK_DIR}/${n}`, 'utf8')));
+    return combineGuestbook([legacy, ...files]).map((entry, index) => ({
+      ...entry,
+      id: String(index),
+      order: index,
+    }));
+  },
   schema: z.object({
     order: z.number(),
     name: z.string(),

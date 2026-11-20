@@ -1,0 +1,7 @@
+# Deploy from this folder: npx wrangler deploy
+# Secrets and ALLOWED_ORIGIN are set in Cloudflare, not in this file
+# (see src/index.ts for the list). A deploy keeps them.
+name = "guestbook"
+main = "src/index.ts"
+compatibility_date = "2026-11-01"
+workers_dev = true

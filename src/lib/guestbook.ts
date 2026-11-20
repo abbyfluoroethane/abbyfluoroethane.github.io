@@ -1,10 +1,10 @@
 import { parse } from 'yaml';
 
-// The guestbook worker appends visitor entries to _data/guestbook.yml on the
-// deploy branch, so this file is the one input to the build that nobody
-// reviews. One bad entry must cost that entry, never the deploy: rows are
-// parsed leniently, coerced to text, and dropped (with a warning) when they
-// cannot be shown.
+// Visitors write the guestbook files (_data/guestbook.yml and the worker's
+// per-entry files in _data/guestbook/). A PR review catches spam, not a
+// subtle YAML problem. One bad entry must cost that entry, never the deploy:
+// rows are parsed leniently, coerced to text, and dropped (with a warning)
+// when they cannot be shown.
 
 export interface GuestbookRow {
   name: string;
@@ -62,3 +62,9 @@ export function parseGuestbook(
   });
   return rows;
 }
+
+/** All entries of several guestbook files, in the order the files are given. */
+export const combineGuestbook = (
+  sources: string[],
+  warn: (msg: string) => void = (msg) => console.warn(msg),
+): GuestbookRow[] => sources.flatMap((source) => parseGuestbook(source, warn));

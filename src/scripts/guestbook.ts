@@ -1,7 +1,7 @@
-// the worker behind guestbook_endpoint takes a classic form POST and
-// commits straight to _data/guestbook.yml via the GitHub API, then
-// 302s back here with a query param — new entries show up on the next
-// site rebuild, not instantly, so there is nothing to fetch/prepend here.
+// the worker behind guestbook_endpoint (worker/ in this repo) takes a classic
+// form POST, opens a pull request with the entry, then 302s back here with a
+// query param. an entry shows up after the PR is merged and the site
+// rebuilds, so there is nothing to fetch/prepend here.
 const status = document.getElementById("guestbook-form-status");
 const form = document.querySelector<HTMLFormElement>("#guestbook-form");
 
@@ -15,6 +15,7 @@ function show(kind: "ok" | "error", text: string) {
 const params = new URLSearchParams(window.location.search);
 const messages: Record<string, string> = {
   fields: "Please fill in your name and a message.",
+  link: "Links are not allowed in the message. Remove the link and try again.",
   spam: "Verification failed. Your message is still here: please try again.",
   server: "Something went wrong. Your message is still here: try again later.",
 };
@@ -61,7 +62,7 @@ form?.addEventListener("submit", saveDraft);
 
 if (params.get("signed") === "true") {
   clearDraft();
-  show("ok", "Thanks for signing. Your entry will appear in a minute or two.");
+  show("ok", "Thanks for signing. Your entry will appear after a quick review.");
 } else if (params.has("error")) {
   restoreDraft();
   show("error", messages[params.get("error") ?? ""] || messages.server);
