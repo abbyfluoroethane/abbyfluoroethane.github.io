@@ -19,18 +19,18 @@
     "@astrojs/sitemap": "^3.7.4",
     "astro": "^7.3.5",
     "fluorokit": "^0.1.0",
-    "marked": "^18.0.14",
+    "marked": "^18.2.0",
     "yaml": "^2.9.1"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.10",
+    "@astrojs/check": "^0.9.12",
     "@eslint/js": "^10.0.1",
     "@phosphor-icons/core": "2.1.1",
     "eslint": "^10.15.0",
-    "eslint-plugin-astro": "^1.7.0",
-    "typescript": "^6.0.3",
+    "eslint-plugin-astro": "^3.2.1",
+    "typescript": "^7.0.2",
     "typescript-eslint": "^8.72.2",
-    "vitest": "^4.1.12"
+    "vitest": "^5.1.0"
   },
   "engines": {
     "node": ">=22.12.0"
