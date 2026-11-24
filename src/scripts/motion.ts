@@ -1,11 +1,12 @@
 // Metro motion for the whole site, from fluorokit/motion:
 // - tilt: a pressed tile tips toward the press point (.fk-tilt).
-// - continuum: a blog or project row carries its title to the top of its
-//   page, and the back link carries it back to the row.
-// - turnstile: a Start tile swings the home page shut, and the section it
-//   opens swings in.
-// - slide: every other link to a page of this site plays the slide exit on
-//   <main>. The next page enters as before (enterDirectionScript).
+// - turnstile, for a move deeper or back: a Start tile to its section, a
+//   row to its page, a page back to its list. The old page swings shut and
+//   the new one swings in, on the side that --fk-enter-dir sets.
+// - continuum, with it: a blog or project row carries its title to the
+//   top of its page, and the back link carries it down into the row.
+// - slide: every other link to a page of this site (across the nav).
+// Within one section the header holds still. The rules are in global.css.
 // The page after reads the arrival from sessionStorage, in a script in the
 // <head> of Base.astro, before its first paint.
 import { attachTilt, continuum, continuumIn, leave } from 'fluorokit/motion';
@@ -16,6 +17,10 @@ type Arrival = {
   to: string;
   at: number;
   kind: 'turnstile' | 'continuum';
+  /** 1 deeper, -1 back. */
+  dir: number;
+  /** The same section on both pages: the header does not move. */
+  holdHeader: boolean;
   from?: { left: number; top: number; fontSize: number } | null;
   /** Continuum back to a list: the href of the row to land on. */
   item?: string;
@@ -88,27 +93,33 @@ document.addEventListener('click', async (e) => {
   e.preventDefault();
   leaving = true;
   const to = url.pathname;
-  document.documentElement.style.setProperty('--fk-enter-dir', String(direction(location.pathname, to)));
+  const dir = direction(location.pathname, to);
+  document.documentElement.style.setProperty('--fk-enter-dir', String(dir));
+  const holdHeader = section(location.pathname) !== -1 && section(location.pathname) === section(to);
+  const header = shell.querySelector('header');
 
   if (a.dataset.fkContinuum !== undefined) {
-    // A row to its page: the title goes up to the top of the next page.
+    // A row to its page: the rest of the list swings shut, then the title
+    // goes up to the top of the next page.
     const title = a.matches('[data-fk-continuum-title]') ? a : a.querySelector('[data-fk-continuum-title]');
     const from = await continuum(title, { page: main, kind: 'turnstile' });
-    arriveNext({ to, kind: 'continuum', from });
+    arriveNext({ to, kind: 'continuum', dir, holdHeader, from });
   } else if (detailTitle && to === listOf(location.pathname)) {
-    // A page back to its list: the title goes down into its row.
-    const from = await continuum(detailTitle, { page: shell, kind: 'turnstile' });
-    arriveNext({ to, kind: 'continuum', from, item: location.pathname });
+    // A page back to its list: the content swings shut, the title stays,
+    // then it goes down into its row.
+    const r = detailTitle.getBoundingClientRect();
+    const from = { left: r.left, top: r.top, fontSize: parseFloat(getComputedStyle(detailTitle).fontSize) };
+    await feather([...main.children]);
+    arriveNext({ to, kind: 'continuum', dir, holdHeader, from, item: location.pathname });
   } else if (a.classList.contains('tile')) {
-    // A Start tile: the home page swings shut, and the section swings in.
-    const header = shell.querySelector('header');
+    // A Start tile: the home page swings shut, tiles and all.
     const grid = main.querySelector('.tile-grid');
     await feather([
-      ...(header ? [...header.children] : []),
+      ...(header && !holdHeader ? [...header.children] : []),
       ...[...main.children].filter((el) => el !== grid),
       ...(grid ? [...grid.children] : []),
     ]);
-    arriveNext({ to, kind: 'turnstile' });
+    arriveNext({ to, kind: 'turnstile', dir, holdHeader });
   } else {
     await leave(main);
   }

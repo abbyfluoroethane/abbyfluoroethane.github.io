@@ -68,8 +68,11 @@ const navPaths = ['/', ...(await getNav()).filter((s) => s.navbar && s.url.start
   {/* Before the first paint, so the page-enter starts on the right side. */}
   <script is:inline set:html={enterDirectionScript(navPaths)} />
   {/* Before the first paint: a turnstile or continuum arrival, set by
-      src/scripts/motion.ts on the page before. It marks the root element,
-      and for continuum hides the element that moves until it starts. */}
+      src/scripts/motion.ts on the page before. It marks the root element
+      with the kind, sets the direction, holds the header still within one
+      section, and for continuum hides the title that moves until it
+      starts. The marks stay for the life of the page: when they go, the
+      usual enter animations come back and play a second time. */}
   <script is:inline>
     (() => {
       try {
@@ -80,26 +83,30 @@ const navPaths = ['/', ...(await getNav()).filter((s) => s.navbar && s.url.start
         if (a.to !== location.pathname || Date.now() - a.at > 5000) return;
         const root = document.documentElement;
         root.dataset.fkArrive = a.kind;
+        if (a.holdHeader) root.dataset.fkHoldHeader = '';
+        root.style.setProperty('--fk-enter-dir', String(a.dir));
         window.__fkArrive = a;
-        // The marker stays for the life of the page: when it goes, the usual
-        // enter animations come back and play a second time.
-        if (a.kind === 'continuum') {
-          const sel = a.item ? `a[href=${JSON.stringify(a.item)}]` : null;
-          const add = (id, css) => {
-            const style = document.createElement('style');
-            style.id = id;
-            style.textContent = css;
-            document.head.append(style);
-          };
-          // Hide the element that moves until it starts.
-          add('fk-arrive-hide', sel
-            ? `${sel} [data-fk-continuum-title]:not(.fk-continuum-in),${sel}[data-fk-continuum-title]:not(.fk-continuum-in){opacity:0}`
-            : '.detail-title:not(.fk-continuum-in){opacity:0}');
-          // The block that holds the row stays still, so only the title moves.
-          if (sel) add('fk-arrive-keep', `.page-shell>main>:has(${sel}){animation:none!important}`);
-          // If the script never runs, show the page anyway.
-          setTimeout(() => document.getElementById('fk-arrive-hide')?.remove(), 2000);
+        if (a.kind !== 'continuum') return;
+        const add = (id, css) => {
+          const style = document.createElement('style');
+          style.id = id;
+          style.textContent = css;
+          document.head.append(style);
+        };
+        const sel = a.item ? `a[href=${JSON.stringify(a.item)}]` : null;
+        add('fk-arrive-hide', sel
+          ? `${sel} [data-fk-continuum-title]:not(.fk-continuum-in),${sel}[data-fk-continuum-title]:not(.fk-continuum-in){opacity:0}`
+          : '.detail-title:not(.fk-continuum-in){opacity:0}');
+        // Back to a list: the block that holds the row cannot swing, or the
+        // title would swing with it. Its other rows and labels swing instead.
+        if (sel) {
+          add('fk-arrive-keep',
+            `.page-shell>main>:has(${sel}){animation:none!important}` +
+            `.page-shell>main>:has(${sel}) :is(li,h2):not(:has(${sel})){transform-origin:left center;` +
+            `animation:fk-turnstile-in var(--page-in) var(--fk-ease-metro) backwards}`);
         }
+        // If the script never runs, show the page anyway.
+        setTimeout(() => document.getElementById('fk-arrive-hide')?.remove(), 2000);
       } catch {
         // No sessionStorage: arrive as usual.
       }

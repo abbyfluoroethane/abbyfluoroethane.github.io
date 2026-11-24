@@ -248,8 +248,21 @@ h6 {
 }
 
 /* ---- page motion (src/scripts/motion.ts) ----
-   The exits and arrivals of fluorokit, made stronger than the component
-   enter animations, which they replace for one page change. */
+   One rule for every page change:
+   - deeper or back (a tile to its section, a row to its page, a page back
+     to its list): turnstile, on both pages. Deeper, the old page swings
+     toward the reader and the new one swings out of the screen. Back, the
+     old page swings into the screen and the new one swings toward the
+     reader. --fk-enter-dir (1 deeper, -1 back) sets the side.
+   - a row to its page and back: the title also carries over (continuum).
+   - across the nav, one section to another: the slide.
+   Within one section the header holds still: only the content moves.
+   These rules replace the component enter animations for one page change,
+   so they must be stronger than them. */
+:root {
+  /* The swing-in and the continuum share one length, so they land together. */
+  --page-in: var(--fk-continuum-duration);
+}
 .page-shell :is(header > *, main *, .detail-title).fk-turnstile-out {
   animation: fk-turnstile-out var(--fk-turnstile-duration) var(--fk-ease-exit) forwards;
   animation-delay: calc(var(--i, 0) * var(--fk-exit-stagger));
@@ -258,21 +271,24 @@ h6 {
   animation: fk-exit var(--fk-exit-duration) var(--fk-ease-exit) forwards;
   animation-delay: calc(var(--i, 0) * var(--fk-exit-stagger));
 }
-/* A turnstile arrival: the page swings open, top to bottom. */
-html[data-fk-arrive='turnstile'] .page-shell > header > *,
-html[data-fk-arrive='turnstile'] .page-shell > .detail-title,
-html[data-fk-arrive='turnstile'] .page-shell > main > * {
+/* The arrival: the page swings in, top to bottom. */
+html[data-fk-arrive] .page-shell > header > *,
+html[data-fk-arrive] .page-shell > .detail-title,
+html[data-fk-arrive] .page-shell > main > * {
   transform-origin: left center;
-  animation: fk-turnstile-in var(--fk-turnstile-duration) var(--fk-ease-metro) backwards;
+  animation: fk-turnstile-in var(--page-in) var(--fk-ease-metro) backwards;
   animation-delay: calc(var(--i, 0) * var(--fk-exit-stagger));
 }
-html[data-fk-arrive='turnstile'] .page-shell > header > :nth-child(2) { --i: 1; }
-html[data-fk-arrive='turnstile'] .page-shell > header > :nth-child(n + 3) { --i: 2; }
-html[data-fk-arrive='turnstile'] .page-shell > .detail-title { --i: 3; }
-html[data-fk-arrive='turnstile'] .page-shell > main > * { --i: 3; }
-html[data-fk-arrive='turnstile'] .page-shell > main > :nth-child(n + 2) { --i: 4; }
-/* A continuum arrival: the moving title runs the continuum, nothing else. */
-html[data-fk-arrive='continuum'] .page-shell .fk-continuum-in:not(#fk-none) {
+html[data-fk-arrive] .page-shell > header > :nth-child(2) { --i: 1; }
+html[data-fk-arrive] .page-shell > header > :nth-child(n + 3) { --i: 2; }
+html[data-fk-arrive] .page-shell > .detail-title { --i: 2; }
+html[data-fk-arrive] .page-shell > main > * { --i: 3; }
+html[data-fk-arrive] .page-shell > main > :nth-child(n + 2) { --i: 4; }
+html[data-fk-hold-header] .page-shell > header > * {
+  animation: none !important;
+}
+/* The title that carries over runs the continuum, not the swing. */
+html[data-fk-arrive] .page-shell .fk-continuum-in:not(#fk-none) {
   transform-origin: left top;
   animation: fk-continuum-in var(--fk-continuum-duration) var(--fk-ease-metro) backwards;
 }
