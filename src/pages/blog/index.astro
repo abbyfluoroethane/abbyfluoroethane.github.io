@@ -23,12 +23,12 @@ const summaryOf = (post: typeof latest) =>
 ---
 <Base title="blog">
   <article class="latest">
-    <a class="row" href={`/blog/${latest.id}/`}>
+    <a class="row" href={`/blog/${latest.id}/`} data-fk-continuum>
       <p class="fk-overline fk-muted">
         <time datetime={formatDate(latest.data.date)}>{formatDate(latest.data.date)}</time>
         · {formatMinutes(readingMinutes(latest.body))}
       </p>
-      <h2 class="fk-title">{latest.data.title}</h2>
+      <h2 class="fk-title" data-fk-continuum-title>{latest.data.title}</h2>
       <p class="summary">{summaryOf(latest)}</p>
     </a>
   </article>
@@ -40,9 +40,9 @@ const summaryOf = (post: typeof latest) =>
         <ul>
           {posts.map((post) => (
             <li>
-              <a class="row" href={`/blog/${post.id}/`}>
+              <a class="row" href={`/blog/${post.id}/`} data-fk-continuum>
                 <time class="fk-data fk-muted" datetime={formatDate(post.data.date)}>{formatDate(post.data.date)}</time>
-                <span class="name">{post.data.title}</span>
+                <span class="name" data-fk-continuum-title>{post.data.title}</span>
                 <span class="summary">{summaryOf(post)}</span>
               </a>
             </li>
@@ -58,9 +58,9 @@ const summaryOf = (post: typeof latest) =>
       <ul>
         {archive.map((post) => (
           <li>
-            <a class="row" href={`/blog/${post.id}/`}>
+            <a class="row" href={`/blog/${post.id}/`} data-fk-continuum>
               <time class="fk-data fk-muted" datetime={formatDate(post.data.date)}>{formatDate(post.data.date)}</time>
-              <span class="name">{post.data.title}</span>
+              <span class="name" data-fk-continuum-title>{post.data.title}</span>
               <span class="summary">{summaryOf(post)}</span>
             </a>
           </li>

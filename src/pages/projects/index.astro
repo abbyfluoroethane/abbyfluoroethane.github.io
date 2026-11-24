@@ -26,7 +26,7 @@ const years = (p: Project) =>
           {projects.map((p) => (
             <li class="card">
               <div class="card-head">
-                <h3 class="card-title">{href(p) ? <a href={href(p)}>{p.data.title}</a> : p.data.title}</h3>
+                <h3 class="card-title">{href(p) ? <a href={href(p)} data-fk-continuum data-fk-continuum-title>{p.data.title}</a> : p.data.title}</h3>
                 <p class="card-date">{years(p)}</p>
               </div>
               <p class="card-desc">{p.data.description}</p>

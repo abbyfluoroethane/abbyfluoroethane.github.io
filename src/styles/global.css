@@ -246,3 +246,39 @@ h6 {
   flex: none;
   margin-top: 2px; /* centers the 16px icon on the 20px first line */
 }
+
+/* ---- page motion (src/scripts/motion.ts) ----
+   The exits and arrivals of fluorokit, made stronger than the component
+   enter animations, which they replace for one page change. */
+.page-shell :is(header > *, main *, .detail-title).fk-turnstile-out {
+  animation: fk-turnstile-out var(--fk-turnstile-duration) var(--fk-ease-exit) forwards;
+  animation-delay: calc(var(--i, 0) * var(--fk-exit-stagger));
+}
+.page-shell :is(header > *, main *, .detail-title).fk-exit {
+  animation: fk-exit var(--fk-exit-duration) var(--fk-ease-exit) forwards;
+  animation-delay: calc(var(--i, 0) * var(--fk-exit-stagger));
+}
+/* A turnstile arrival: the page swings open, top to bottom. */
+html[data-fk-arrive='turnstile'] .page-shell > header > *,
+html[data-fk-arrive='turnstile'] .page-shell > .detail-title,
+html[data-fk-arrive='turnstile'] .page-shell > main > * {
+  transform-origin: left center;
+  animation: fk-turnstile-in var(--fk-turnstile-duration) var(--fk-ease-metro) backwards;
+  animation-delay: calc(var(--i, 0) * var(--fk-exit-stagger));
+}
+html[data-fk-arrive='turnstile'] .page-shell > header > :nth-child(2) { --i: 1; }
+html[data-fk-arrive='turnstile'] .page-shell > header > :nth-child(n + 3) { --i: 2; }
+html[data-fk-arrive='turnstile'] .page-shell > .detail-title { --i: 3; }
+html[data-fk-arrive='turnstile'] .page-shell > main > * { --i: 3; }
+html[data-fk-arrive='turnstile'] .page-shell > main > :nth-child(n + 2) { --i: 4; }
+/* A continuum arrival: the moving title runs the continuum, nothing else. */
+html[data-fk-arrive='continuum'] .page-shell .fk-continuum-in:not(#fk-none) {
+  transform-origin: left top;
+  animation: fk-continuum-in var(--fk-continuum-duration) var(--fk-ease-metro) backwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .page-shell :is(header > *, main *, .detail-title):is(.fk-turnstile-out, .fk-exit),
+  html[data-fk-arrive] .page-shell * {
+    animation: none !important;
+  }
+}
