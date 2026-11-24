@@ -35,7 +35,7 @@ const { size = 'square', color = 'pink', icon, href, label, nav = false, externa
 const accent = `var(--fk-tile-${color})`;
 ---
 <a
-  class:list={['tile', { 'tile-live-tile': live, 'tile-nav': nav, 'has-strip': art }]}
+  class:list={['tile', 'fk-tilt', { 'tile-live-tile': live, 'tile-nav': nav, 'has-strip': art }]}
   data-size={size}
   href={href}
   style={`--tile-color: ${accent}`}
@@ -70,7 +70,8 @@ const accent = `var(--fk-tile-${color})`;
     cursor: pointer;
     user-select: none;
     overflow: hidden;
-    transition: transform 0.1s ease;
+    /* Press feedback is the fluorokit tilt (.fk-tilt, attachTilt() in
+       src/scripts/motion.ts): the tile tips toward the press point. */
     animation: fk-enter var(--fk-enter-duration) var(--fk-ease-metro) backwards; /* delay set by home.ts */
     /* The icon is 16% of the tile's height, from the grid unit TileGrid
        sets: 24px on a 152px tile, 50px on a 312px one, and in proportion
@@ -120,9 +121,6 @@ const accent = `var(--fk-tile-${color})`;
     --tile-fill: var(--tile-hover);
     text-decoration: none;
   }
-  .tile:active {
-    transform: scale(0.97);
-  }
   .tile:focus-visible {
     outline: 2px solid var(--fk-focus);
     outline-offset: 2px;
@@ -130,7 +128,6 @@ const accent = `var(--fk-tile-${color})`;
   @media (prefers-reduced-motion: reduce) {
     .tile {
       animation: none;
-      transition: none;
     }
   }
 

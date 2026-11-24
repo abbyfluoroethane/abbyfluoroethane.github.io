@@ -18,7 +18,7 @@
     "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.4",
     "astro": "^7.3.5",
-    "fluorokit": "^0.1.0",
+    "fluorokit": "git+https://github.com/abbyfluoroethane/fluorokit.git#pure-metro",
     "marked": "^18.0.14",
     "yaml": "^2.9.1"
   },
